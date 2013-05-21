@@ -1,8 +1,9 @@
 package com.tavant.droid.womensecurity;
 
-import android.os.Bundle;
 import android.app.Activity;
-import android.view.Menu;
+import android.os.Bundle;
+
+import com.tavant.droid.womensecurity.sound.ScreamPlayer;
 
 public class MainActivity extends Activity {
 
@@ -10,13 +11,11 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle instance3) {
 		super.onCreate(instance3);
 		setContentView(R.layout.activity_main);
+		ScreamPlayer soundPlayer = new ScreamPlayer(getApplicationContext());
+		soundPlayer.setRepeatCount(2);
+		soundPlayer.startRinging();
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
+
 
 }
