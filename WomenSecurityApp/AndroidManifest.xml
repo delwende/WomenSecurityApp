@@ -29,6 +29,18 @@
         </activity>
         
         <activity android:name=".activities.FetchContactsActivity"/>
+        
+        
+        <activity
+            android:name="group.pals.android.lib.ui.lockpattern.LockPatternActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
+            android:screenOrientation="user"
+            android:theme="@style/Alp.Theme.Dialog.Dark" />
+        <activity
+            android:name=".lock.LockScreenActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
+            android:screenOrientation="user"/>    
+        
     </application>
 
 </manifest>
