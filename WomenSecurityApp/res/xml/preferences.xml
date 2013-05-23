@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="@string/str_facebook" >
+        <PreferenceScreen android:title="@string/str_lp_label_preference1_title" >
+            <PreferenceCategory android:title="@string/str_facebook" >
+                <Preference android:title="@string/str_lp_label_preference1_title" />
+            </PreferenceCategory>
+        </PreferenceScreen>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/str_contacts" >
+        <PreferenceScreen android:title="@string/str_lp_label_preference2_title" >
+            <PreferenceCategory android:title="@string/str_contacts" >
+                <Preference android:title="@string/str_lp_label_preference2_title" />
+            </PreferenceCategory>
+        </PreferenceScreen>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/str_location" >
+        <CheckBoxPreference
+            android:key="cbp_checkbox_preference3"
+            android:title="@string/str_cbp_checkbox_preference3_title" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/str_buzzer" >
+        <CheckBoxPreference
+            android:key="cbp_checkbox_preference4"
+            android:title="@string/str_cbp_checkbox_preference4_title" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/str_cops" >
+        <CheckBoxPreference
+            android:key="cbp_checkbox_preference5"
+            android:title="@string/str_cbp_checkbox_preference5_title" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/str_friends" >
+        <CheckBoxPreference
+            android:key="cbp_checkbox_preference6"
+            android:title="@string/str_cbp_checkbox_preference6_title" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/str_pattern" >
+        <PreferenceScreen android:title="@string/str_lp_label_preference7_title" >
+            <PreferenceCategory android:title="@string/str_pattern" >
+                <Preference android:title="@string/str_lp_label_preference7_title" />
+            </PreferenceCategory>
+        </PreferenceScreen>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/str_password" >
+        <PreferenceScreen android:title="@string/str_lp_label_preference8_title" >
+            <PreferenceCategory android:title="@string/str_password" >
+                <Preference android:title="@string/str_lp_label_preference8_title" />
+            </PreferenceCategory>
+        </PreferenceScreen>
+    </PreferenceCategory>
+
+</PreferenceScreen><!--
+    <PreferenceCategory
+	    android:title="@string/str_second_category_title"	        
+	    >
+	    
+	    <ListPreference 
+	        android:key="lp_list_preference"
+	        android:title="@string/lp_list_preference_title"
+	        android:entries="@array/array_list_preference_entries"
+	        android:entryValues="@array/array_list_preference_entry_values"	        
+	        />
+	    
+	    <RingtonePreference 
+	        android:key="rtp_ringtone_preference"
+	        android:title="@string/rtp_ringtone_preference_title"	        	        
+	        />	    
+	        
+	</PreferenceCategory>
+	
+	<PreferenceScreen 
+	    android:title="@string/more"
+	    >
+	    <PreferenceCategory 
+	        android:title="@string/str_third_category_title"
+	        >
+		    <EditTextPreference 
+		        android:key="etp_edittext_preference2"
+		        android:title="@string/str_cbp_checkbox_preference3_title"	        
+		    />
+	    </PreferenceCategory> 
+	</PreferenceScreen>
+-->
+

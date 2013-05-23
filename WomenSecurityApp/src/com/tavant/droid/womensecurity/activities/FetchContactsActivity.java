@@ -8,6 +8,9 @@ import android.support.v4.app.FragmentActivity;
 
 import com.tavant.droid.womensecurity.BuildConfig;
 import com.tavant.droid.womensecurity.R;
+import com.tavant.droid.womensecurity.R.id;
+import com.tavant.droid.womensecurity.R.layout;
+import com.tavant.droid.womensecurity.R.string;
 import com.tavant.droid.womensecurity.fragments.ContactsListFragment;
 import com.tavant.droid.womensecurity.utils.Utils;
 

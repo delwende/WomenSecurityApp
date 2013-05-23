@@ -1,5 +1,6 @@
 package com.tavant.droid.womensecurity;
 
+
 import com.tavant.droid.womensecurity.activities.FetchContactsActivity;
 
 import android.annotation.TargetApi;
