@@ -5,4 +5,7 @@
          screen margins) for sw600dp devices (e.g. 7" tablets) here.
     -->
 
+    <item name="alp_dialog_height_large" type="dimen">@dimen/alp_dialog_height_large_base</item>
+    <item name="alp_dialog_width_large" type="dimen">@dimen/alp_dialog_width_large_base</item>
+
 </resources>

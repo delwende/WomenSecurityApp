@@ -11,9 +11,9 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle instance3) {
 		super.onCreate(instance3);
 		setContentView(R.layout.activity_main);
-		ScreamPlayer soundPlayer = new ScreamPlayer(getApplicationContext());
-		soundPlayer.setRepeatCount(2);
-		soundPlayer.startRinging();
+//		ScreamPlayer soundPlayer = new ScreamPlayer(getApplicationContext());
+//		soundPlayer.setRepeatCount(2);
+//		soundPlayer.startRinging();
 	}
 
 
