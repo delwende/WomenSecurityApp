@@ -2,16 +2,16 @@ package com.tavant.droid.womensecurity;
 
 
 import com.tavant.droid.womensecurity.activities.FetchContactsActivity;
+import com.tavant.droid.womensecurity.data.BaseData;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class HomeActivity extends FragmentActivity {
+public class HomeActivity extends BaseActivity {
 
 	
 
@@ -48,5 +48,17 @@ public class HomeActivity extends FragmentActivity {
 	private void loadContacts() {
 		Intent intent = new Intent(this,FetchContactsActivity.class);
 		startActivity(intent);
+	}
+
+	@Override
+	protected void onComplete(int reqCode, BaseData data) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void onError(int reqCode, int errorCode, String errorMessage) {
+		// TODO Auto-generated method stub
+		
 	}
 }

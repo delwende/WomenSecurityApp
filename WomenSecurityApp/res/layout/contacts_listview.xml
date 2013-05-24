@@ -9,4 +9,30 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+   <LinearLayout 
+       android:id="@+id/button_layout"
+       android:layout_width="fill_parent"
+       android:layout_height="wrap_content"
+       android:layout_gravity="bottom"
+       android:background="@android:color/background_dark"
+       android:orientation="horizontal"
+       android:visibility="invisible"
+       android:paddingBottom="5dp">
+       <Button 
+           android:id="@+id/cancel_button"
+           android:layout_width="0dp"
+           android:layout_height="wrap_content"
+           android:text="@string/cancel"
+           android:textColor="@android:color/white"
+           android:layout_weight="50"
+           />
+       <Button 
+           android:id="@+id/save_button"
+           android:layout_width="0dp"
+           android:layout_height="wrap_content"
+           android:layout_weight="50"
+           android:text="@string/save"
+           android:textColor="@android:color/white"
+           />
+       </LinearLayout> 
 </FrameLayout>

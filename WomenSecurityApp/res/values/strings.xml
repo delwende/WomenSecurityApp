@@ -88,6 +88,7 @@
     <string name="no_address">No addresses found</string>
     <string name="no_intent_found">No application found to handle this action</string>
     
-    
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
 
 </resources>
