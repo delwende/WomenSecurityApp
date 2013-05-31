@@ -41,7 +41,7 @@ public abstract class BaseActivity extends FragmentActivity {
 	 * @param ReqCode
 	 * @param request
 	 * @param isshowdialog
-	 * It can be multiple requests without dismissing the loading dialog ex : followuser api needs GET_MEMBER_INFO api to call OR
+	 * It can be multiple requests without dismissing the loading dialog
 	 * It can be called for non loading screen api's like setvideostats
 	 */
 	public void onExecute(int ReqCode, HttpRequestBase request,final boolean isshowdialog) {
