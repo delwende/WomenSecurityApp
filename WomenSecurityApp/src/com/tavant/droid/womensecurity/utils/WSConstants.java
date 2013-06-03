@@ -30,7 +30,15 @@ public class WSConstants {
 	
 	
 
-	public static final String URL_USER_DATA = BASEURL+"/userdata";
+	public static final String GCM_SENDER_ID = "351736632081";
+	public static final String PROPERTY_REG_ID = "gcm_id";
+	
+	public static final String URL_USER_DATA = BASEURL+"/user";
+	public static final String URL_USER_LOCATION = BASEURL+"/updatelocation";
+	public static final String URL_USER_ALERT = BASEURL+"/UserAlert";
+	
+	
+	
 
 	public static final int CODE_USER_DATA = 1001;
 	

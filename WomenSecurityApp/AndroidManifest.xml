@@ -20,9 +20,10 @@
     <uses-permission android:name="com.tavant.droid.womensecurity.permission.C2D_MESSAGE" />
 	
     <application
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
+        android:name=".WSecurityApp"
         android:theme="@style/AppTheme" >
         <provider android:name=".database.WSContentProvider"
 			android:authorities="com.tavant.droid.womensecurity.database.contentprovider"
@@ -44,12 +45,8 @@
         
         <activity android:name=".activities.FetchContactsActivity"/>
         
-         <activity
-            android:name="com.tavant.droid.womensecurity.GCMActivity"
-            android:label="@string/app_name" >
-        </activity>
-        
-        
+      
+     
         
         <activity
             android:name="group.pals.android.lib.ui.lockpattern.LockPatternActivity"
@@ -63,14 +60,14 @@
 
             
          <receiver
-            android:name=".OurBroadcastReceiver"
+            android:name="com.tavant.droid.womensecurity.service.WSGCMBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
                 <category android:name="com.tavant.droid.womensecurity" />
             </intent-filter>
         </receiver>
-        <service android:name=".IntentService" />
+        <service android:name=".service.WSGCMIntentServices" />
         
 
         <activity 
