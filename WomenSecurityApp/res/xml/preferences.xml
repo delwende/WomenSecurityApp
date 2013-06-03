@@ -2,18 +2,36 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <PreferenceCategory android:title="@string/str_facebook" >
-        <PreferenceScreen android:title="@string/str_lp_label_preference1_title" >
-            <PreferenceCategory android:title="@string/str_facebook" >
+     
+        <Preference 
+            android:key="facebook_key"
+            android:title="@string/str_lp_label_preference1_title"> 
+            </Preference>
+        
+        <!-- <PreferenceScreen android:title="@string/str_lp_label_preference1_title" >
+            <Preference android:title="@string/str_lp_label_preference1_title"> 
+            <intent
+                    android:action="android.intent.action.VIEW"
+                    android:targetClass="com.tavant.droid.womensecurity.activities.PickerActivity"
+                    android:targetPackage="com.tavant.droid.womensecurity" />
+            </Preference>
+             <PreferenceCategory android:title="@string/str_facebook" >
                 <Preference android:title="@string/str_lp_label_preference1_title" />
             </PreferenceCategory>
-        </PreferenceScreen>
+        </PreferenceScreen> -->
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/str_contacts" >
         <PreferenceScreen android:title="@string/str_lp_label_preference2_title" >
+            <intent
+                    android:action="android.intent.action.VIEW"
+                    android:targetClass="com.tavant.droid.womensecurity.activities.FetchContactsActivity"
+                    android:targetPackage="com.tavant.droid.womensecurity" />
+            <!-- 
             <PreferenceCategory android:title="@string/str_contacts" >
                 <Preference android:title="@string/str_lp_label_preference2_title" />
-            </PreferenceCategory>
+            </PreferenceCategory> -->
         </PreferenceScreen>
+
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/str_location" >
         <CheckBoxPreference
@@ -81,5 +99,6 @@
 		    />
 	    </PreferenceCategory> 
 	</PreferenceScreen>
+
 -->
 

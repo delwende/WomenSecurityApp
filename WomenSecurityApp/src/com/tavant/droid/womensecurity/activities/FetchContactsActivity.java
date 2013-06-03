@@ -171,6 +171,7 @@ public class FetchContactsActivity extends FragmentActivity implements
 
 		case R.id.save_button:
 			saveContent();
+			FetchContactsActivity.this.finish();
 			break;
 
 		}
