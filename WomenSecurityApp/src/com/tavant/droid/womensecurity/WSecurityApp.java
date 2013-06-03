@@ -12,9 +12,7 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.tavant.droid.womensecurity.utils.WSConstants;
 public class WSecurityApp extends Application {
 
-	
 
-  
     static final String TAG = "TAG";
     GoogleCloudMessaging gcm;
 

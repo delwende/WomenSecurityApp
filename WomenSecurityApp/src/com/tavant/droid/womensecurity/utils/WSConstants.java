@@ -31,7 +31,12 @@ public class WSConstants {
 	
 
 	public static final String GCM_SENDER_ID = "351736632081";
+	public static final String FB_APP_KEY = "417172928381965";
+	
+	
+	
 	public static final String PROPERTY_REG_ID = "gcm_id";
+	public static final String PROPERTY_USER_ID = "user_id";
 	
 	public static final String URL_USER_DATA = BASEURL+"/user";
 	public static final String URL_USER_LOCATION = BASEURL+"/updatelocation";
