@@ -4,6 +4,7 @@
     <string name="app_name">WomenSecurityApp</string>
     <string name="action_settings">Settings</string>
     <string name="get_started">To get started, log in using Facebook</string>
+    <string name="app_id">417172928381965</string>
     
     
     <!-- Setting Screen Strings -->
