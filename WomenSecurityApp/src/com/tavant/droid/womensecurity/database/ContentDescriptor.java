@@ -61,4 +61,34 @@ public class ContentDescriptor {
 		}
 		
 	}
+	
+	
+	public static class WSFacebook {
+		// an identifying name for entity
+		public static final String NAME_TABLE = "wsfb";
+		
+		// define a URI paths to access entity
+		// BASE_URI/wscontacts - for list of wscontacts
+		// BASE_URI/wscontacts/* - retreive specific wscontacts by id
+		// the toke value are used to register path in matcher (see above)
+		public static final String PATH = "wsfb";
+		public static final int PATH_TOKEN = 500;
+		public static final String PATH_FOR_ID = "wsfb/*";
+		public static final int PATH_FOR_ID_TOKEN = 600;
+		
+		// URI for all content stored as WSContact entity
+		// BASE_URI + PATH ==> "com.tavant.droid.womensecurity.database.contentprovider";
+		public static final Uri CONTENT_URI = BASE_URI.buildUpon().appendPath(PATH).build();
+		
+	
+		
+		// a static class to store columns in entity
+		public static class Cols {
+			public static final String ID = BaseColumns._ID; // convention
+			public static final String FBID = "fbid";
+			public static final String FBNAME  = "fbname";
+		}
+		
+	}
+	
 }

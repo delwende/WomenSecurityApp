@@ -18,20 +18,26 @@ public class SettingsActivity extends PreferenceActivity{
 		
 		/** Setting Preferences resource to the PreferenceActivity */
 		addPreferencesFromResource(R.xml.preferences);
-		/*facebookPref = findPreference("facebook_key");
+		facebookPref = findPreference("facebook_key");
 		facebookPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
 				startPickerActivity(PickerActivity.FRIEND_PICKER,2 );
-				return false;
+				return true;
 			}
-		});*/
+		});
 	}
 	protected void startPickerActivity(Uri data, int i) {
-		 	/*Intent intent = new Intent();
-	        intent.setData(data);
+		 	Intent intent = new Intent();
+	        intent.setData(PickerActivity.FRIEND_PICKER);
 	        intent.setClass(this, PickerActivity.class);
-	        startActivityForResult(intent, 2);*/		
+	        startActivityForResult(intent, 2000);		
+	}
+	
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
 	}
 }

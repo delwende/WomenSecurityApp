@@ -51,6 +51,11 @@ public class WSContentProvider extends ContentProvider {
 				getContext().getContentResolver().notifyChange(uri, null);
 				return ContentDescriptor.WSContact.CONTENT_URI.buildUpon().appendPath(String.valueOf(id)).build();
 			}
+			case ContentDescriptor.WSFacebook.PATH_TOKEN:{
+				long id = db.insert(ContentDescriptor.WSFacebook.NAME_TABLE, null, values);
+				//getContext().getContentResolver().notifyChange(uri, null);
+				return ContentDescriptor.WSFacebook.CONTENT_URI.buildUpon().appendPath(String.valueOf(id)).build();
+			}
             default: {
                 throw new UnsupportedOperationException("URI: " + uri + " not supported.");
             }

@@ -26,10 +26,6 @@
                     android:action="android.intent.action.VIEW"
                     android:targetClass="com.tavant.droid.womensecurity.activities.FetchContactsActivity"
                     android:targetPackage="com.tavant.droid.womensecurity" />
-            <!-- 
-            <PreferenceCategory android:title="@string/str_contacts" >
-                <Preference android:title="@string/str_lp_label_preference2_title" />
-            </PreferenceCategory> -->
         </PreferenceScreen>
 
     </PreferenceCategory>

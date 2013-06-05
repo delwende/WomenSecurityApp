@@ -37,6 +37,16 @@ public class WSContactsDatabase extends SQLiteOpenHelper {
 					ContentDescriptor.WSContact.Cols.ID + 
 				") ON CONFLICT REPLACE)"
 			);
+		
+		db.execSQL("CREATE TABLE " + ContentDescriptor.WSFacebook.NAME_TABLE+ " ( " +
+				ContentDescriptor.WSContact.Cols.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+				ContentDescriptor.WSFacebook.Cols.FBID + " TEXT NOT NULL, " +
+				ContentDescriptor.WSFacebook.Cols.FBNAME 	+ " TEXT NOT NULL , " +
+				"UNIQUE (" + 
+					ContentDescriptor.WSContact.Cols.ID + 
+				") ON CONFLICT REPLACE)"
+			);	
+		
 	}
 
 	/**

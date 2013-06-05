@@ -37,6 +37,8 @@ public class WSConstants {
 	
 	public static final String PROPERTY_REG_ID = "gcm_id";
 	public static final String PROPERTY_USER_ID = "user_id";
+	public static final String PROPERTY_FB_ID = "fb_id";
+	public static final String PROPERTY_FB_ACCESSTOKEN = "fb_access_token";
 	
 	public static final String URL_USER_DATA = BASEURL+"/user";
 	public static final String URL_USER_LOCATION = BASEURL+"/updatelocation";
