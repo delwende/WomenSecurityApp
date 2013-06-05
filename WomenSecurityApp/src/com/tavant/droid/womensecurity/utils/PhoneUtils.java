@@ -1,7 +1,5 @@
 package com.tavant.droid.womensecurity.utils;
 
-import com.tavant.droid.womensecurity.fragments.ContactsListFragment.ContactsQuery;
-
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;

@@ -13,7 +13,7 @@ public class WSConstants {
 	
 
 	public static final String HOST = "";
-	public static final String BASEURL = "";
+	public static final String BASEURL = "http://192.168.147.197:8080/WomenSecurityBackEnd";
 
 	
 	
