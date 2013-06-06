@@ -27,6 +27,7 @@ import org.apache.http.params.HttpProtocolParams;
 
 import com.tavant.droid.womensecurity.data.BaseData;
 import com.tavant.droid.womensecurity.utils.WSConstants;
+import com.tavant.womensecurity.parser.LocationResponseParser;
 import com.tavant.womensecurity.parser.UserDataParser;
 
 
@@ -64,8 +65,13 @@ public class HttpHandler {
 			if (response != null) {
 				InputStream inputStream = response.getContent();
 				switch (reqCode) {
-				case WSConstants.CODE_USER_DATA:
+				case WSConstants.CODE_USER_API:
 					return parseUserData(inputStream);
+				case WSConstants.CODE_LOCATION_API:
+					//System.out.println("Response >> " + read(inputStream));
+					return parseLocationAPI(inputStream);	
+				case WSConstants.CODE_ALERT_API:
+					return parseUserData(inputStream);		
 				default:
 					break;
 				}
@@ -95,6 +101,11 @@ public class HttpHandler {
 	
 	private BaseData parseUserData(InputStream inputStream)	throws IOException {
 		UserDataParser parser = new UserDataParser(inputStream);
+		return parser.getData();
+	}
+	
+	private BaseData parseLocationAPI(InputStream inputStream)	throws IOException {
+		LocationResponseParser parser = new LocationResponseParser(inputStream);
 		return parser.getData();
 	}
 	

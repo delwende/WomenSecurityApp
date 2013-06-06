@@ -15,5 +15,6 @@ public class HttpResponseTags {
 	public static final Object TAG_MSG = "msg";
 	public static final Object TAG_LIST = "list";
 	public static final Object TAG_METHOD = "method";
+	public static final Object TAG_PHONE_NO = "phoneno";
 	
 }

@@ -2,18 +2,17 @@ package com.tavant.droid.womensecurity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Locale;
 
 import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.speech.tts.TextToSpeech;
 import android.telephony.PhoneStateListener;
 import android.telephony.SmsManager;
@@ -37,11 +36,15 @@ public class HomeActivity extends BaseActivity implements
 	ImageButton panicButton;
 	private String SAVE_ME_TEXT = "Please call police. I am in danger. PLEASE HELP . My location is:";
 
-	private TextToSpeech mTts;
+	//private TextToSpeech mTts;
 	// This code can be any value you want, its just a checksum.
 	private static final int MY_DATA_CHECK_CODE = 1234;
 	TelephonyManager telephonyManager;
 	PhoneStateListener listener;
+
+	private SharedPreferences copPhonePreferences;
+	private SharedPreferences.Editor copPrefsEditor;
+	String copNumber;
 	private PendingIntent pendingIntent;
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -50,6 +53,9 @@ public class HomeActivity extends BaseActivity implements
 		super.onCreate(instance3);
 		setContentView(R.layout.activity_main);
 		// Get the telephony manager
+		copPhonePreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
+
+		copNumber = copPhonePreferences.getString("COP_NUMBER", "9538432555");
 
 		panicButton = (ImageButton) findViewById(R.id.panic_button);
 
@@ -73,30 +79,40 @@ public class HomeActivity extends BaseActivity implements
 				Toast.makeText(HomeActivity.this, "Start Alarm",
 						Toast.LENGTH_LONG).show();
 				final ArrayList<String> number = retrievePhoneNumbers();
+
+				/*Handler handler = new Handler();
+				handler.postDelayed(new Runnable() {
+
+					@Override
+					public void run() {
+						System.out.println("Text to send.."
+								+ SAVE_ME_TEXT
+								+ LocationData.getInstance()
+										.getCurrentLocation());
+						if (LocationData.getInstance().getCurrentLocation() != null) {
+							try {
+								sendSmsMessage(number, SAVE_ME_TEXT
+										+ LocationData.getInstance()
+												.getCurrentLocation());
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+					}
+				}, 10000);
+*/
 				
-				
-				Handler handler = new Handler(); handler.postDelayed(new
-						 Runnable(){
-						  
-						  @Override public void run() {
-							  System.out.println("Text to send.." + SAVE_ME_TEXT + LocationData.getInstance().getCurrentLocation());
-							  if(LocationData.getInstance().getCurrentLocation() != null){
-								  try {
-									sendSmsMessage(number, SAVE_ME_TEXT + LocationData.getInstance().getCurrentLocation());
-								} catch (Exception e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-							  }
-						  }}, 10000);
 				try {
-					//sendSmsMessage(number, SAVE_ME_TEXT + LocationData.getInstance().getCurrentLocation());
-					System.out.println("Text to send.." + SAVE_ME_TEXT + LocationData.getInstance().getCurrentLocation());
+					 sendSmsMessage(number, SAVE_ME_TEXT +
+					 LocationData.getInstance().getCurrentLocation());
+					System.out.println("Text to send.." + SAVE_ME_TEXT
+							+ LocationData.getInstance().getCurrentLocation());
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				//makeEmergencyCalls(number);
+				makeEmergencyCalls(number);
 			}
 		});
 
@@ -122,16 +138,6 @@ public class HomeActivity extends BaseActivity implements
 					stateString = "Off Hook";
 					Toast.makeText(HomeActivity.this, "Phone state Off hook",
 							Toast.LENGTH_LONG).show();
-					/*
-					 * Handler handler = new Handler(); handler.postDelayed(new
-					 * Runnable(){
-					 * 
-					 * @Override public void run() { mTts.speak(SAVE_ME_TEXT,
-					 * TextToSpeech.QUEUE_FLUSH, // Drop all pending entries in
-					 * the playback queue. null);
-					 * 
-					 * }}, 4000);
-					 */
 					break;
 				case TelephonyManager.CALL_STATE_RINGING:
 					stateString = "Ringing";
@@ -147,25 +153,31 @@ public class HomeActivity extends BaseActivity implements
 
 	protected void makeEmergencyCalls(ArrayList<String> numbers) {
 
-		if (numbers != null) {
-			System.out.println("String phone number in calls >> "
-					+ numbers.get(0));
-			Intent intent = new Intent(Intent.ACTION_CALL);
-			intent.setData(Uri.parse("tel:" + numbers.get(0)));
-			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			intent.addFlags(Intent.FLAG_FROM_BACKGROUND);
-			startActivity(intent);
-		}
-
+		System.out.println("String phone number in calls >> " + copNumber);
+		/*
+		 * if (numbers != null) {
+		 * System.out.println("String phone number in calls >> " +
+		 * numbers.get(0)); Intent intent = new Intent(Intent.ACTION_CALL);
+		 * intent.setData(Uri.parse("tel:" + numbers.get(0)));
+		 * intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		 * intent.addFlags(Intent.FLAG_FROM_BACKGROUND); startActivity(intent);
+		 * }
+		 */
+		Intent intent = new Intent(Intent.ACTION_CALL);
+		intent.setData(Uri.parse("tel:" + copNumber));
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		intent.addFlags(Intent.FLAG_FROM_BACKGROUND);
+		startActivity(intent);
 	}
 
 	public void sendSmsMessage(ArrayList<String> numbers, String message)
 			throws Exception {
 		SmsManager smsMgr = SmsManager.getDefault();
 		smsMgr.sendTextMessage(numbers.get(0), null, message, null, null);
-/*		for (int i = 0; i < numbers.size(); i++) {
-			smsMgr.sendTextMessage(numbers.get(i), null, message, null, null);
-		}*/
+		
+		  for (int i = 0; i < numbers.size(); i++) {
+		  smsMgr.sendTextMessage(numbers.get(i), null, message, null, null); 
+		  }
 	}
 
 	private ArrayList<String> retrievePhoneNumbers() {
@@ -244,7 +256,7 @@ public class HomeActivity extends BaseActivity implements
 	 * @param data
 	 *            Intent Intent returned from the TTS check.
 	 */
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+	/*public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == MY_DATA_CHECK_CODE) {
 			if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
 				// success, create the TTS instance
@@ -258,7 +270,7 @@ public class HomeActivity extends BaseActivity implements
 				startActivity(installIntent);
 			}
 		}
-	}
+	}*/
 
 	/**
 	 * Be kind, once you've finished with the TTS engine, shut it down so other
@@ -267,11 +279,10 @@ public class HomeActivity extends BaseActivity implements
 	@Override
 	public void onDestroy() {
 		// Don't forget to shutdown!
-		if (mTts != null) {
+		/*if (mTts != null) {
 			mTts.stop();
 			mTts.shutdown();
-		}
+		}*/
 		super.onDestroy();
 	}
-
 }

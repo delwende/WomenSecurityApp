@@ -16,6 +16,8 @@
 
 package com.tavant.droid.womensecurity.activities;
 
+import java.util.List;
+
 import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -35,7 +37,6 @@ import com.facebook.model.GraphUser;
 import com.facebook.widget.FriendPickerFragment;
 import com.facebook.widget.PickerFragment;
 import com.facebook.widget.PlacePickerFragment;
-import com.sun.tools.javac.util.List;
 import com.tavant.droid.womensecurity.R;
 import com.tavant.droid.womensecurity.database.ContentDescriptor;
 import com.tavant.droid.womensecurity.database.ContentDescriptor.WSFacebook;
