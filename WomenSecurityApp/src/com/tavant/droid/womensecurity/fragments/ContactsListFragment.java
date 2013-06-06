@@ -294,11 +294,11 @@ public class ContactsListFragment extends ListFragment implements
 	@Override
 	public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 
-		/*CheckBox checkbox = (CheckBox) v.findViewWithTag(position);
+		CheckBox checkbox = (CheckBox) v.findViewWithTag(position);
 		if (checkbox.isChecked())
 			checkbox.setChecked(false);
 		else
-			checkbox.setChecked(true);*/
+			checkbox.setChecked(true);
 
 		// Gets the Cursor object currently bound to the ListView
 		final Cursor cursor = mAdapter.getCursor();

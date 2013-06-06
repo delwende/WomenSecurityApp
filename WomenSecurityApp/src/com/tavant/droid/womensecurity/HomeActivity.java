@@ -13,6 +13,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.speech.tts.TextToSpeech;
 import android.telephony.PhoneStateListener;
 import android.telephony.SmsManager;
@@ -31,21 +32,24 @@ import com.tavant.droid.womensecurity.service.LocationAlarmService;
 import com.tavant.droid.womensecurity.utils.LocationData;
 
 public class HomeActivity extends BaseActivity implements
-		TextToSpeech.OnInitListener {
+		OnClickListener{
 
 	ImageButton panicButton;
 	private String SAVE_ME_TEXT = "Please call police. I am in danger. PLEASE HELP . My location is:";
 
-	//private TextToSpeech mTts;
+	// private TextToSpeech mTts;
 	// This code can be any value you want, its just a checksum.
 	private static final int MY_DATA_CHECK_CODE = 1234;
 	TelephonyManager telephonyManager;
 	PhoneStateListener listener;
-
 	private SharedPreferences copPhonePreferences;
 	private SharedPreferences.Editor copPrefsEditor;
 	String copNumber;
 	private PendingIntent pendingIntent;
+	String stateString = "N/A";
+	boolean callNext = false;
+	private ArrayList<String> numbers;
+	private int callRepeatCount = 1;
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Override
@@ -55,87 +59,73 @@ public class HomeActivity extends BaseActivity implements
 		// Get the telephony manager
 		copPhonePreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
 
-		copNumber = copPhonePreferences.getString("COP_NUMBER", "9538432555");
+		//copNumber = copPhonePreferences.getString("COP_NUMBER", "");
 
 		panicButton = (ImageButton) findViewById(R.id.panic_button);
-
-		panicButton.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-
-				Intent myIntent = new Intent(HomeActivity.this,
-						LocationAlarmService.class);
-				pendingIntent = PendingIntent.getService(HomeActivity.this, 0,
-						myIntent, 0);
-
-				AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-
-				Calendar calendar = Calendar.getInstance();
-				calendar.setTimeInMillis(System.currentTimeMillis());
-				calendar.add(Calendar.SECOND, 10);
-				alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
-						calendar.getTimeInMillis(), 50 * 1000, pendingIntent);
-				Toast.makeText(HomeActivity.this, "Start Alarm",
-						Toast.LENGTH_LONG).show();
-				final ArrayList<String> number = retrievePhoneNumbers();
-
-				/*Handler handler = new Handler();
-				handler.postDelayed(new Runnable() {
-
-					@Override
-					public void run() {
-						System.out.println("Text to send.."
-								+ SAVE_ME_TEXT
-								+ LocationData.getInstance()
-										.getCurrentLocation());
-						if (LocationData.getInstance().getCurrentLocation() != null) {
-							try {
-								sendSmsMessage(number, SAVE_ME_TEXT
-										+ LocationData.getInstance()
-												.getCurrentLocation());
-							} catch (Exception e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-						}
-					}
-				}, 10000);
-*/
-				
-				try {
-					 sendSmsMessage(number, SAVE_ME_TEXT +
-					 LocationData.getInstance().getCurrentLocation());
-					System.out.println("Text to send.." + SAVE_ME_TEXT
-							+ LocationData.getInstance().getCurrentLocation());
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				makeEmergencyCalls(number);
-			}
-		});
-
+		panicButton.setOnClickListener(this);
+		
 		// Fire off an intent to check if a TTS engine is installed
-		Intent checkIntent = new Intent();
+		/*Intent checkIntent = new Intent();
 		checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
 		startActivityForResult(checkIntent, MY_DATA_CHECK_CODE);
+*/
+		
+	}
 
+
+	
+	
+	
+	protected void onResume(){
+		super.onResume();
+		if(callNext == true){
+			for(int i = 0 ; i < callRepeatCount ; i++){
+			
+				for(int j = 0 ; j < numbers.size() ; j++){
+					makeEmergencyCalls(numbers.get(j));
+				}
+			}
+			callNext = false;
+			callRepeatCount = 0;
+		}
+	}
+	
+	@Override
+	public void onClick(View v) {
+		if(v.getId()== R.id.panic_button){
+
+			numbers = retrievePhoneNumbers();
+			
+			
+			//getCallStates();
+			
+			raiseLocationUpdateAlarm();
+			if(numbers.size() > 0){
+			makeSmsAlert(numbers);
+			//makeEmergencyCalls(numbers.get(0));
+			makeEmergencyCallToNearestCop();
+			}
+		}
+		
+	}
+	private void getCallStates() {
 		telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 
 		// Create a new PhoneStateListener
 		listener = new PhoneStateListener() {
 			@Override
 			public void onCallStateChanged(int state, String incomingNumber) {
-				String stateString = "N/A";
+				
 				switch (state) {
 				case TelephonyManager.CALL_STATE_IDLE:
 					stateString = "Idle";
-					Toast.makeText(HomeActivity.this, "Phone state Idle",
-							Toast.LENGTH_LONG).show();
+					callNext = true;
+					/*Toast.makeText(HomeActivity.this, "Phone state Idle",
+							Toast.LENGTH_LONG).show();*/
 					break;
 				case TelephonyManager.CALL_STATE_OFFHOOK:
 					stateString = "Off Hook";
+					callNext = false;
 					Toast.makeText(HomeActivity.this, "Phone state Off hook",
 							Toast.LENGTH_LONG).show();
 					break;
@@ -150,34 +140,83 @@ public class HomeActivity extends BaseActivity implements
 		// Register the listener wit the telephony manager
 		telephonyManager.listen(listener, PhoneStateListener.LISTEN_CALL_STATE);
 	}
+	
+	private void raiseLocationUpdateAlarm() {
+		Intent myIntent = new Intent(HomeActivity.this,
+				LocationAlarmService.class);
+		pendingIntent = PendingIntent.getService(HomeActivity.this, 0,
+				myIntent, 0);
 
-	protected void makeEmergencyCalls(ArrayList<String> numbers) {
+		AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(System.currentTimeMillis());
+		calendar.add(Calendar.SECOND, 10);
+		alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
+				calendar.getTimeInMillis(), 50 * 1000, pendingIntent);
+	}
+
+	private void makeSmsAlert(final ArrayList<String> number) {
+		Handler handler = new Handler();
+		handler.postDelayed(new Runnable() {
+
+			@Override
+			public void run() {
+				System.out.println("Text to send.."
+						+ SAVE_ME_TEXT
+						+ LocationData.getInstance()
+								.getCurrentLocation());
+				if (LocationData.getInstance().getCurrentLocation() != null) {
+					try {
+						sendSmsMessage(number, SAVE_ME_TEXT
+								+ LocationData.getInstance()
+										.getCurrentLocation());
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		}, 10000);
+	}
+	
+	protected void makeEmergencyCalls(String numbers) {
+		
+		 if (numbers != null) {
+			System.out.println("String phone number in calls >> " + numbers);
+			Intent intent = new Intent(Intent.ACTION_CALL);
+			intent.setData(Uri.parse("tel:" + numbers));
+			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			intent.addFlags(Intent.FLAG_FROM_BACKGROUND);
+			startActivity(intent);
+		}
+		
+		
+	}
+	
+	private void makeEmergencyCallToNearestCop(){
+		
+		copNumber = copPhonePreferences.getString("COP_NUMBER", "");
 		System.out.println("String phone number in calls >> " + copNumber);
-		/*
-		 * if (numbers != null) {
-		 * System.out.println("String phone number in calls >> " +
-		 * numbers.get(0)); Intent intent = new Intent(Intent.ACTION_CALL);
-		 * intent.setData(Uri.parse("tel:" + numbers.get(0)));
-		 * intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		 * intent.addFlags(Intent.FLAG_FROM_BACKGROUND); startActivity(intent);
-		 * }
-		 */
-		Intent intent = new Intent(Intent.ACTION_CALL);
-		intent.setData(Uri.parse("tel:" + copNumber));
-		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		intent.addFlags(Intent.FLAG_FROM_BACKGROUND);
-		startActivity(intent);
+		getCallStates();
+		if (copNumber.length() != 0) {
+			Intent intent = new Intent(Intent.ACTION_CALL);
+			intent.setData(Uri.parse("tel:" + copNumber));
+			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			intent.addFlags(Intent.FLAG_FROM_BACKGROUND);
+			startActivity(intent);
+		} 
+		
 	}
 
 	public void sendSmsMessage(ArrayList<String> numbers, String message)
 			throws Exception {
 		SmsManager smsMgr = SmsManager.getDefault();
 		smsMgr.sendTextMessage(numbers.get(0), null, message, null, null);
-		
-		  for (int i = 0; i < numbers.size(); i++) {
-		  smsMgr.sendTextMessage(numbers.get(i), null, message, null, null); 
-		  }
+
+		for (int i = 0; i < numbers.size(); i++) {
+			smsMgr.sendTextMessage(numbers.get(i), null, message, null, null);
+		}
 	}
 
 	private ArrayList<String> retrievePhoneNumbers() {
@@ -239,11 +278,6 @@ public class HomeActivity extends BaseActivity implements
 
 	}
 
-	@Override
-	public void onInit(int initStatus) {
-		// TODO Auto-generated method stub
-	}
-
 	/**
 	 * This is the callback from the TTS engine check, if a TTS is installed we
 	 * create a new TTS instance (which in turn calls onInit), if not then we
@@ -256,21 +290,16 @@ public class HomeActivity extends BaseActivity implements
 	 * @param data
 	 *            Intent Intent returned from the TTS check.
 	 */
-	/*public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == MY_DATA_CHECK_CODE) {
-			if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
-				// success, create the TTS instance
-				mTts = new TextToSpeech(this, this);
-				mTts.setLanguage(Locale.US);
-			} else {
-				// missing data, install it
-				Intent installIntent = new Intent();
-				installIntent
-						.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
-				startActivity(installIntent);
-			}
-		}
-	}*/
+	/*
+	 * public void onActivityResult(int requestCode, int resultCode, Intent
+	 * data) { if (requestCode == MY_DATA_CHECK_CODE) { if (resultCode ==
+	 * TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) { // success, create the TTS
+	 * instance mTts = new TextToSpeech(this, this);
+	 * mTts.setLanguage(Locale.US); } else { // missing data, install it Intent
+	 * installIntent = new Intent(); installIntent
+	 * .setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+	 * startActivity(installIntent); } } }
+	 */
 
 	/**
 	 * Be kind, once you've finished with the TTS engine, shut it down so other
@@ -279,10 +308,12 @@ public class HomeActivity extends BaseActivity implements
 	@Override
 	public void onDestroy() {
 		// Don't forget to shutdown!
-		/*if (mTts != null) {
-			mTts.stop();
-			mTts.shutdown();
-		}*/
+		/*
+		 * if (mTts != null) { mTts.stop(); mTts.shutdown(); }
+		 */
 		super.onDestroy();
 	}
+
+
+	
 }
