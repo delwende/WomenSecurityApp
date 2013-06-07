@@ -1,4 +1,4 @@
-package com.tavant.droid.womensecurity;
+ package com.tavant.droid.womensecurity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -28,8 +28,10 @@ import android.widget.Toast;
 import com.tavant.droid.womensecurity.activities.SettingsActivity;
 import com.tavant.droid.womensecurity.data.BaseData;
 import com.tavant.droid.womensecurity.database.ContentDescriptor;
+import com.tavant.droid.womensecurity.http.HttpRequestCreater;
 import com.tavant.droid.womensecurity.service.LocationAlarmService;
 import com.tavant.droid.womensecurity.utils.LocationData;
+import com.tavant.droid.womensecurity.utils.WSConstants;
 
 public class HomeActivity extends BaseActivity implements
 		OnClickListener{
@@ -48,7 +50,7 @@ public class HomeActivity extends BaseActivity implements
 	private PendingIntent pendingIntent;
 	String stateString = "N/A";
 	boolean callNext = false;
-	private ArrayList<String> numbers;
+	private String[] numbers;
 	private int callRepeatCount = 1;
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -81,8 +83,8 @@ public class HomeActivity extends BaseActivity implements
 		if(callNext == true){
 			for(int i = 0 ; i < callRepeatCount ; i++){
 			
-				for(int j = 0 ; j < numbers.size() ; j++){
-					makeEmergencyCalls(numbers.get(j));
+				for(int j = 0 ; j < numbers.length ; j++){
+					makeEmergencyCalls(numbers[j]);
 				}
 			}
 			callNext = false;
@@ -97,10 +99,11 @@ public class HomeActivity extends BaseActivity implements
 			numbers = retrievePhoneNumbers();
 			
 			
-			//getCallStates();
+			getCallStates();
 			
 			raiseLocationUpdateAlarm();
-			if(numbers.size() > 0){
+			if(numbers.length > 0){
+			notifyFriendsByPushNotification();
 			makeSmsAlert(numbers);
 			//makeEmergencyCalls(numbers.get(0));
 			makeEmergencyCallToNearestCop();
@@ -108,6 +111,10 @@ public class HomeActivity extends BaseActivity implements
 		}
 		
 	}
+	private void notifyFriendsByPushNotification() {
+		onExecute(WSConstants.CODE_ALERT_API, HttpRequestCreater.alertUsers(numbers), false);
+	}
+
 	private void getCallStates() {
 		telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 
@@ -156,7 +163,7 @@ public class HomeActivity extends BaseActivity implements
 				calendar.getTimeInMillis(), 50 * 1000, pendingIntent);
 	}
 
-	private void makeSmsAlert(final ArrayList<String> number) {
+	private void makeSmsAlert(final String[] number) {
 		Handler handler = new Handler();
 		handler.postDelayed(new Runnable() {
 
@@ -196,9 +203,9 @@ public class HomeActivity extends BaseActivity implements
 	
 	private void makeEmergencyCallToNearestCop(){
 		
-		copNumber = copPhonePreferences.getString("COP_NUMBER", "");
+		copNumber = copPhonePreferences.getString("COP_NUMBER", "9538432555");
 		System.out.println("String phone number in calls >> " + copNumber);
-		getCallStates();
+		//getCallStates();
 		if (copNumber.length() != 0) {
 			Intent intent = new Intent(Intent.ACTION_CALL);
 			intent.setData(Uri.parse("tel:" + copNumber));
@@ -209,17 +216,17 @@ public class HomeActivity extends BaseActivity implements
 		
 	}
 
-	public void sendSmsMessage(ArrayList<String> numbers, String message)
+	public void sendSmsMessage(String[] number, String message)
 			throws Exception {
 		SmsManager smsMgr = SmsManager.getDefault();
-		smsMgr.sendTextMessage(numbers.get(0), null, message, null, null);
+		smsMgr.sendTextMessage(number[0], null, message, null, null);
 
-		for (int i = 0; i < numbers.size(); i++) {
-			smsMgr.sendTextMessage(numbers.get(i), null, message, null, null);
+		for (int i = 0; i < number.length; i++) {
+			smsMgr.sendTextMessage(number[i], null, message, null, null);
 		}
 	}
 
-	private ArrayList<String> retrievePhoneNumbers() {
+	private String[] retrievePhoneNumbers() {
 		ArrayList<String> phoneList = new ArrayList<String>();
 
 		Cursor cur = this.getContentResolver()
@@ -235,7 +242,12 @@ public class HomeActivity extends BaseActivity implements
 				cur.moveToNext();
 			}
 			cur.close();
-			return phoneList;
+			
+			    String[] phoneArray = new String[phoneList.size()];
+			    phoneArray = phoneList.toArray(phoneArray);
+			    for(String s : phoneArray)
+			        System.out.println(s);
+			return phoneArray;
 		} else {
 			return null;
 		}
