@@ -23,6 +23,8 @@ public class ContentDescriptor {
         
         matcher.addURI(authority, WSContact.PATH, WSContact.PATH_TOKEN);
 		matcher.addURI(authority, WSContact.PATH_FOR_ID, WSContact.PATH_FOR_ID_TOKEN);
+		matcher.addURI(authority, WSFacebook.PATH, WSFacebook.PATH_TOKEN);
+		matcher.addURI(authority, WSFacebook.PATH_FOR_ID, WSFacebook.PATH_FOR_ID_TOKEN);
 		
         return matcher;
 	}

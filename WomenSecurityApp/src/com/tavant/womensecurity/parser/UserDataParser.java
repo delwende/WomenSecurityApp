@@ -43,7 +43,7 @@ public class UserDataParser extends BaseParser {
 			break;
 		case XmlPullParser.START_TAG:
 			String localName = pullParser.getName();
-			if (localName.equals(HttpResponseTags.TAG_RESULT)) {
+			if (localName.equalsIgnoreCase(HttpResponseTags.TAG_RESULT)) {
 				mData = new UserData();
 			}
 			mStartTag = localName;
@@ -65,11 +65,11 @@ public class UserDataParser extends BaseParser {
 	public void parseText() {
          if (isStart) {
 			
-			if (mStartTag.equals(HttpResponseTags.TAG_SS)) {
+			if (mStartTag.equalsIgnoreCase(HttpResponseTags.TAG_SS.toString())) {
 				mData.isSuccess = Boolean.parseBoolean(pullParser.getText());
-			} else if (mStartTag.equals(HttpResponseTags.TAG_MSG)) {
+			} else if (mStartTag.equalsIgnoreCase(HttpResponseTags.TAG_MSG.toString())) {
 				mData.serverMessages = pullParser.getText();
-			} else if (mStartTag.equals(HttpResponseTags.TAG_METHOD)) {
+			} else if (mStartTag.equalsIgnoreCase(HttpResponseTags.TAG_METHOD.toString())) {
 				mData.methodName = pullParser.getText();
 			}
 		}

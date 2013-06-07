@@ -1,5 +1,12 @@
 package com.tavant.droid.womensecurity.activities;
 
+import java.util.regex.Pattern;
+
+import org.apache.http.client.methods.HttpRequestBase;
+
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -7,7 +14,10 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.util.Patterns;
+import android.widget.Toast;
 
 import com.facebook.Request;
 import com.facebook.Response;
@@ -18,6 +28,7 @@ import com.facebook.model.GraphUser;
 import com.tavant.droid.womensecurity.BaseActivity;
 import com.tavant.droid.womensecurity.R;
 import com.tavant.droid.womensecurity.data.BaseData;
+import com.tavant.droid.womensecurity.http.HttpRequestCreater;
 import com.tavant.droid.womensecurity.utils.WSConstants;
 
 public class FacebookLoginActivty extends BaseActivity {
@@ -27,7 +38,9 @@ public class FacebookLoginActivty extends BaseActivity {
 	private UiLifecycleHelper uiHelper=null;
 	private SharedPreferences prefs=null;
 	private Editor edit=null;
-	
+	private ProgressDialog mdialog=null;
+	private TelephonyManager phoneManager=null;
+	private String fbacesstoken=null;
 	
 	private Session.StatusCallback callback = 
 		    new Session.StatusCallback() {
@@ -44,10 +57,12 @@ public class FacebookLoginActivty extends BaseActivity {
 	   if (isResumed) {
 	        if (state.isOpened()) {
 	        	Log.i("TAG", "my accesstoken"+session.getAccessToken());
+	        	fbacesstoken=session.getAccessToken();
 	        	edit.putString(WSConstants.PROPERTY_FB_ACCESSTOKEN,session.getAccessToken() );
 	        	//edit.putString(WSConstants.PROPERTY_FB_ACCESSTOKEN,session.getExpirationDate());
 	        	//edit.putString(WSConstants.PROPERTY_FB_ACCESSTOKEN,session.());
 	        	edit.commit();
+	        	mdialog=ProgressDialog.show(FacebookLoginActivty.this, "", "fetching user details...");
 	        	makeMeRequest(session);
 	        } else if (state.isClosed()) {
 	            // show error here
@@ -68,7 +83,8 @@ public class FacebookLoginActivty extends BaseActivity {
 	                	Log.i("TAG","myfbid"+user.getId());
 	                	edit.putString(WSConstants.PROPERTY_FB_ID,user.getId());
 	                	edit.commit();
-	                    LaunchSettingsScreen();        	
+	                    //LaunchSettingsScreen();     
+	                	createUser(user.getId());
 	                }
 	            }
 	            if (response.getError() != null) {
@@ -78,6 +94,29 @@ public class FacebookLoginActivty extends BaseActivity {
 	    });
 	    request.executeAsync();
    }
+	
+	
+	private void createUser(final String fbid){
+		String phoneNumber =""; 
+		phoneNumber=phoneManager.getLine1Number();
+		String possibleEmail="";
+		Pattern emailPattern = Patterns.EMAIL_ADDRESS; // API level 8+
+		Account[] accounts = AccountManager.get(this).getAccounts();
+		for (Account account : accounts) {
+		    if (emailPattern.matcher(account.name).matches()) {
+		        possibleEmail = account.name;
+		        if(possibleEmail.equals(""))
+		        	 break;
+		    }
+		}
+		String gcmid=prefs.getString(WSConstants.PROPERTY_REG_ID, "");
+		HttpRequestBase put=HttpRequestCreater.createUesr(fbid, "facebook", phoneNumber, possibleEmail, gcmid, 0,"android",fbacesstoken);
+		onExecute(WSConstants.CODE_USER_API, put, false);
+	}
+	
+	
+	
+	
 	
 	private void LaunchSettingsScreen(){
 		Intent intent=new Intent(this, SettingsActivity.class);
@@ -95,6 +134,8 @@ public class FacebookLoginActivty extends BaseActivity {
                 Context.MODE_PRIVATE);
 		edit=prefs.edit();
 		Session session=new Session(FacebookLoginActivty.this);
+		phoneManager = (TelephonyManager) getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
+		//mdialog=new ProgressDialog(FacebookLoginActivty.this);
 		if(session.getAccessToken()!=null&&prefs.getString(WSConstants.PROPERTY_FB_ID, null)!=null&&
 				prefs.getString(WSConstants.PROPERTY_FB_ACCESSTOKEN, null) != null){
 			//TODO write condition to check that app is configured settings , if configured launch home screen
@@ -134,17 +175,28 @@ public class FacebookLoginActivty extends BaseActivity {
 	    super.onSaveInstanceState(outState);
 	    uiHelper.onSaveInstanceState(outState);
 	}
-	
-	
-	
-	
-	
+
 	@Override
 	protected void onComplete(int reqCode, BaseData data) {
+		// TODO Auto-generated method stub
+		if(data.isSuccess){
+		 mdialog.dismiss();
+		 LaunchSettingsScreen();
+		}
 	}
+
 	@Override
 	protected void onError(int reqCode, int errorCode, String errorMessage) {
-	
+		 mdialog.dismiss();
+		 Toast.makeText(FacebookLoginActivty.this,errorMessage, Toast.LENGTH_SHORT).show();
+		 LaunchSettingsScreen();
+		
 	}
+	
+	
+	
+	
+	
+	
 
 }

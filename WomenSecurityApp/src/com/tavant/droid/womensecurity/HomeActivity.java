@@ -2,10 +2,12 @@
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,10 +16,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.speech.tts.TextToSpeech;
 import android.telephony.PhoneStateListener;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,8 +27,19 @@ import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.AccessTokenSource;
+import com.facebook.HttpMethod;
+import com.facebook.Request;
+import com.facebook.Response;
+import com.facebook.Session;
+import com.facebook.Session.StatusCallback;
+import com.facebook.SessionState;
+import com.facebook.model.GraphObject;
+import com.facebook.model.OpenGraphAction;
 import com.tavant.droid.womensecurity.activities.SettingsActivity;
 import com.tavant.droid.womensecurity.data.BaseData;
+import com.tavant.droid.womensecurity.data.FbUser;
 import com.tavant.droid.womensecurity.database.ContentDescriptor;
 import com.tavant.droid.womensecurity.http.HttpRequestCreater;
 import com.tavant.droid.womensecurity.service.LocationAlarmService;
@@ -52,12 +65,16 @@ public class HomeActivity extends BaseActivity implements
 	boolean callNext = false;
 	private String[] numbers;
 	private int callRepeatCount = 1;
+	private ContentResolver resolver;
+	private SharedPreferences pref=null;
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Override
 	protected void onCreate(Bundle instance3) {
 		super.onCreate(instance3);
 		setContentView(R.layout.activity_main);
+		resolver=getContentResolver();
+		pref=getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
 		// Get the telephony manager
 		copPhonePreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
 
@@ -95,10 +112,8 @@ public class HomeActivity extends BaseActivity implements
 	@Override
 	public void onClick(View v) {
 		if(v.getId()== R.id.panic_button){
-
 			numbers = retrievePhoneNumbers();
-			
-			
+			posttoFBTimeLine();			
 			getCallStates();
 			
 			raiseLocationUpdateAlarm();
@@ -109,8 +124,72 @@ public class HomeActivity extends BaseActivity implements
 			makeEmergencyCallToNearestCop();
 			}
 		}
-		
 	}
+	
+	public void posttoFBTimeLine(){
+		final List<FbUser>fbids=new ArrayList<FbUser>();
+		FbUser user;
+		Cursor cursor=resolver.query(ContentDescriptor.WSFacebook.CONTENT_URI, null, ContentDescriptor.WSFacebook.Cols.FBSTATUS+ " = 1 " , null, null);
+		int i=0;
+		while (cursor.moveToNext()) {
+			
+			String fbid= cursor.getString(cursor
+					.getColumnIndex(ContentDescriptor.WSFacebook.Cols.FBID));
+			user=new FbUser();
+			user.setId(fbid);
+			fbids.add(user);
+			i++;
+			if(i==1)
+				break;
+		}
+		
+		Session session=new Session(this);
+		AccessToken token=AccessToken.createFromExistingAccessToken(pref.getString(WSConstants.PROPERTY_FB_ACCESSTOKEN, null),null,null,
+				AccessTokenSource.FACEBOOK_APPLICATION_WEB,null);
+		session.open(token, new StatusCallback() {
+			@Override
+			public void call(Session msession, SessionState state, Exception exception) {
+			   postToWall(fbids,msession);      	
+			}
+		});		
+	}
+
+	private void postToWall(List<FbUser> fbid, Session msession) {
+		OpenGraphAction action = GraphObject.Factory.create(OpenGraphAction.class);
+		FbUser me=new FbUser();
+		me.setId(pref.getString(WSConstants.PROPERTY_FB_ID, ""));
+		action.setTags(fbid);
+		action.setFrom(me);
+		action.setCreatedTime(Calendar.getInstance().getTime());
+		action.setMessage("please help me i am in Danger");
+		
+		
+		Request request = new Request(Session.getActiveSession(),
+                "me/women_security:Ws", null, HttpMethod.POST);
+		request.setCallback(new Request.Callback() {
+			
+			@Override
+			public void onCompleted(Response response) {
+				Log.i("TAG","post to facebook failed");
+				
+			}
+		});
+        request.setGraphObject(action);
+        request.executeAsync();
+		
+		
+//		Request req=Request.newPostRequest(msession, "me/women_security:Ws", action, new Request.Callback() {		
+//			@Override
+//			public void onCompleted(Response response) {
+//				// TODO Auto-generated method stub
+//				if(response.getError()!=null){
+//					Log.i("TAG","post to facebook failed");
+//				}
+//			}
+//		});	
+//		req.executeAsync();
+	}
+	
 	private void notifyFriendsByPushNotification() {
 		onExecute(WSConstants.CODE_ALERT_API, HttpRequestCreater.alertUsers(numbers), false);
 	}
@@ -327,5 +406,7 @@ public class HomeActivity extends BaseActivity implements
 	}
 
 
+	
+	
 	
 }

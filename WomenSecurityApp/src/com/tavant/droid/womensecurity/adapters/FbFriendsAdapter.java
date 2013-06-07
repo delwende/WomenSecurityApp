@@ -114,16 +114,16 @@ public class FbFriendsAdapter extends CursorAdapter implements OnCheckedChangeLi
 					mResolver.update(ContentDescriptor.WSFacebook.CONTENT_URI, values,
 							BaseColumns._ID+ " = " + _id + " ",
 							null);
-					getCursor().requery();
-					notifyDataSetChanged();
+					//getCursor().requery();
+					//notifyDataSetChanged();
 				
 			} else {
 				values.put(ContentDescriptor.WSFacebook.Cols.FBSTATUS, 0);
 				mResolver.update(ContentDescriptor.WSFacebook.CONTENT_URI, values,
 						BaseColumns._ID+ " = " + _id + " ",
 						null);
-				getCursor().requery();
-				notifyDataSetChanged();
+				//getCursor().requery();
+				//notifyDataSetChanged();
 			}
 	}
 

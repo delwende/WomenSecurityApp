@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="135dip">
 
 <ImageView
     android:id="@+id/com_facebook_image"
@@ -21,11 +21,9 @@
           
 <CheckBox
     android:id="@+id/com_fb_checkbox"
-    android:layout_width="23dip"
-    android:layout_height="23dip"
-    android:focusable="false"
-    android:clickable="true"
+    android:layout_width="40dip"
+    android:layout_height="40dip"
     android:layout_alignParentRight="true"
     android:layout_centerVertical="true"
-    android:layout_marginRight="3dip"/>
+    android:layout_marginRight="10dip"/>
 </RelativeLayout>

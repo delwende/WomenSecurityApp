@@ -67,8 +67,12 @@ protected void onCreate(Bundle savedInstanceState) {
 
 private void checkintialiLoading() {
 	Cursor curosr=resolver.query(ContentDescriptor.WSFacebook.CONTENT_URI, null, null, null, null);
-	if(curosr!=null && curosr.getCount()==0){
+	if(curosr!=null && curosr.getCount()>0){
 		adapter=new FbFriendsAdapter(this,curosr);
+		listview.setAdapter(adapter);
+		progress.setVisibility(View.INVISIBLE);
+		listview.setVisibility(View.VISIBLE);
+		
 	}else{
 		
 	   //FBFriendListActivity OpenRe	
@@ -88,15 +92,18 @@ private void checkintialiLoading() {
 					Log.i("TAG", "size of user"+users.size());
 					for(GraphUser user:users){
 						ContentValues values=new ContentValues();
+						Log.i("TAG",""+user.getId()+"::"+user.getFirstName()+user.getLastName()+"::"+user.getMiddleName()+":"+user.getName());
 						values.put(ContentDescriptor.WSFacebook.Cols.FBID, user.getId());
-						values.put(ContentDescriptor.WSFacebook.Cols.FBNAME, user.getFirstName());
+						values.put(ContentDescriptor.WSFacebook.Cols.FBNAME, user.getName());
 						values.put(ContentDescriptor.WSFacebook.Cols.IMGURL, "");
 						values.put(ContentDescriptor.WSFacebook.Cols.FBSTATUS, 0);
 						resolver.insert(ContentDescriptor.WSFacebook.CONTENT_URI, values);
 					}
 					Cursor curosr=resolver.query(ContentDescriptor.WSFacebook.CONTENT_URI, null, null, null, null);
 					adapter=new FbFriendsAdapter(FBFriendListActivity.this,curosr);
+					listview.setAdapter(adapter);
 					progress.setVisibility(View.INVISIBLE);
+					listview.setVisibility(View.VISIBLE);
 					
 				}
 				

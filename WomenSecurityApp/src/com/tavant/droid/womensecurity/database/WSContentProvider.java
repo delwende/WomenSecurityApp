@@ -78,6 +78,11 @@ public class WSContentProvider extends ContentProvider {
 				builder.setTables(ContentDescriptor.WSContact.NAME);
 				return builder.query(db, null, null, null, null, null, null);
 			}
+			case ContentDescriptor.WSFacebook.PATH_TOKEN:{
+				SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
+				builder.setTables(ContentDescriptor.WSFacebook.NAME_TABLE);
+				return builder.query(db, null, null, null, null, null, null);
+			}
 			default: return null;
 		}
 	}
@@ -85,6 +90,15 @@ public class WSContentProvider extends ContentProvider {
 	@Override
 	public int update(Uri uri, ContentValues values, String selection,
 			String[] selectionArgs) {
+		SQLiteDatabase db = wsContactsDb.getReadableDatabase();
+		final int match = ContentDescriptor.URI_MATCHER.match(uri);
+		switch (match) {
+		case ContentDescriptor.WSFacebook.PATH_TOKEN:{
+			return db.update(ContentDescriptor.WSFacebook.NAME_TABLE, values, selection, selectionArgs);
+		 }
+		default:
+			break;
+		}
 		return 0;
 	}
 	
