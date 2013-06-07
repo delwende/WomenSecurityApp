@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+<ImageView
+    android:id="@+id/com_facebook_image"
+    android:layout_width="50dip"
+    android:layout_height="50dip"
+    android:src="@drawable/icon" 
+    android:layout_alignParentLeft="true"
+    android:layout_marginLeft="3dip"/>  
+    
+<TextView android:id="@+id/fb_name"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_toRightOf="@+id/com_facebook_image"
+          android:layout_centerVertical="true"
+          android:layout_marginLeft="3dip"
+          android:text="dd"/>
+          
+<CheckBox
+    android:id="@+id/com_fb_checkbox"
+    android:layout_width="23dip"
+    android:layout_height="23dip"
+    android:focusable="false"
+    android:clickable="true"
+    android:layout_alignParentRight="true"
+    android:layout_centerVertical="true"
+    android:layout_marginRight="3dip"/>
+</RelativeLayout>
