@@ -42,6 +42,8 @@ public class WSContactsDatabase extends SQLiteOpenHelper {
 				ContentDescriptor.WSContact.Cols.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
 				ContentDescriptor.WSFacebook.Cols.FBID + " TEXT NOT NULL, " +
 				ContentDescriptor.WSFacebook.Cols.FBNAME 	+ " TEXT NOT NULL , " +
+				ContentDescriptor.WSFacebook.Cols.FBSTATUS 	+ " INTEGER NOT NULL, " +
+				ContentDescriptor.WSFacebook.Cols.IMGURL 	+ " TEXT NOT NULL, " +
 				"UNIQUE (" + 
 					ContentDescriptor.WSContact.Cols.ID + 
 				") ON CONFLICT REPLACE)"

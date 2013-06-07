@@ -8,6 +8,7 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 
+import com.facebook.widget.PickerFragment;
 import com.tavant.droid.womensecurity.R;
 
 public class SettingsActivity extends PreferenceActivity{
@@ -23,15 +24,15 @@ public class SettingsActivity extends PreferenceActivity{
 			
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
-				startPickerActivity(PickerActivity.FRIEND_PICKER,2 );
+				startPickerActivity();
 				return true;
 			}
 		});
 	}
-	protected void startPickerActivity(Uri data, int i) {
+	protected void startPickerActivity() {
 		 	Intent intent = new Intent();
-	        intent.setData(PickerActivity.FRIEND_PICKER);
-	        intent.setClass(this, PickerActivity.class);
+	       // intent.setData(PickerActivity.FRIEND_PICKER);
+	        intent.setClass(this, FBFriendListActivity.class);
 	        startActivityForResult(intent, 2000);		
 	}
 	

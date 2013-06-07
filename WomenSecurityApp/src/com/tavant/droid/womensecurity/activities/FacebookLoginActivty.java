@@ -45,6 +45,8 @@ public class FacebookLoginActivty extends BaseActivity {
 	        if (state.isOpened()) {
 	        	Log.i("TAG", "my accesstoken"+session.getAccessToken());
 	        	edit.putString(WSConstants.PROPERTY_FB_ACCESSTOKEN,session.getAccessToken() );
+	        	//edit.putString(WSConstants.PROPERTY_FB_ACCESSTOKEN,session.getExpirationDate());
+	        	//edit.putString(WSConstants.PROPERTY_FB_ACCESSTOKEN,session.());
 	        	edit.commit();
 	        	makeMeRequest(session);
 	        } else if (state.isClosed()) {

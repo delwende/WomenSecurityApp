@@ -87,6 +87,8 @@ public class ContentDescriptor {
 			public static final String ID = BaseColumns._ID; // convention
 			public static final String FBID = "fbid";
 			public static final String FBNAME  = "fbname";
+			public static final String FBSTATUS  = "status";
+			public static final String IMGURL  = "imgurl";
 		}
 		
 	}
