@@ -29,7 +29,8 @@ public class WSConstants {
 
 
 
-	public static final String GCM_SENDER_ID = "351736632081";
+	public static final String GCM_SENDER_ID1 = "339234639849";  //  
+	public static final String GCM_SENDER_ID2 = "351736632081";
 	public static final String FB_APP_KEY = "417172928381965";
 
 
