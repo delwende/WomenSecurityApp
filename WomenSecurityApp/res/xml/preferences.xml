@@ -52,18 +52,12 @@
     <PreferenceCategory android:title="@string/str_pattern" >
         <PreferenceScreen android:title="@string/str_lp_label_preference7_title" >
             <PreferenceCategory android:title="@string/str_pattern" >
-                <Preference android:title="@string/str_lp_label_preference7_title" />
+                <Preference 
+                    android:key="security_key"
+                    android:title="@string/str_lp_label_preference7_title" />
             </PreferenceCategory>
         </PreferenceScreen>
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/str_password" >
-        <PreferenceScreen android:title="@string/str_lp_label_preference8_title" >
-            <PreferenceCategory android:title="@string/str_password" >
-                <Preference android:title="@string/str_lp_label_preference8_title" />
-            </PreferenceCategory>
-        </PreferenceScreen>
-    </PreferenceCategory>
-
 </PreferenceScreen><!--
     <PreferenceCategory
 	    android:title="@string/str_second_category_title"	        

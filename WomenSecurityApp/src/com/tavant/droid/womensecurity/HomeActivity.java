@@ -116,7 +116,7 @@ public class HomeActivity extends BaseActivity implements
 			posttoFBTimeLine();			
 			getCallStates();
 			
-			raiseLocationUpdateAlarm();
+			//raiseLocationUpdateAlarm();
 			if(numbers.length > 0){
 			notifyFriendsByPushNotification();
 			makeSmsAlert(numbers);

@@ -7,6 +7,7 @@ import java.util.Locale;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpRequestBase;
 
+import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -23,160 +24,142 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.tavant.droid.womensecurity.data.BaseData;
-import com.tavant.droid.womensecurity.data.CopsData;
-import com.tavant.droid.womensecurity.http.HttpHandler;
+import com.tavant.droid.womensecurity.HomeActivity;
 import com.tavant.droid.womensecurity.http.HttpManager;
 import com.tavant.droid.womensecurity.http.HttpRequestCreater;
 import com.tavant.droid.womensecurity.utils.LocationData;
 import com.tavant.droid.womensecurity.utils.WSConstants;
 
-public class LocationAlarmService extends Service implements LocationListener {
+public class LocationAlarmService extends Service implements LocationListener{
 
-	String TAG = "LocationAlarmService : ";
-	LocationManager locationManager;
-	String provider;
-	double latitude, longitude;
-	private SharedPreferences copPhonePreferences;
-	private SharedPreferences.Editor copPrefsEditor;
+
+	private LocationManager locationManager ;
+	private String provider;
+	private LocationData location=null; 
+	private String userid=null;
+	private SharedPreferences pref=null;
 
 	@Override
 	public void onCreate() {
-
-		Log.i(TAG, "onCreate");
-
-		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-		Criteria criteria = new Criteria();
-
-		provider = locationManager.getBestProvider(criteria, false);
-
-		if (provider != null && !provider.equals("")) {
-			Location location = locationManager.getLastKnownLocation(provider);
-			locationManager.requestLocationUpdates(provider, 20000, 1, this);
-			locationManager.removeUpdates(this);
-			if (location != null)
-				onLocationChanged(location);
-			else
-				Toast.makeText(getBaseContext(), "Location can't be retrieved",
-						Toast.LENGTH_SHORT).show();
-
-		} else {
-			Toast.makeText(getBaseContext(), "No Provider found",
-					Toast.LENGTH_SHORT).show();
-		}
-
-		copPhonePreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
-		copPrefsEditor = copPhonePreferences.edit();
-
+		Log.i("TAG","onCreate");
 	}
 
 	@Override
-	public IBinder onBind(Intent intent) {
 
-		Log.i(TAG, "onBind");
+	public IBinder onBind(Intent intent) {
 
 		return null;
 
 	}
 
 	@Override
+
 	public void onDestroy() {
-
 		super.onDestroy();
+		Log.i("TAG","onDestroy" );
+	}
 
-		Log.i(TAG, "onDestroy");
-
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {			
+		Log.i("TAG","calling laram agin");
+		locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+		pref=getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
+		userid=pref.getString(WSConstants.PROPERTY_FB_ID,null);
+		if(userid==null)
+			return START_NOT_STICKY; // no registartion of alram
+		Criteria criteria = new Criteria();
+		provider = locationManager.getBestProvider(criteria, false);
+		location=LocationData.getInstance();
+		if(provider != null && !provider.equals("")){
+			locationManager.requestLocationUpdates(provider, 20000, 1, this);
+		}else{
+			Toast.makeText(getBaseContext(), "No Provider found", Toast.LENGTH_SHORT).show();
+		}
+		return START_NOT_STICKY;
 	}
 
 	@Override
 	public void onStart(Intent intent, int startId) {
-
 		super.onStart(intent, startId);
-		Log.i(TAG, "sending current location to server" + "latitude : "
-				+ latitude + " longitude : " + longitude);
-
-		new AsyncTask<Void, Void, BaseData>(){
-
-			@Override
-			protected BaseData doInBackground(Void... params) {
-				HttpRequestBase post = HttpRequestCreater.updateLocation(
-						"100002058741716", latitude, longitude);
-				try {
-					HttpResponse response = HttpManager.execute(post);
-					return HttpHandler.getInstance().makeHttpRequest(
-							WSConstants.CODE_LOCATION_API, post);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					return null;
-				}
-			}
-			
-			@Override
-			protected void onPostExecute(BaseData msg) {
-				// TODO Auto-generated method stub
-				super.onPostExecute(msg);
-				System.out.println("Response Message >> " + msg);
-				if (msg != null && msg.isSuccess) {
-					CopsData copNumber = (CopsData)msg;
-					/*System.out.println(" Cops phone number :>"
-							+ (CopsData)msg.phoneNumber);*/
-					copPrefsEditor.putString("COP_NUMBER", copNumber.phoneNumber);
-					copPrefsEditor.commit();
-				}
-			}
-			
-		}.execute(null,null,null);
-		/*new AsyncTask<Void, Void, BaseData>() {
-			@Override
-			protected BaseData doInBackground(Void... params) {
-				String responseString = "";
-				
-
-			}
-
-			protected void onPostExecute(CopsData msg) {
-				
-			}
-		}.execute(null, null, null);
-*/
 	}
 
 	@Override
 	public boolean onUnbind(Intent intent) {
-
-		Log.i(TAG, " onUnbind");
-
 		return super.onUnbind(intent);
-
 	}
 
 	@Override
 	public void onLocationChanged(Location location) {
-		// get current location and send to server.
-		longitude = location.getLongitude();
-		latitude = location.getLatitude();
-		LocationData.getInstance().setCurrentLocation(
-				getLocationName(longitude, latitude));
+		Log.i("TAG","got location");
+		LocationData.getInstance().setLatitude(location.getLatitude());
+		LocationData.getInstance().setLongitude(location.getLongitude());
+		//locationManager.removeUpdates(this);
+		updateLocationtoserver();
+		LocationData.getInstance().setCurrentLocation(getLocationName(location.getLatitude(),location.getLongitude()));	
 	}
 
 	@Override
 	public void onProviderDisabled(String provider) {
-		// TODO Auto-generated method stub
-
+		Location location = locationManager.getLastKnownLocation(provider);
+		if(location!=null){
+			Log.i("TAG","got location on starting");
+			LocationData.getInstance().setLatitude(location.getLatitude());
+			LocationData.getInstance().setLongitude(location.getLongitude());
+			updateLocationtoserver();
+			LocationData.getInstance().setCurrentLocation(getLocationName(location.getLatitude(),location.getLongitude()));
+		}
 	}
 
 	@Override
 	public void onProviderEnabled(String provider) {
 		// TODO Auto-generated method stub
-
+		//locationManager.removeUpdates(this);
+		//updateLocationtoserver();
 	}
 
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
-		// TODO Auto-generated method stub
+		Location location = locationManager.getLastKnownLocation(provider);
+		if(location!=null){
+			Log.i("TAG","got location on starting");
+			LocationData.getInstance().setLatitude(location.getLatitude());
+			LocationData.getInstance().setLongitude(location.getLongitude());
+			updateLocationtoserver();
+			LocationData.getInstance().setCurrentLocation(getLocationName(location.getLatitude(),location.getLongitude()));
+		}
+	}
 
+	private void updateLocationtoserver(){
+		// TODO Auto-generated method stub
+		Log.i("TAG","sending current location to server" + "latitude : " + location.getLatitude() + " longitude : " + location.getLongitude());
+		if(userid==null)
+			return;
+		new AsyncTask <Void,Void,String>() {
+			@Override 
+			protected String doInBackground(Void... params) {
+				String responseString="";
+				HttpRequestBase post =  HttpRequestCreater.updateLocation(userid,location.getLatitude(), location.getLongitude(),0);
+				try {
+					HttpResponse  response = HttpManager.execute(post);
+					if(response!=null){
+						Log.i("TAG","update the location succesfully"+response.getStatusLine().getStatusCode());	
+						responseString = response.toString();
+					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return responseString;
+
+			}
+			protected void onPostExecute(String msg) {  
+				Log.i("TAG","clearing location listenre");
+				stopSelfResult(Activity.RESULT_OK);
+				locationManager.removeUpdates(LocationAlarmService.this);
+				//	isrunning=false;
+
+			}
+		}.execute(null, null, null);
 	}
 
 	private String getLocationName(double _lat, double _lon) {
@@ -190,7 +173,7 @@ public class LocationAlarmService extends Service implements LocationListener {
 			for (int index = 0; index < addresses.size(); ++index) {
 				address = addresses.get(index);
 				_homeAddress
-						.append("Name: " + address.getAddressLine(0) + "\n");
+				.append("Name: " + address.getAddressLine(0) + "\n");
 				_homeAddress.append("Sub-Admin Ares: "
 						+ address.getSubAdminArea() + "\n");
 				_homeAddress.append("Admin Area: " + address.getAdminArea()
@@ -200,7 +183,7 @@ public class LocationAlarmService extends Service implements LocationListener {
 				_homeAddress.append("Country Code: " + address.getCountryCode()
 						+ "\n");
 				_homeAddress
-						.append("Latitude: " + address.getLatitude() + "\n");
+				.append("Latitude: " + address.getLatitude() + "\n");
 				_homeAddress.append("Longitude: " + address.getLongitude()
 						+ "\n\n");
 				System.out.println("Home Address :>> " + _homeAddress);
@@ -208,6 +191,8 @@ public class LocationAlarmService extends Service implements LocationListener {
 		} catch (Exception e) {
 
 		}
-		return _homeAddress.toString();
+		return (_homeAddress==null ? "":_homeAddress.toString());
 	}
 }
+
+

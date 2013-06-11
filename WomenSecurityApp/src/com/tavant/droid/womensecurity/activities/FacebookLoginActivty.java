@@ -6,13 +6,15 @@ import org.apache.http.client.methods.HttpRequestBase;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.util.Patterns;
@@ -29,6 +31,7 @@ import com.tavant.droid.womensecurity.BaseActivity;
 import com.tavant.droid.womensecurity.R;
 import com.tavant.droid.womensecurity.data.BaseData;
 import com.tavant.droid.womensecurity.http.HttpRequestCreater;
+import com.tavant.droid.womensecurity.service.LocationAlarmService;
 import com.tavant.droid.womensecurity.utils.CustomPhoneDialog;
 import com.tavant.droid.womensecurity.utils.PhoneStatus;
 import com.tavant.droid.womensecurity.utils.WSConstants;
@@ -197,6 +200,7 @@ public class FacebookLoginActivty extends BaseActivity implements PhoneStatus {
 		// TODO Auto-generated method stub
 		if(data.isSuccess){
 		 mdialog.dismiss();
+		 raiseLocationUpdateAlarm();
 		 LaunchSettingsScreen();
 		}
 	}
@@ -209,6 +213,23 @@ public class FacebookLoginActivty extends BaseActivity implements PhoneStatus {
 		
 	}
 
+	
+	
+	
+	private void raiseLocationUpdateAlarm() {
+		Intent myIntent = new Intent(this,
+				LocationAlarmService.class);
+		//startService(myIntent);
+		PendingIntent pendingIntent = PendingIntent.getService(this, 0,
+				myIntent, 0);
+		AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+//		Calendar calendar = Calendar.getInstance();
+//		calendar.setTimeInMillis(System.currentTimeMillis());
+//		calendar.add(Calendar.SECOND, 10);
+		long firstTime = SystemClock.elapsedRealtime();
+		alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
+				firstTime, 3*60* 1000, pendingIntent);
+	}
 	
 	
 	

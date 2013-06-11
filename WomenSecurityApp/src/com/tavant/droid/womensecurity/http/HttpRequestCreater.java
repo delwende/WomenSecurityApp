@@ -76,13 +76,14 @@ public class HttpRequestCreater {
 	}
 	
 	
-	public static HttpRequestBase updateLocation(String userid, double latitude,double longitude){
+	public static HttpRequestBase updateLocation(String userid, double latitude,double longitude,int app_type){
 		HttpPost post=new HttpPost(WSConstants.URL_USER_LOCATION);
 		JSONObject object=new JSONObject();
 		try{
 		object.put("userid", userid);
 		object.put("latitude", latitude);
 		object.put("longitude", longitude);
+		object.put("apptype", 1);
 		post.addHeader("Content-type", "application/json");
 		post.setEntity(new StringEntity(object.toString(), "utf-8"));
         return post;
