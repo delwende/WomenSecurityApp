@@ -362,7 +362,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 		SharedPreferences prfs = getSharedPreferences(
 				"AUTHENTICATION_FILE_NAME", Context.MODE_PRIVATE);
 		String pattaren = prfs.getString("drawpattern", null);
- System.out.println("pattern code >>>>>>>>>>>>>>>>>> " + pattaren);
+		System.out.println("pattern code >>>>>>>>>>>>>>>>>> " + pattaren);
 		if (pattaren != null) {
 			Intent intentActivity = new Intent(
 	                LockPatternActivity.ACTION_COMPARE_PATTERN,
@@ -435,6 +435,8 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 			switch (resultCode) {
 			case RESULT_OK:
 				msgId = android.R.string.ok;
+				Intent intent = new Intent(this, SettingsActivity.class);
+				startActivity(intent);
 				break;
 			case RESULT_CANCELED:
 				msgId = android.R.string.cancel;
