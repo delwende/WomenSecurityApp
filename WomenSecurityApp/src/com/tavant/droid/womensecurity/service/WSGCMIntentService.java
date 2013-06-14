@@ -10,13 +10,14 @@ import android.util.Log;
 
 import com.google.android.gcm.GCMBaseIntentService;
 import com.tavant.droid.womensecurity.activities.DummyActivity;
+import com.tavant.droid.womensecurity.utils.WSConstants;
 
 public class WSGCMIntentService extends GCMBaseIntentService {
 
 	
 	
     public WSGCMIntentService(){
-		super();
+		super(WSConstants.GCM_SENDER_ID2);
 	}
 	
 	@Override

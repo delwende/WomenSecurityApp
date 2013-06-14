@@ -4,7 +4,9 @@ package com.tavant.droid.womensecurity.lock;
 import group.pals.android.lib.ui.lockpattern.LockPatternActivity;
 import group.pals.android.lib.ui.lockpattern.prefs.SecurityPrefs;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -14,6 +16,7 @@ public class LockScreenActivity extends Activity {
 	
 	  public static final int REQ_CREATE_PATTERN = 0;
 	  public static final int REQ_ENTER_PATTERN = 1;
+	  
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -34,12 +37,12 @@ public class LockScreenActivity extends Activity {
                      null, this,
                      LockPatternActivity.class);
         	 
-        	 String pattaren="1256fd3d";
+        	 SharedPreferences prfs = getSharedPreferences("AUTHENTICATION_FILE_NAME", Context.MODE_PRIVATE);
+        	 String pattaren = prfs.getString("drawpattern", null);
         	 intentActivity.putExtra(LockPatternActivity.EXTRA_PATTERN, pattaren.toCharArray());
 
              startActivityForResult(intentActivity,
                      REQ_ENTER_PATTERN);
-
         }
 	}
 	
@@ -52,6 +55,10 @@ public class LockScreenActivity extends Activity {
             	 char array[]=data.getCharArrayExtra(LockPatternActivity.EXTRA_PATTERN); 
             Log.i("drawpattern",new String(array)); 
             // Save this prefrnce and read it from prefrence when we need to validate
+            SharedPreferences preferences = getSharedPreferences("AUTHENTICATION_FILE_NAME", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString("drawpattern",new String(array));
+            editor.commit();
             } 
             break;
         

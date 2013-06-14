@@ -2,33 +2,21 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <PreferenceCategory android:title="@string/str_facebook" >
-     
-        <Preference 
+        <Preference
             android:key="facebook_key"
-            android:title="@string/str_lp_label_preference1_title"> 
-            </Preference>
-        
-        <!-- <PreferenceScreen android:title="@string/str_lp_label_preference1_title" >
-            <Preference android:title="@string/str_lp_label_preference1_title"> 
-            <intent
-                    android:action="android.intent.action.VIEW"
-                    android:targetClass="com.tavant.droid.womensecurity.activities.PickerActivity"
-                    android:targetPackage="com.tavant.droid.womensecurity" />
-            </Preference>
-             <PreferenceCategory android:title="@string/str_facebook" >
-                <Preference android:title="@string/str_lp_label_preference1_title" />
-            </PreferenceCategory>
-        </PreferenceScreen> -->
+            android:title="@string/str_lp_label_preference1_title" >
+        </Preference>
     </PreferenceCategory>
+    
     <PreferenceCategory android:title="@string/str_contacts" >
         <PreferenceScreen android:title="@string/str_lp_label_preference2_title" >
             <intent
-                    android:action="android.intent.action.VIEW"
-                    android:targetClass="com.tavant.droid.womensecurity.activities.FetchContactsActivity"
-                    android:targetPackage="com.tavant.droid.womensecurity" />
+                android:action="android.intent.action.VIEW"
+                android:targetClass="com.tavant.droid.womensecurity.activities.FetchContactsActivity"
+                android:targetPackage="com.tavant.droid.womensecurity" />
         </PreferenceScreen>
-
     </PreferenceCategory>
+    
     <PreferenceCategory android:title="@string/str_location" >
         <CheckBoxPreference
             android:key="cbp_checkbox_preference3"
@@ -50,45 +38,10 @@
             android:title="@string/str_cbp_checkbox_preference6_title" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/str_pattern" >
-        <PreferenceScreen android:title="@string/str_lp_label_preference7_title" >
-            <PreferenceCategory android:title="@string/str_pattern" >
-                <Preference 
-                    android:key="security_key"
-                    android:title="@string/str_lp_label_preference7_title" />
-            </PreferenceCategory>
-        </PreferenceScreen>
+             <Preference
+            android:key="security_key"
+            android:title="@string/str_lp_label_preference7_title" >
+        </Preference>
     </PreferenceCategory>
-</PreferenceScreen><!--
-    <PreferenceCategory
-	    android:title="@string/str_second_category_title"	        
-	    >
-	    
-	    <ListPreference 
-	        android:key="lp_list_preference"
-	        android:title="@string/lp_list_preference_title"
-	        android:entries="@array/array_list_preference_entries"
-	        android:entryValues="@array/array_list_preference_entry_values"	        
-	        />
-	    
-	    <RingtonePreference 
-	        android:key="rtp_ringtone_preference"
-	        android:title="@string/rtp_ringtone_preference_title"	        	        
-	        />	    
-	        
-	</PreferenceCategory>
-	
-	<PreferenceScreen 
-	    android:title="@string/more"
-	    >
-	    <PreferenceCategory 
-	        android:title="@string/str_third_category_title"
-	        >
-		    <EditTextPreference 
-		        android:key="etp_edittext_preference2"
-		        android:title="@string/str_cbp_checkbox_preference3_title"	        
-		    />
-	    </PreferenceCategory> 
-	</PreferenceScreen>
 
--->
-
+</PreferenceScreen>

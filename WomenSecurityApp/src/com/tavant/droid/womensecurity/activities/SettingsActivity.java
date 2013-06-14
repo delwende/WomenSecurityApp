@@ -1,8 +1,11 @@
 package com.tavant.droid.womensecurity.activities;
 
 
+import group.pals.android.lib.ui.lockpattern.LockPatternActivity;
 import group.pals.android.lib.ui.lockpattern.prefs.SecurityPrefs;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
@@ -10,6 +13,8 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.facebook.widget.PickerFragment;
 import com.tavant.droid.womensecurity.R;
@@ -43,11 +48,20 @@ public class SettingsActivity extends PreferenceActivity{
 		pattrenpref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
-				//startPatternLockActivity();
+				startPatternLockActivity();
 				return true;
 			}
 		});
 
+	}
+	protected void startPatternLockActivity() {
+		Intent intentActivity = new Intent(
+                LockPatternActivity.ACTION_CREATE_PATTERN,
+                null, this,
+                LockPatternActivity.class);
+        startActivityForResult(intentActivity,
+                REQ_CREATE_PATTERN);
+		
 	}
 	protected void startPickerActivity() {
 		Intent intent = new Intent();
@@ -60,5 +74,18 @@ public class SettingsActivity extends PreferenceActivity{
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-	}
+		switch (requestCode) {
+        case REQ_CREATE_PATTERN: 
+            if (resultCode == RESULT_OK){
+            	 char array[]=data.getCharArrayExtra(LockPatternActivity.EXTRA_PATTERN); 
+            Log.i("drawpattern",new String(array)); 
+            // Save this prefrnce and read it from prefrence when we need to validate
+            SharedPreferences preferences = getSharedPreferences("AUTHENTICATION_FILE_NAME", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString("drawpattern",new String(array));
+            editor.commit();
+            } 
+            break;
+        }// REQ_ENTER_PATTERN
+    }// onActivityResult()
 }

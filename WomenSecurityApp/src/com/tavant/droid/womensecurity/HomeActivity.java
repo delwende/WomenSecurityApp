@@ -1,4 +1,6 @@
- package com.tavant.droid.womensecurity;
+package com.tavant.droid.womensecurity;
+
+import group.pals.android.lib.ui.lockpattern.LockPatternActivity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -42,12 +44,12 @@ import com.tavant.droid.womensecurity.data.BaseData;
 import com.tavant.droid.womensecurity.data.FbUser;
 import com.tavant.droid.womensecurity.database.ContentDescriptor;
 import com.tavant.droid.womensecurity.http.HttpRequestCreater;
+import com.tavant.droid.womensecurity.lock.LockScreenActivity;
 import com.tavant.droid.womensecurity.service.LocationAlarmService;
 import com.tavant.droid.womensecurity.utils.LocationData;
 import com.tavant.droid.womensecurity.utils.WSConstants;
 
-public class HomeActivity extends BaseActivity implements
-		OnClickListener{
+public class HomeActivity extends BaseActivity implements OnClickListener {
 
 	ImageButton panicButton;
 	private String SAVE_ME_TEXT = "Please call police. I am in danger. PLEASE HELP . My location is:";
@@ -66,41 +68,38 @@ public class HomeActivity extends BaseActivity implements
 	private String[] numbers;
 	private int callRepeatCount = 1;
 	private ContentResolver resolver;
-	private SharedPreferences pref=null;
+	private SharedPreferences pref = null;
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Override
 	protected void onCreate(Bundle instance3) {
 		super.onCreate(instance3);
 		setContentView(R.layout.activity_main);
-		resolver=getContentResolver();
-		pref=getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
+		resolver = getContentResolver();
+		pref = getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
 		// Get the telephony manager
 		copPhonePreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
 
-		//copNumber = copPhonePreferences.getString("COP_NUMBER", "");
+		// copNumber = copPhonePreferences.getString("COP_NUMBER", "");
 
 		panicButton = (ImageButton) findViewById(R.id.panic_button);
 		panicButton.setOnClickListener(this);
-		
+
 		// Fire off an intent to check if a TTS engine is installed
-		/*Intent checkIntent = new Intent();
-		checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
-		startActivityForResult(checkIntent, MY_DATA_CHECK_CODE);
-*/
-		
+		/*
+		 * Intent checkIntent = new Intent();
+		 * checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
+		 * startActivityForResult(checkIntent, MY_DATA_CHECK_CODE);
+		 */
+
 	}
 
-
-	
-	
-	
-	protected void onResume(){
+	protected void onResume() {
 		super.onResume();
-		if(callNext == true){
-			for(int i = 0 ; i < callRepeatCount ; i++){
-			
-				for(int j = 0 ; j < numbers.length ; j++){
+		if (callNext == true) {
+			for (int i = 0; i < callRepeatCount; i++) {
+
+				for (int j = 0; j < numbers.length; j++) {
 					makeEmergencyCalls(numbers[j]);
 				}
 			}
@@ -108,90 +107,96 @@ public class HomeActivity extends BaseActivity implements
 			callRepeatCount = 0;
 		}
 	}
-	
+
 	@Override
 	public void onClick(View v) {
-		if(v.getId()== R.id.panic_button){
+		if (v.getId() == R.id.panic_button) {
 			numbers = retrievePhoneNumbers();
-			posttoFBTimeLine();			
+			posttoFBTimeLine();
 			getCallStates();
-			
-			//raiseLocationUpdateAlarm();
-			if(numbers.length > 0){
-			notifyFriendsByPushNotification();
-			makeSmsAlert(numbers);
-			//makeEmergencyCalls(numbers.get(0));
-			makeEmergencyCallToNearestCop();
+
+			// raiseLocationUpdateAlarm();
+			if (numbers.length > 0) {
+				notifyFriendsByPushNotification();
+				makeSmsAlert(numbers);
+				// makeEmergencyCalls(numbers.get(0));
+				makeEmergencyCallToNearestCop();
 			}
 		}
 	}
-	
-	public void posttoFBTimeLine(){
-		final List<FbUser>fbids=new ArrayList<FbUser>();
+
+	public void posttoFBTimeLine() {
+		final List<FbUser> fbids = new ArrayList<FbUser>();
 		FbUser user;
-		Cursor cursor=resolver.query(ContentDescriptor.WSFacebook.CONTENT_URI, null, ContentDescriptor.WSFacebook.Cols.FBSTATUS+ " = 1 " , null, null);
-		int i=0;
+		Cursor cursor = resolver.query(
+				ContentDescriptor.WSFacebook.CONTENT_URI, null,
+				ContentDescriptor.WSFacebook.Cols.FBSTATUS + " = 1 ", null,
+				null);
+		int i = 0;
 		while (cursor.moveToNext()) {
-			
-			String fbid= cursor.getString(cursor
+
+			String fbid = cursor.getString(cursor
 					.getColumnIndex(ContentDescriptor.WSFacebook.Cols.FBID));
-			user=new FbUser();
+			user = new FbUser();
 			user.setId(fbid);
 			fbids.add(user);
 			i++;
-			if(i==1)
+			if (i == 1)
 				break;
 		}
-		
-		Session session=new Session(this);
-		AccessToken token=AccessToken.createFromExistingAccessToken(pref.getString(WSConstants.PROPERTY_FB_ACCESSTOKEN, null),null,null,
-				AccessTokenSource.FACEBOOK_APPLICATION_WEB,null);
+
+		Session session = new Session(this);
+		AccessToken token = AccessToken.createFromExistingAccessToken(
+				pref.getString(WSConstants.PROPERTY_FB_ACCESSTOKEN, null),
+				null, null, AccessTokenSource.FACEBOOK_APPLICATION_WEB, null);
 		session.open(token, new StatusCallback() {
 			@Override
-			public void call(Session msession, SessionState state, Exception exception) {
-			   postToWall(fbids,msession);      	
+			public void call(Session msession, SessionState state,
+					Exception exception) {
+				postToWall(fbids, msession);
 			}
-		});		
+		});
 	}
 
 	private void postToWall(List<FbUser> fbid, Session msession) {
-		OpenGraphAction action = GraphObject.Factory.create(OpenGraphAction.class);
-		FbUser me=new FbUser();
+		OpenGraphAction action = GraphObject.Factory
+				.create(OpenGraphAction.class);
+		FbUser me = new FbUser();
 		me.setId(pref.getString(WSConstants.PROPERTY_FB_ID, ""));
 		action.setTags(fbid);
 		action.setFrom(me);
 		action.setCreatedTime(Calendar.getInstance().getTime());
 		action.setMessage("please help me i am in Danger");
-		
-		
+
 		Request request = new Request(Session.getActiveSession(),
-                "me/women_security:Ws", null, HttpMethod.POST);
+				"me/women_security:Ws", null, HttpMethod.POST);
 		request.setCallback(new Request.Callback() {
-			
+
 			@Override
 			public void onCompleted(Response response) {
-				Log.i("TAG","post to facebook failed");
-				
+				Log.i("TAG", "post to facebook failed");
+
 			}
 		});
-        request.setGraphObject(action);
-        request.executeAsync();
-		
-		
-//		Request req=Request.newPostRequest(msession, "me/women_security:Ws", action, new Request.Callback() {		
-//			@Override
-//			public void onCompleted(Response response) {
-//				// TODO Auto-generated method stub
-//				if(response.getError()!=null){
-//					Log.i("TAG","post to facebook failed");
-//				}
-//			}
-//		});	
-//		req.executeAsync();
+		request.setGraphObject(action);
+		request.executeAsync();
+
+		// Request req=Request.newPostRequest(msession, "me/women_security:Ws",
+		// action, new Request.Callback() {
+		// @Override
+		// public void onCompleted(Response response) {
+		// // TODO Auto-generated method stub
+		// if(response.getError()!=null){
+		// Log.i("TAG","post to facebook failed");
+		// }
+		// }
+		// });
+		// req.executeAsync();
 	}
-	
+
 	private void notifyFriendsByPushNotification() {
-		onExecute(WSConstants.CODE_ALERT_API, HttpRequestCreater.alertUsers(numbers), false);
+		onExecute(WSConstants.CODE_ALERT_API,
+				HttpRequestCreater.alertUsers(numbers), false);
 	}
 
 	private void getCallStates() {
@@ -201,13 +206,15 @@ public class HomeActivity extends BaseActivity implements
 		listener = new PhoneStateListener() {
 			@Override
 			public void onCallStateChanged(int state, String incomingNumber) {
-				
+
 				switch (state) {
 				case TelephonyManager.CALL_STATE_IDLE:
 					stateString = "Idle";
 					callNext = true;
-					/*Toast.makeText(HomeActivity.this, "Phone state Idle",
-							Toast.LENGTH_LONG).show();*/
+					/*
+					 * Toast.makeText(HomeActivity.this, "Phone state Idle",
+					 * Toast.LENGTH_LONG).show();
+					 */
 					break;
 				case TelephonyManager.CALL_STATE_OFFHOOK:
 					stateString = "Off Hook";
@@ -226,7 +233,7 @@ public class HomeActivity extends BaseActivity implements
 		// Register the listener wit the telephony manager
 		telephonyManager.listen(listener, PhoneStateListener.LISTEN_CALL_STATE);
 	}
-	
+
 	private void raiseLocationUpdateAlarm() {
 		Intent myIntent = new Intent(HomeActivity.this,
 				LocationAlarmService.class);
@@ -248,10 +255,8 @@ public class HomeActivity extends BaseActivity implements
 
 			@Override
 			public void run() {
-				System.out.println("Text to send.."
-						+ SAVE_ME_TEXT
-						+ LocationData.getInstance()
-								.getCurrentLocation());
+				System.out.println("Text to send.." + SAVE_ME_TEXT
+						+ LocationData.getInstance().getCurrentLocation());
 				if (LocationData.getInstance().getCurrentLocation() != null) {
 					try {
 						sendSmsMessage(number, SAVE_ME_TEXT
@@ -265,10 +270,10 @@ public class HomeActivity extends BaseActivity implements
 			}
 		}, 10000);
 	}
-	
+
 	protected void makeEmergencyCalls(String numbers) {
-		
-		 if (numbers != null) {
+
+		if (numbers != null) {
 			System.out.println("String phone number in calls >> " + numbers);
 			Intent intent = new Intent(Intent.ACTION_CALL);
 			intent.setData(Uri.parse("tel:" + numbers));
@@ -276,23 +281,22 @@ public class HomeActivity extends BaseActivity implements
 			intent.addFlags(Intent.FLAG_FROM_BACKGROUND);
 			startActivity(intent);
 		}
-		
-		
+
 	}
-	
-	private void makeEmergencyCallToNearestCop(){
-		
+
+	private void makeEmergencyCallToNearestCop() {
+
 		copNumber = copPhonePreferences.getString("COP_NUMBER", "9538432555");
 		System.out.println("String phone number in calls >> " + copNumber);
-		//getCallStates();
+		// getCallStates();
 		if (copNumber.length() != 0) {
 			Intent intent = new Intent(Intent.ACTION_CALL);
 			intent.setData(Uri.parse("tel:" + copNumber));
 			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			intent.addFlags(Intent.FLAG_FROM_BACKGROUND);
 			startActivity(intent);
-		} 
-		
+		}
+
 	}
 
 	public void sendSmsMessage(String[] number, String message)
@@ -321,11 +325,11 @@ public class HomeActivity extends BaseActivity implements
 				cur.moveToNext();
 			}
 			cur.close();
-			
-			    String[] phoneArray = new String[phoneList.size()];
-			    phoneArray = phoneList.toArray(phoneArray);
-			    for(String s : phoneArray)
-			        System.out.println(s);
+
+			String[] phoneArray = new String[phoneList.size()];
+			phoneArray = phoneList.toArray(phoneArray);
+			for (String s : phoneArray)
+				System.out.println(s);
 			return phoneArray;
 		} else {
 			return null;
@@ -352,8 +356,24 @@ public class HomeActivity extends BaseActivity implements
 	}
 
 	private void loadSettings() {
-		Intent intent = new Intent(this, SettingsActivity.class);
-		startActivity(intent);
+		
+		
+
+		SharedPreferences prfs = getSharedPreferences(
+				"AUTHENTICATION_FILE_NAME", Context.MODE_PRIVATE);
+		String pattaren = prfs.getString("drawpattern", null);
+ System.out.println("pattern code >>>>>>>>>>>>>>>>>> " + pattaren);
+		if (pattaren != null) {
+			Intent intentActivity = new Intent(
+	                LockPatternActivity.ACTION_COMPARE_PATTERN,
+	                null, this,
+	                LockPatternActivity.class);
+			intentActivity.putExtra(LockPatternActivity.EXTRA_PATTERN, pattaren.toCharArray());
+			startActivityForResult(intentActivity, LockScreenActivity.REQ_ENTER_PATTERN);
+		} else {
+			Intent intent = new Intent(this, SettingsActivity.class);
+			startActivity(intent);
+		}
 
 	}
 
@@ -405,8 +425,37 @@ public class HomeActivity extends BaseActivity implements
 		super.onDestroy();
 	}
 
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		switch (requestCode) {
 
-	
-	
-	
+		case LockScreenActivity.REQ_ENTER_PATTERN: {
+			int msgId = 0;
+
+			switch (resultCode) {
+			case RESULT_OK:
+				msgId = android.R.string.ok;
+				break;
+			case RESULT_CANCELED:
+				msgId = android.R.string.cancel;
+				break;
+			case LockPatternActivity.RESULT_FAILED:
+				msgId = 0;
+				break;
+			default:
+				return;
+			}
+
+			String msg = String.format("%s (%,d tries)", getString(msgId),
+					data.getIntExtra(LockPatternActivity.EXTRA_RETRY_COUNT, 0));
+
+			Toast toast = Toast.makeText(this, msg, Toast.LENGTH_LONG);
+			toast.show();
+
+			break;
+		}
+
+		}
+	}
+
 }
