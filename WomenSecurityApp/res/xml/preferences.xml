@@ -17,21 +17,21 @@
         </PreferenceScreen>
     </PreferenceCategory>
     
-    <PreferenceCategory android:title="@string/str_location" >
+    <!-- <PreferenceCategory android:title="@string/str_location" >
         <CheckBoxPreference
             android:key="cbp_checkbox_preference3"
             android:title="@string/str_cbp_checkbox_preference3_title" />
-    </PreferenceCategory>
+    </PreferenceCategory> -->
     <PreferenceCategory android:title="@string/str_buzzer" >
         <CheckBoxPreference
             android:key="cbp_checkbox_preference4"
             android:title="@string/str_cbp_checkbox_preference4_title" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/str_cops" >
+    <!-- <PreferenceCategory android:title="@string/str_cops" >
         <CheckBoxPreference
             android:key="cbp_checkbox_preference5"
             android:title="@string/str_cbp_checkbox_preference5_title" />
-    </PreferenceCategory>
+    </PreferenceCategory> -->
     <PreferenceCategory android:title="@string/str_friends" >
         <CheckBoxPreference
             android:key="cbp_checkbox_preference6"
