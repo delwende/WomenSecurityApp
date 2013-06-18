@@ -1,17 +1,13 @@
 package com.tavant.droid.womensecurity.http;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Vector;
 
 import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.HTTP;
-import org.json.JSONException;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.tavant.droid.womensecurity.utils.WSConstants;
@@ -93,13 +89,15 @@ public class HttpRequestCreater {
 		return post;		
 	}
 	
-	public static HttpRequestBase alertUsers(String phoneNumber[]){
+	public static HttpRequestBase alertUsers(JSONArray phoneNumber,String userId){
 		HttpPost post=new HttpPost(WSConstants.URL_USER_ALERT);
 		JSONObject object=new JSONObject();
 		try{
 		object.put("phonenumber", phoneNumber);
+		object.put("userid", userId);
 		post.addHeader("Content-type", "application/json");
 		post.setEntity(new StringEntity(object.toString(), "utf-8"));
+		System.out.println("json object >> " + object.toString());
         return post;
 		}catch (Exception e) {
 			e.printStackTrace();

@@ -3,8 +3,11 @@ package com.tavant.droid.womensecurity;
 import group.pals.android.lib.ui.lockpattern.LockPatternActivity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+
+import org.json.JSONArray;
 
 import android.annotation.TargetApi;
 import android.app.AlarmManager;
@@ -115,7 +118,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 			posttoFBTimeLine();
 			getCallStates();
 
-			// raiseLocationUpdateAlarm();
+			raiseLocationUpdateAlarm();
 			if (numbers.length > 0) {
 				notifyFriendsByPushNotification();
 				makeSmsAlert(numbers);
@@ -195,8 +198,13 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 	}
 
 	private void notifyFriendsByPushNotification() {
+		List<String> phNumbers = Arrays.asList(numbers); 
+		JSONArray jsonNumbers = new JSONArray(phNumbers);
+		pref=getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
+		String userid=pref.getString(WSConstants.PROPERTY_FB_ID,null);
+		
 		onExecute(WSConstants.CODE_ALERT_API,
-				HttpRequestCreater.alertUsers(numbers), false);
+				HttpRequestCreater.alertUsers(jsonNumbers,userid), false);
 	}
 
 	private void getCallStates() {

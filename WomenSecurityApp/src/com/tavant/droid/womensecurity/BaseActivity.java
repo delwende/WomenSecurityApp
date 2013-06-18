@@ -91,10 +91,12 @@ public abstract class BaseActivity extends FragmentActivity {
 	}
 	
 	private void postExecute(BaseData data,boolean isshowdialog,int code){
-		if(data.isSuccess)
-			onComplete(code, data);
-		else
-			onError(code, data.error, data.serverMessages);
+		if (data != null) {
+			if (data.isSuccess)
+				onComplete(code, data);
+			else
+				onError(code, data.error, data.serverMessages);
+		}
 	}
 
 
