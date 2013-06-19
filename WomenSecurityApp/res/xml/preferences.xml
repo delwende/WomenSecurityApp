@@ -24,7 +24,8 @@
     </PreferenceCategory> -->
     <PreferenceCategory android:title="@string/str_buzzer" >
         <CheckBoxPreference
-            android:key="cbp_checkbox_preference4"
+            android:defaultValue="false"
+            android:key="buzzer_key"
             android:title="@string/str_cbp_checkbox_preference4_title" />
     </PreferenceCategory>
     <!-- <PreferenceCategory android:title="@string/str_cops" >
@@ -34,7 +35,8 @@
     </PreferenceCategory> -->
     <PreferenceCategory android:title="@string/str_friends" >
         <CheckBoxPreference
-            android:key="cbp_checkbox_preference6"
+            android:defaultValue="true"
+            android:key="friends_key"
             android:title="@string/str_cbp_checkbox_preference6_title" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/str_pattern" >

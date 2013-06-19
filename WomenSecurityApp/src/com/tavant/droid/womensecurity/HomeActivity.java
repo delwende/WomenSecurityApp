@@ -72,6 +72,8 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 	private int callRepeatCount = 1;
 	private ContentResolver resolver;
 	private SharedPreferences pref = null;
+	private boolean buzzer;
+	private boolean friends;
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Override
@@ -95,6 +97,9 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 		 * startActivityForResult(checkIntent, MY_DATA_CHECK_CODE);
 		 */
 
+		buzzer = pref.getBoolean("buzzer_key", false);
+		friends = pref.getBoolean("friends_key", true);
+
 	}
 
 	protected void onResume() {
@@ -115,16 +120,21 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 	public void onClick(View v) {
 		if (v.getId() == R.id.panic_button) {
 			numbers = retrievePhoneNumbers();
-			posttoFBTimeLine();
 			getCallStates();
-
-			raiseLocationUpdateAlarm();
-			if (numbers.length > 0) {
-				notifyFriendsByPushNotification();
-				makeSmsAlert(numbers);
-				// makeEmergencyCalls(numbers.get(0));
-				makeEmergencyCallToNearestCop();
+			if (buzzer == true) {
+				System.out.println("Buzzer 00000000000000000000000000000000");
 			}
+			if (friends == true) {
+				posttoFBTimeLine();
+
+				// raiseLocationUpdateAlarm();
+				if (numbers.length > 0) {
+					notifyFriendsByPushNotification();
+					makeSmsAlert(numbers);
+					// makeEmergencyCalls(numbers.get(0));
+				}
+			}
+			makeEmergencyCallToNearestCop();
 		}
 	}
 
@@ -198,13 +208,13 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 	}
 
 	private void notifyFriendsByPushNotification() {
-		List<String> phNumbers = Arrays.asList(numbers); 
+		List<String> phNumbers = Arrays.asList(numbers);
 		JSONArray jsonNumbers = new JSONArray(phNumbers);
-		pref=getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
-		String userid=pref.getString(WSConstants.PROPERTY_FB_ID,null);
-		
+		pref = getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
+		String userid = pref.getString(WSConstants.PROPERTY_FB_ID, null);
+
 		onExecute(WSConstants.CODE_ALERT_API,
-				HttpRequestCreater.alertUsers(jsonNumbers,userid), false);
+				HttpRequestCreater.alertUsers(jsonNumbers, userid), false);
 	}
 
 	private void getCallStates() {
@@ -364,8 +374,6 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 	}
 
 	private void loadSettings() {
-		
-		
 
 		SharedPreferences prfs = getSharedPreferences(
 				"AUTHENTICATION_FILE_NAME", Context.MODE_PRIVATE);
@@ -373,11 +381,12 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 		System.out.println("pattern code >>>>>>>>>>>>>>>>>> " + pattaren);
 		if (pattaren != null) {
 			Intent intentActivity = new Intent(
-	                LockPatternActivity.ACTION_COMPARE_PATTERN,
-	                null, this,
-	                LockPatternActivity.class);
-			intentActivity.putExtra(LockPatternActivity.EXTRA_PATTERN, pattaren.toCharArray());
-			startActivityForResult(intentActivity, LockScreenActivity.REQ_ENTER_PATTERN);
+					LockPatternActivity.ACTION_COMPARE_PATTERN, null, this,
+					LockPatternActivity.class);
+			intentActivity.putExtra(LockPatternActivity.EXTRA_PATTERN,
+					pattaren.toCharArray());
+			startActivityForResult(intentActivity,
+					LockScreenActivity.REQ_ENTER_PATTERN);
 		} else {
 			Intent intent = new Intent(this, SettingsActivity.class);
 			startActivity(intent);

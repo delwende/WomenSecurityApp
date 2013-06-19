@@ -6,23 +6,23 @@ import group.pals.android.lib.ui.lockpattern.prefs.SecurityPrefs;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.facebook.widget.PickerFragment;
 import com.tavant.droid.womensecurity.R;
 import com.tavant.droid.womensecurity.lock.LPEncrypter;
 
 public class SettingsActivity extends PreferenceActivity{
 	Preference facebookPref=null;
 	Preference pattrenpref=null;
+	Preference buzzerPref=null;
+	Preference friendsPref=null;
+	SharedPreferences pref=null;
 
 	public static final int REQ_CREATE_PATTERN = 0;
 	public static final int REQ_ENTER_PATTERN = 1;
@@ -36,6 +36,13 @@ public class SettingsActivity extends PreferenceActivity{
 		addPreferencesFromResource(R.xml.preferences);
 		facebookPref = findPreference("facebook_key");
 		pattrenpref=findPreference("security_key");
+		buzzerPref=findPreference("buzzer_key");
+		friendsPref=findPreference("friends_key");
+		
+		pref= getApplicationContext().getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
+		final Editor editor = pref.edit();
+		editor.commit();
+		
 		facebookPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
 			@Override
@@ -52,8 +59,36 @@ public class SettingsActivity extends PreferenceActivity{
 				return true;
 			}
 		});
-
+		
+buzzerPref.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+			
+			@Override
+			public boolean onPreferenceChange(Preference preference, Object newValue) {
+				if((Boolean) newValue){
+				editor.putBoolean("buzzer_key", true);
+				}else{
+					editor.putBoolean("buzzer_key", false);
+				}
+				editor.commit();
+				return true;
+			}
+		});
+		
+		friendsPref.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+			
+			@Override
+			public boolean onPreferenceChange(Preference preference, Object newValue) {
+				if((Boolean) newValue){
+                editor.putBoolean("friends_key", true);
+				}else{
+					editor.putBoolean("friends_key", false);
+				}
+                editor.commit();
+				return true;
+			}
+		});
 	}
+	
 	protected void startPatternLockActivity() {
 		Intent intentActivity = new Intent(
                 LockPatternActivity.ACTION_CREATE_PATTERN,
