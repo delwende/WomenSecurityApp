@@ -49,6 +49,7 @@ import com.tavant.droid.womensecurity.database.ContentDescriptor;
 import com.tavant.droid.womensecurity.http.HttpRequestCreater;
 import com.tavant.droid.womensecurity.lock.LockScreenActivity;
 import com.tavant.droid.womensecurity.service.LocationAlarmService;
+import com.tavant.droid.womensecurity.sound.ScreamPlayer;
 import com.tavant.droid.womensecurity.utils.LocationData;
 import com.tavant.droid.womensecurity.utils.WSConstants;
 
@@ -122,7 +123,9 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 			numbers = retrievePhoneNumbers();
 			getCallStates();
 			if (buzzer == true) {
-				System.out.println("Buzzer 00000000000000000000000000000000");
+				ScreamPlayer screamPlayer = new ScreamPlayer(this);
+				screamPlayer.setRepeatCount(3);
+				screamPlayer.startRinging();
 			}
 			if (friends == true) {
 				posttoFBTimeLine();
