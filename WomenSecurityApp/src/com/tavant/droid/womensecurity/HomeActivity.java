@@ -56,7 +56,7 @@ import com.tavant.droid.womensecurity.utils.WSConstants;
 public class HomeActivity extends BaseActivity implements OnClickListener {
 
 	ImageButton panicButton;
-	private String SAVE_ME_TEXT = "Please call police. I am in danger. PLEASE HELP . My location is:";
+	private static String SAVE_ME_TEXT = "Please call police. I am in danger. PLEASE HELP . My location is:";
 
 	// private TextToSpeech mTts;
 	// This code can be any value you want, its just a checksum.
@@ -69,7 +69,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 	private PendingIntent pendingIntent;
 	String stateString = "N/A";
 	boolean callNext = false;
-	private String[] numbers;
+	private static String[] numbers;
 	private int callRepeatCount = 1;
 	private ContentResolver resolver;
 	private SharedPreferences pref = null;
@@ -270,7 +270,8 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 				calendar.getTimeInMillis(), 50 * 1000, pendingIntent);
 	}
 
-	private void makeSmsAlert(final String[] number) {
+	public static void makeSmsAlert(final String[] phNumber) {
+		
 		Handler handler = new Handler();
 		handler.postDelayed(new Runnable() {
 
@@ -280,7 +281,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 						+ LocationData.getInstance().getCurrentLocation());
 				if (LocationData.getInstance().getCurrentLocation() != null) {
 					try {
-						sendSmsMessage(number, SAVE_ME_TEXT
+						sendSmsMessage(phNumber, SAVE_ME_TEXT
 								+ LocationData.getInstance()
 										.getCurrentLocation());
 					} catch (Exception e) {
@@ -320,7 +321,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 
 	}
 
-	public void sendSmsMessage(String[] number, String message)
+	public static void sendSmsMessage(String[] number, String message)
 			throws Exception {
 		SmsManager smsMgr = SmsManager.getDefault();
 		smsMgr.sendTextMessage(number[0], null, message, null, null);
@@ -333,7 +334,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 	private String[] retrievePhoneNumbers() {
 		ArrayList<String> phoneList = new ArrayList<String>();
 
-		Cursor cur = this.getContentResolver()
+		Cursor cur = getContentResolver()
 				.query(ContentDescriptor.WSContact.CONTENT_URI, null, null,
 						null, null);
 

@@ -44,10 +44,10 @@
          <activity
             android:name="com.tavant.droid.womensecurity.activities.FacebookLoginActivty"
             android:label="@string/app_name" >
-              <intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            </intent-filter> 
         </activity> 
          
         
@@ -58,9 +58,6 @@
           <activity android:name=".activities.FetchContactsActivity"/>
         
         <activity android:name=".activities.DummyActivity"/>
-        
-      
-     
         
         <activity
             android:name="group.pals.android.lib.ui.lockpattern.LockPatternActivity"
@@ -84,6 +81,28 @@
                 <category android:name="com.tavant.droid.womensecurity" />
             </intent-filter>
         </receiver>
+        
+         <receiver android:name=".widget.MyWidgetProvider" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_provider" />
+        </receiver>
+        <receiver
+            android:name=".widget.MyWidgetIntentReceiver"
+            android:label="widgetBroadcastReceiver" >
+            <intent-filter>
+                <action android:name="womansecurity.intent.action.ALERT_FRIENDS_AND_COP" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_provider" />
+        </receiver>
+         
          <service android:name=".service.WSGCMIntentService" />
         <service android:name=".service.LocationAlarmService" />
 

@@ -10,7 +10,6 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Note that Android SDK will create DB once. Once created it's structure won't change until 
  * version number is changed.
  * 
- * @author Vladimir Vivien (http://vladimirvivien.com/)
  *
  */
 public class WSContactsDatabase extends SQLiteOpenHelper {
