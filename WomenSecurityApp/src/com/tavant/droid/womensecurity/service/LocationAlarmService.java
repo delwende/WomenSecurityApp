@@ -3,6 +3,8 @@ package com.tavant.droid.womensecurity.service;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpRequestBase;
@@ -38,9 +40,11 @@ public class LocationAlarmService extends Service implements LocationListener{
 	private LocationData location=null; 
 	private String userid=null;
 	private SharedPreferences pref=null;
+	private Timer timer=null;
 
 	@Override
 	public void onCreate() {
+		timer=new Timer();
 		Log.i("TAG","onCreate");
 	}
 
@@ -69,14 +73,50 @@ public class LocationAlarmService extends Service implements LocationListener{
 			return START_NOT_STICKY; // no registartion of alram
 		Criteria criteria = new Criteria();
 		provider = locationManager.getBestProvider(criteria, false);
+
+		Log.i("TAG","best provider is"+provider);
+
+		if(provider.equals(LocationManager.NETWORK_PROVIDER.toString())&&!locationManager.isProviderEnabled(provider)&&
+				locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+			provider= LocationManager.GPS_PROVIDER;
+		}else if(provider.equals(LocationManager.GPS_PROVIDER)&&!locationManager.isProviderEnabled(provider)&&
+				locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
+			provider= LocationManager.NETWORK_PROVIDER;
+		}else{
+			provider=LocationManager.NETWORK_PROVIDER;   // if both are
+		}
+
+
 		location=LocationData.getInstance();
 		if(provider != null && !provider.equals("")){
+			timer.schedule(timertask, 10*1000);
 			locationManager.requestLocationUpdates(provider, 20000, 1, this);
 		}else{
 			Toast.makeText(getBaseContext(), "No Provider found", Toast.LENGTH_SHORT).show();
 		}
 		return START_NOT_STICKY;
 	}
+	
+	
+	
+	private TimerTask timertask=new TimerTask() {
+		@Override
+		public void run() {
+			timertask.cancel();
+			timer.cancel();
+			Location location = locationManager.getLastKnownLocation(provider);
+			if(location!=null){
+				Log.i("TAG","got last known location, after removing the timer");
+				LocationData.getInstance().setLatitude(location.getLatitude());
+				LocationData.getInstance().setLongitude(location.getLongitude());
+				updateLocationtoserver();
+			}else{
+				clear();
+			}
+		}
+	};
+	
+	
 
 	@Override
 	public void onStart(Intent intent, int startId) {
@@ -91,6 +131,7 @@ public class LocationAlarmService extends Service implements LocationListener{
 	@Override
 	public void onLocationChanged(Location location) {
 		Log.i("TAG","got location");
+		timertask.cancel();
 		LocationData.getInstance().setLatitude(location.getLatitude());
 		LocationData.getInstance().setLongitude(location.getLongitude());
 		//locationManager.removeUpdates(this);
@@ -100,6 +141,7 @@ public class LocationAlarmService extends Service implements LocationListener{
 
 	@Override
 	public void onProviderDisabled(String provider) {
+		timertask.cancel();
 		Location location = locationManager.getLastKnownLocation(provider);
 		if(location!=null){
 			Log.i("TAG","got location on starting");
@@ -119,6 +161,7 @@ public class LocationAlarmService extends Service implements LocationListener{
 
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
+		timertask.cancel();
 		Location location = locationManager.getLastKnownLocation(provider);
 		if(location!=null){
 			Log.i("TAG","got location on starting");
@@ -127,6 +170,11 @@ public class LocationAlarmService extends Service implements LocationListener{
 			updateLocationtoserver();
 			LocationData.getInstance().setCurrentLocation(getLocationName(location.getLatitude(),location.getLongitude()));
 		}
+	}
+	
+	private void clear(){
+		locationManager.removeUpdates(this);
+		 stopSelfResult(Activity.RESULT_OK);
 	}
 
 	private void updateLocationtoserver(){
@@ -156,6 +204,8 @@ public class LocationAlarmService extends Service implements LocationListener{
 				Log.i("TAG","clearing location listenre");
 				stopSelfResult(Activity.RESULT_OK);
 				locationManager.removeUpdates(LocationAlarmService.this);
+				timertask.cancel();
+				timer.cancel();
 				//	isrunning=false;
 
 			}
