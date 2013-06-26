@@ -23,7 +23,7 @@ public class CustomPhoneDialog extends Dialog implements android.view.View.OnCli
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.custom_phone);
-		setCancelable(false);
+		//setCancelable(false);
 		register_btn=(Button)findViewById(R.id.btn);
 		register_btn.setOnClickListener(this);
 		text=(EditText)findViewById(R.id.editTextDialogUserInput);

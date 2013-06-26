@@ -79,7 +79,7 @@ public class HttpRequestCreater {
 		object.put("userid", userid);
 		object.put("latitude", latitude);
 		object.put("longitude", longitude);
-		object.put("apptype", 1);
+		object.put("apptype", app_type);
 		post.addHeader("Content-type", "application/json");
 		post.setEntity(new StringEntity(object.toString(), "utf-8"));
         return post;

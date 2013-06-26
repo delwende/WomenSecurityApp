@@ -3,10 +3,12 @@ package com.tavant.droid.womensecurity.activities;
 
 import group.pals.android.lib.ui.lockpattern.LockPatternActivity;
 import group.pals.android.lib.ui.lockpattern.prefs.SecurityPrefs;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
@@ -14,7 +16,9 @@ import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.util.Log;
 
+import com.tavant.droid.womensecurity.HomeActivity;
 import com.tavant.droid.womensecurity.R;
+import com.tavant.droid.womensecurity.database.ContentDescriptor;
 import com.tavant.droid.womensecurity.lock.LPEncrypter;
 
 public class SettingsActivity extends PreferenceActivity{
@@ -26,10 +30,26 @@ public class SettingsActivity extends PreferenceActivity{
 
 	public static final int REQ_CREATE_PATTERN = 0;
 	public static final int REQ_ENTER_PATTERN = 1;
-
+    private ContentResolver resolver;
+    private Cursor fbCursor=null;
+    private Cursor friendCursor=null;
+	
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {		
 		super.onCreate(savedInstanceState);
+		resolver=getContentResolver();
+		fbCursor =resolver.query(ContentDescriptor.WSFacebook.CONTENT_URI, null, null, null, null);
+		friendCursor=resolver.query(ContentDescriptor.WSContact.CONTENT_URI, null, null, null, null);
+		if(fbCursor!=null&&fbCursor.getCount()>0&&friendCursor!=null&&friendCursor.getCount()>0){
+			fbCursor.close();
+			friendCursor.close();
+		    startActivity(new Intent(this, HomeActivity.class));	
+		    finish();
+		    return;
+		}
+		resolver=getContentResolver();
 		SecurityPrefs.setAutoSavePattern(this, true);
         SecurityPrefs.setEncrypterClass(this, LPEncrypter.class);
 		/** Setting Preferences resource to the PreferenceActivity */

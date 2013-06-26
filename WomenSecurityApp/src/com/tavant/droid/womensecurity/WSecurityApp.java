@@ -1,20 +1,12 @@
 package com.tavant.droid.womensecurity;
 
-import java.io.IOException;
-
 import android.app.Application;
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
-import android.util.Log;
-
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.tavant.droid.womensecurity.utils.WSConstants;
 public class WSecurityApp extends Application {
 
 
     static final String TAG = "TAG";
-    GoogleCloudMessaging gcm;
+    //GoogleCloudMessaging gcm;
 
     SharedPreferences prefs;
     String regid;

@@ -1,6 +1,9 @@
 package com.tavant.droid.womensecurity.service;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
@@ -14,6 +17,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
@@ -22,11 +26,16 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.tavant.droid.womensecurity.HomeActivity;
+import com.tavant.droid.womensecurity.data.BaseData;
+import com.tavant.droid.womensecurity.data.CopsData;
+import com.tavant.droid.womensecurity.http.HttpHandler;
 import com.tavant.droid.womensecurity.http.HttpManager;
 import com.tavant.droid.womensecurity.http.HttpRequestCreater;
 import com.tavant.droid.womensecurity.utils.LocationData;
@@ -41,6 +50,7 @@ public class LocationAlarmService extends Service implements LocationListener{
 	private String userid=null;
 	private SharedPreferences pref=null;
 	private Timer timer=null;
+	private Editor edit=null;
 
 	@Override
 	public void onCreate() {
@@ -68,6 +78,7 @@ public class LocationAlarmService extends Service implements LocationListener{
 		Log.i("TAG","calling laram agin");
 		locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 		pref=getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
+		edit=pref.edit();
 		userid=pref.getString(WSConstants.PROPERTY_FB_ID,null);
 		if(userid==null)
 			return START_NOT_STICKY; // no registartion of alram
@@ -109,12 +120,20 @@ public class LocationAlarmService extends Service implements LocationListener{
 				Log.i("TAG","got last known location, after removing the timer");
 				LocationData.getInstance().setLatitude(location.getLatitude());
 				LocationData.getInstance().setLongitude(location.getLongitude());
-				updateLocationtoserver();
+				handler.sendEmptyMessage(0);
 			}else{
 				clear();
 			}
 		}
 	};
+	
+	
+	final Handler handler = new Handler() {
+	    public void handleMessage(Message msg) {
+	    	updateLocationtoserver();
+	     }
+	};
+
 	
 	
 
@@ -182,26 +201,31 @@ public class LocationAlarmService extends Service implements LocationListener{
 		Log.i("TAG","sending current location to server" + "latitude : " + location.getLatitude() + " longitude : " + location.getLongitude());
 		if(userid==null)
 			return;
-		new AsyncTask <Void,Void,String>() {
+		new AsyncTask <Void,Void,BaseData>() {
 			@Override 
-			protected String doInBackground(Void... params) {
-				String responseString="";
+			protected BaseData doInBackground(Void... params) {
+				BaseData data=null;
 				HttpRequestBase post =  HttpRequestCreater.updateLocation(userid,location.getLatitude(), location.getLongitude(),0);
 				try {
-					HttpResponse  response = HttpManager.execute(post);
-					if(response!=null){
-						Log.i("TAG","update the location succesfully"+response.getStatusLine().getStatusCode());	
-						responseString = response.toString();
-					}
+					data  = HttpHandler.getInstance().makeHttpRequest(WSConstants.CODE_LOCATION_API, post);
+					return data;
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				return responseString;
+				return data;
 
 			}
-			protected void onPostExecute(String msg) {  
+			@Override 
+			protected void onPostExecute(BaseData base) {  
 				Log.i("TAG","clearing location listenre");
+				CopsData data=(CopsData)base;
+				if(data!=null&&data.phoneNumber!=null) {
+					SharedPreferences copPhonePreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
+					Editor edit=copPhonePreferences.edit();
+					Log.i("TAG","Phone number"+data.phoneNumber);
+					edit.putString("COP_NUMBER", data.phoneNumber);
+					edit.commit();
+				}	
 				stopSelfResult(Activity.RESULT_OK);
 				locationManager.removeUpdates(LocationAlarmService.this);
 				timertask.cancel();
@@ -243,6 +267,16 @@ public class LocationAlarmService extends Service implements LocationListener{
 		}
 		return (_homeAddress==null ? "":_homeAddress.toString());
 	}
+	
+	
+	 private static String read(InputStream in) throws IOException {
+			StringBuilder sb = new StringBuilder();
+			BufferedReader r = new BufferedReader(new InputStreamReader(in), 1000);
+			for (String line = r.readLine(); line != null; line = r.readLine()) {
+				sb.append(line);
+			}
+			return sb.toString();
+    }
 }
 
 

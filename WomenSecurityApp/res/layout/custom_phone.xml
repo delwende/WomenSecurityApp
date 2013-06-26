@@ -9,16 +9,17 @@
 
     <TextView
         android:id="@+id/textView1"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Enter Your phone Number: "
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:background="#ffffff"/>
 
     <EditText
         android:id="@+id/editTextDialogUserInput"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
+        android:layout_height="wrap_content"
+         android:background="#ffffff">
+      
         <requestFocus />
     </EditText>
 
@@ -26,7 +27,7 @@
         android:id="@+id/bottom_layout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="#000000" >
+        android:background="#ffffff">
 
         <Button
             android:id="@+id/btn"

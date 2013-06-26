@@ -105,7 +105,8 @@ public class HttpHandler {
 	
 	private BaseData parseLocationAPI(InputStream inputStream)	throws IOException {
 		LocationResponseParser parser = new LocationResponseParser(inputStream);
-		return parser.getData();
+		BaseData data=parser.getData();
+		return data;
 	}
 	
 

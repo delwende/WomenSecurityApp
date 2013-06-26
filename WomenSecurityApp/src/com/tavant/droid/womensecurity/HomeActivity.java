@@ -129,7 +129,6 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 			}
 			if (friends == true) {
 				posttoFBTimeLine();
-
 				// raiseLocationUpdateAlarm();
 				if (numbers.length > 0) {
 					notifyFriendsByPushNotification();
@@ -308,7 +307,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 
 	private void makeEmergencyCallToNearestCop() {
 
-		copNumber = copPhonePreferences.getString("COP_NUMBER", "9538432555");
+		copNumber = copPhonePreferences.getString("COP_NUMBER", null);
 		System.out.println("String phone number in calls >> " + copNumber);
 		// getCallStates();
 		if (copNumber.length() != 0) {

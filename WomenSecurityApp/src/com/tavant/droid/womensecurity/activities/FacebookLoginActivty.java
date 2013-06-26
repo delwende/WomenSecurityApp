@@ -106,6 +106,8 @@ public class FacebookLoginActivty extends BaseActivity implements PhoneStatus {
 	@Override
 	public void onEntered(String PhoneNo) {
 		phonenumber=PhoneNo;
+		edit.putString(WSConstants.PROPERTY_PHONE_NO, phonenumber);
+		edit.commit();
 		createUser();
 	}
 	
@@ -148,9 +150,12 @@ public class FacebookLoginActivty extends BaseActivity implements PhoneStatus {
 		edit=prefs.edit();
 		Session session=new Session(FacebookLoginActivty.this);
 		phoneManager = (TelephonyManager) getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
+		
+		String phoneNo=prefs.getString(WSConstants.PROPERTY_PHONE_NO, null);
+		
 		//mdialog=new ProgressDialog(FacebookLoginActivty.this);
 		if(session.getAccessToken()!=null&&prefs.getString(WSConstants.PROPERTY_FB_ID, null)!=null&&
-				prefs.getString(WSConstants.PROPERTY_FB_ACCESSTOKEN, null) != null){
+				prefs.getString(WSConstants.PROPERTY_FB_ACCESSTOKEN, null) != null&&phoneNo!=null){
 			//TODO write condition to check that app is configured settings , if configured launch home screen
 			LaunchSettingsScreen();	
 		}else{
@@ -230,11 +235,6 @@ public class FacebookLoginActivty extends BaseActivity implements PhoneStatus {
 		alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
 				firstTime, 3*60* 1000, pendingIntent);
 	}
-	
-	
-	
-	
-	
 }
 
 

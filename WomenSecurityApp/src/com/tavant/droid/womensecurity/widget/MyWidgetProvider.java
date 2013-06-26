@@ -18,10 +18,8 @@ public class MyWidgetProvider extends AppWidgetProvider {
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager,
 			int[] appWidgetIds) {
-
 		RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.ws_widget);
 		remoteViews.setOnClickPendingIntent(R.id.widget_button, buildButtonPendingIntent(context));
-		
 		pushWidgetUpdate(context, remoteViews);
 	}
 
