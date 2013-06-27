@@ -7,9 +7,11 @@ import org.apache.http.client.methods.HttpRequestBase;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -18,6 +20,7 @@ import android.os.SystemClock;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.util.Patterns;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.facebook.Request;
@@ -49,6 +52,10 @@ public class FacebookLoginActivty extends BaseActivity implements PhoneStatus {
 	private String mgcmId="";
 	private String phonenumber="";
 	private String userId="";
+	private AlertDialog.Builder alert = null;
+	private EditText text = null;
+	String phoneNo="";
+	private PhoneStatus mctx=null;
 	
 	private Session.StatusCallback callback = 
 		    new Session.StatusCallback() {
@@ -89,8 +96,24 @@ public class FacebookLoginActivty extends BaseActivity implements PhoneStatus {
 	                	edit.commit();
 	                	userId=user.getId();
 	                	mdialog.dismiss();
-	                	CustomPhoneDialog phoneDialog=new CustomPhoneDialog(FacebookLoginActivty.this);
-	                	phoneDialog.show();
+	                	//CustomPhoneDialog phoneDialog=new CustomPhoneDialog(FacebookLoginActivty.this);
+	                	//phoneDialog.show();
+	                	
+	           		    alert.setMessage("Please Enter Your Mobile No");
+	           		    alert.setView(text);
+	           		    alert.setPositiveButton("Register", new DialogInterface.OnClickListener() {
+	           		        public void onClick(DialogInterface dialog, int whichButton) {
+	           		            String value = text.getText().toString().trim();
+	           		            Toast.makeText(getApplicationContext(), value, Toast.LENGTH_SHORT).show();
+	           		            if(text.getText().toString().length()==0)
+	           		    			return;
+	           		    		else{
+	           		    			phoneNo=text.getText().toString();
+	           		    			mctx.onEntered(phoneNo);
+	           		    		}
+	           		        }
+	           		    });
+	           		 alert.show();
 	                }
 	            }
 	            if (response.getError() != null) {
@@ -145,6 +168,10 @@ public class FacebookLoginActivty extends BaseActivity implements PhoneStatus {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		alert = new AlertDialog.Builder(this);
+		text = new EditText(this);
+		mctx=(PhoneStatus)this;
 		prefs = getSharedPreferences(getPackageName(), 
                 Context.MODE_PRIVATE);
 		edit=prefs.edit();

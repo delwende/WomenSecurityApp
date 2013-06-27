@@ -1,5 +1,6 @@
 package com.tavant.droid.womensecurity.utils;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -15,6 +16,9 @@ public class CustomPhoneDialog extends Dialog implements android.view.View.OnCli
 	private Button register_btn=null;
 	private PhoneStatus mctx=null;
 	private EditText text=null;
+	
+	private AlertDialog.Builder alert = null;
+	
 	public CustomPhoneDialog(Context context) {
 		super(context);
 		mctx=(PhoneStatus)context;
