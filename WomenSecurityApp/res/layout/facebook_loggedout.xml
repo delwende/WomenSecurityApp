@@ -29,6 +29,7 @@
                 android:textSize="28sp"
                 android:typeface="serif"
                 android:textStyle="italic"
+                android:paddingLeft="5dip"
                 android:text="@string/app_name" />
     </LinearLayout>
 
