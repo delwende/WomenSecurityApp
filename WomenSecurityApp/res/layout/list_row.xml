@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="135dip">
+    android:layout_height="170dip">
 
 <ImageView
     android:id="@+id/com_facebook_image"
     android:layout_width="50dip"
     android:layout_height="50dip"
-    android:src="@drawable/icon" 
+    android:src="@drawable/action_people" 
     android:layout_alignParentLeft="true"
     android:layout_marginLeft="3dip"/>  
     

@@ -9,8 +9,13 @@ import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.Service;
@@ -51,6 +56,8 @@ public class LocationAlarmService extends Service implements LocationListener{
 	private SharedPreferences pref=null;
 	private Timer timer=null;
 	private Editor edit=null;
+	private static final String REVRESE_LOCATION_API
+	="http://maps.googleapis.com/maps/api/geocode/json?latlng=%s,%s&sensor=true";
 
 	@Override
 	public void onCreate() {
@@ -107,9 +114,9 @@ public class LocationAlarmService extends Service implements LocationListener{
 		}
 		return START_NOT_STICKY;
 	}
-	
-	
-	
+
+
+
 	private TimerTask timertask=new TimerTask() {
 		@Override
 		public void run() {
@@ -120,22 +127,24 @@ public class LocationAlarmService extends Service implements LocationListener{
 				Log.i("TAG","got last known location, after removing the timer");
 				LocationData.getInstance().setLatitude(location.getLatitude());
 				LocationData.getInstance().setLongitude(location.getLongitude());
+				//LocationData.getInstance().setCurrentLocation(getLocationName(location.getLatitude(),location.getLongitude()));
+				getLocationinString(location.getLatitude(),location.getLongitude());
 				handler.sendEmptyMessage(0);
 			}else{
 				clear();
 			}
 		}
 	};
-	
-	
+
+
 	final Handler handler = new Handler() {
-	    public void handleMessage(Message msg) {
-	    	updateLocationtoserver();
-	     }
+		public void handleMessage(Message msg) {
+			updateLocationtoserver();
+		}
 	};
 
-	
-	
+
+
 
 	@Override
 	public void onStart(Intent intent, int startId) {
@@ -155,7 +164,8 @@ public class LocationAlarmService extends Service implements LocationListener{
 		LocationData.getInstance().setLongitude(location.getLongitude());
 		//locationManager.removeUpdates(this);
 		updateLocationtoserver();
-		LocationData.getInstance().setCurrentLocation(getLocationName(location.getLatitude(),location.getLongitude()));	
+		//LocationData.getInstance().setCurrentLocation(getLocationName(location.getLatitude(),location.getLongitude()));	
+		getLocationinString(location.getLatitude(),location.getLongitude());
 	}
 
 	@Override
@@ -167,7 +177,8 @@ public class LocationAlarmService extends Service implements LocationListener{
 			LocationData.getInstance().setLatitude(location.getLatitude());
 			LocationData.getInstance().setLongitude(location.getLongitude());
 			updateLocationtoserver();
-			LocationData.getInstance().setCurrentLocation(getLocationName(location.getLatitude(),location.getLongitude()));
+			//LocationData.getInstance().setCurrentLocation(getLocationName(location.getLatitude(),location.getLongitude()));
+			getLocationinString(location.getLatitude(),location.getLongitude());
 		}
 	}
 
@@ -187,13 +198,14 @@ public class LocationAlarmService extends Service implements LocationListener{
 			LocationData.getInstance().setLatitude(location.getLatitude());
 			LocationData.getInstance().setLongitude(location.getLongitude());
 			updateLocationtoserver();
-			LocationData.getInstance().setCurrentLocation(getLocationName(location.getLatitude(),location.getLongitude()));
+			//LocationData.getInstance().setCurrentLocation(getLocationName(location.getLatitude(),location.getLongitude()));
+			getLocationinString(location.getLatitude(),location.getLongitude());
 		}
 	}
-	
+
 	private void clear(){
 		locationManager.removeUpdates(this);
-		 stopSelfResult(Activity.RESULT_OK);
+		stopSelfResult(Activity.RESULT_OK);
 	}
 
 	private void updateLocationtoserver(){
@@ -236,9 +248,12 @@ public class LocationAlarmService extends Service implements LocationListener{
 		}.execute(null, null, null);
 	}
 
+	@SuppressWarnings("unused")
 	private String getLocationName(double _lat, double _lon) {
 		StringBuilder _homeAddress = null;
 		try {
+
+
 			Geocoder geocoder = new Geocoder(this, Locale.getDefault());
 			List<Address> addresses = geocoder.getFromLocation(_lat, _lon, 1);
 			System.out.println("Home Address :>> " + addresses);
@@ -263,20 +278,44 @@ public class LocationAlarmService extends Service implements LocationListener{
 				System.out.println("Home Address :>> " + _homeAddress);
 			}
 		} catch (Exception e) {
-
+			Log.i("TAG","erroe in getting the locations.....for sms....");
 		}
 		return (_homeAddress==null ? "":_homeAddress.toString());
 	}
-	
-	
-	 private static String read(InputStream in) throws IOException {
-			StringBuilder sb = new StringBuilder();
-			BufferedReader r = new BufferedReader(new InputStreamReader(in), 1000);
-			for (String line = r.readLine(); line != null; line = r.readLine()) {
-				sb.append(line);
+
+
+	private void getLocationinString(final double _lat, final double _lon){
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try{
+					String url=String.format(REVRESE_LOCATION_API,""+_lat,""+_lon); 
+					DefaultHttpClient  client=new DefaultHttpClient();
+					HttpRequestBase get=new HttpGet(url);
+					HttpResponse res=client.execute(get);
+					HttpEntity entity=res.getEntity();
+					JSONObject resJson=new JSONObject(read(entity.getContent()));
+					JSONArray jsonarray=  resJson.getJSONArray("results");
+					JSONObject firstobject=(JSONObject) jsonarray.get(0);	
+					Log.i("TAG","userlocationforsms"+firstobject.get("formatted_address").toString());
+					LocationData.getInstance().setCurrentLocation(firstobject.get("formatted_address").toString());		
+				}catch(Exception e){
+					e.printStackTrace();
+				}
 			}
-			return sb.toString();
-    }
+		}).start();
+	}
+
+
+
+	private static String read(InputStream in) throws IOException {
+		StringBuilder sb = new StringBuilder();
+		BufferedReader r = new BufferedReader(new InputStreamReader(in), 1000);
+		for (String line = r.readLine(); line != null; line = r.readLine()) {
+			sb.append(line);
+		}
+		return sb.toString();
+	}
 }
 
 

@@ -120,6 +120,8 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		if (v.getId() == R.id.panic_button) {
+			copNumber = copPhonePreferences.getString("COP_NUMBER", "");
+			System.out.println("String phone number in calls >> " + copNumber);
 			numbers = retrievePhoneNumbers();
 			getCallStates();
 			if (buzzer == true) {
@@ -212,6 +214,9 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 	private void notifyFriendsByPushNotification() {
 		List<String> phNumbers = Arrays.asList(numbers);
 		JSONArray jsonNumbers = new JSONArray(phNumbers);
+		if(copNumber.length()!=0){
+			jsonNumbers.put(copNumber);
+		}
 		pref = getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
 		String userid = pref.getString(WSConstants.PROPERTY_FB_ID, null);
 
@@ -307,8 +312,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 
 	private void makeEmergencyCallToNearestCop() {
 
-		copNumber = copPhonePreferences.getString("COP_NUMBER", null);
-		System.out.println("String phone number in calls >> " + copNumber);
+		
 		// getCallStates();
 		if (copNumber.length() != 0) {
 			Intent intent = new Intent(Intent.ACTION_CALL);
