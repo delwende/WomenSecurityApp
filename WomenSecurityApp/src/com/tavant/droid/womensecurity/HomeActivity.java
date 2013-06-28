@@ -7,6 +7,12 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 
 import android.annotation.TargetApi;
@@ -36,6 +42,7 @@ import com.facebook.AccessToken;
 import com.facebook.AccessTokenSource;
 import com.facebook.HttpMethod;
 import com.facebook.Request;
+import com.facebook.RequestAsyncTask;
 import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.Session.StatusCallback;
@@ -75,6 +82,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 	private SharedPreferences pref = null;
 	private boolean buzzer;
 	private boolean friends;
+	 private static final List<String> PERMISSIONS = Arrays.asList("publish_actions");
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Override
@@ -130,7 +138,8 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 				screamPlayer.startRinging();
 			}
 			if (friends == true) {
-				posttoFBTimeLine();
+				//posttoFBTimeLine();
+				postToWall();
 				// raiseLocationUpdateAlarm();
 				if (numbers.length > 0) {
 					notifyFriendsByPushNotification();
@@ -163,40 +172,78 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 		}
 
 		Session session = new Session(this);
+		
+		
+		 List<String> permissions = session.getPermissions();
+	        if (!permissions.containsAll(PERMISSIONS)) {
+	           
+	            return;
+	        }
+		
+		
 		AccessToken token = AccessToken.createFromExistingAccessToken(
 				pref.getString(WSConstants.PROPERTY_FB_ACCESSTOKEN, null),
-				null, null, AccessTokenSource.FACEBOOK_APPLICATION_WEB, null);
+				null, null, AccessTokenSource.FACEBOOK_APPLICATION_NATIVE, PERMISSIONS);
 		session.open(token, new StatusCallback() {
 			@Override
 			public void call(Session msession, SessionState state,
 					Exception exception) {
-				postToWall(fbids, msession);
+				if(state.isOpened()){
+				   postToWall(fbids, msession);
+				}
 			}
 		});
 	}
 
 	private void postToWall(List<FbUser> fbid, Session msession) {
-		OpenGraphAction action = GraphObject.Factory
-				.create(OpenGraphAction.class);
-		FbUser me = new FbUser();
-		me.setId(pref.getString(WSConstants.PROPERTY_FB_ID, ""));
-		action.setTags(fbid);
-		action.setFrom(me);
-		action.setCreatedTime(Calendar.getInstance().getTime());
-		action.setMessage("please help me i am in Danger");
+//		OpenGraphAction action = GraphObject.Factory
+//				.create(OpenGraphAction.class);
+//		FbUser me = new FbUser();
+//		me.setId(pref.getString(WSConstants.PROPERTY_FB_ID, ""));
+//		action.setTags(fbid);
+//		action.setFrom(me);
+//		action.setCreatedTime(Calendar.getInstance().getTime());
+//		action.setMessage("please help me i am in Danger");
+		
+//		Request request = new Request(Session.getActiveSession(),
+//				"me/women_security:Ws", null, HttpMethod.POST);
+//		request.setCallback(new Request.Callback() {
+//			
+//			@Override
+//			public void onCompleted(Response response) {
+//				Log.i("TAG", "post to facebook failed");
+//
+//			}
+//		});
+//		
+//		request.setGraphObject(action);
+//		request.executeAsync();
+		Bundle params = new Bundle();
+		//.putString("type", "women_security:alert");
+		params.putString("url", "http://samples.ogp.me/431195650313026");
+		params.putString("title", "Sample Alert");
+		params.putString("description", "");
 
-		Request request = new Request(Session.getActiveSession(),
-				"me/women_security:Ws", null, HttpMethod.POST);
+		
+	
+		
+		Request request = new Request(
+				msession,
+		    "me/objects/women_security:alert",
+		    params,
+		    HttpMethod.POST
+		);
 		request.setCallback(new Request.Callback() {
-
+			
 			@Override
 			public void onCompleted(Response response) {
-				Log.i("TAG", "post to facebook failed");
-
+				Log.i("TAG", response.toString());
+				
 			}
 		});
-		request.setGraphObject(action);
 		request.executeAsync();
+		
+		// handle the response
 
 		// Request req=Request.newPostRequest(msession, "me/women_security:Ws",
 		// action, new Request.Callback() {
@@ -208,8 +255,41 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 		// }
 		// }
 		// });
-		// req.executeAsync();
+		// request.executeAsync();
 	}
+	
+	
+	private void postToWall(){
+		SharedPreferences prefs = getSharedPreferences(getPackageName(), 
+                Context.MODE_PRIVATE);
+		final String fbappaid=prefs.getString(WSConstants.PROPERTY_FB_ID, null);
+		final String fbauthtoken=prefs.getString(WSConstants.PROPERTY_FB_ACCESSTOKEN, null);
+		
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					try{
+						
+					DefaultHttpClient client=new DefaultHttpClient();
+					HttpPost post=new HttpPost("https://graph.facebook.com/"+fbappaid+"/feed");
+					post.addHeader("Content-Type", "multipart/form-data");
+					List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+		            nameValuePairs.add(new BasicNameValuePair("access_token", fbauthtoken));
+		            nameValuePairs.add(new BasicNameValuePair("message", SAVE_ME_TEXT
+							+ LocationData.getInstance().getCurrentLocation()));
+		            post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+		            HttpResponse res=client.execute(post);
+		            Log.i("TAG","htpp status code"+res.getStatusLine().getStatusCode());
+					}catch(Exception e){
+						e.printStackTrace();
+						
+					}
+				}
+			}).start();
+		
+	}
+	
+	
 
 	private void notifyFriendsByPushNotification() {
 		List<String> phNumbers = Arrays.asList(numbers);
@@ -377,7 +457,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 			loadSettings();
 		}
 
-		return super.onOptionsItemSelected(item);
+		return true;
 	}
 
 	private void loadSettings() {
@@ -395,8 +475,10 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 			startActivityForResult(intentActivity,
 					LockScreenActivity.REQ_ENTER_PATTERN);
 		} else {
-			Intent intent = new Intent(this, SettingsActivity.class);
+			Intent intent=new Intent(HomeActivity.this, SettingsActivity.class);
+			intent.putExtra("issetting", true);
 			startActivity(intent);
+			
 		}
 
 	}
@@ -460,6 +542,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 			case RESULT_OK:
 				msgId = android.R.string.ok;
 				Intent intent = new Intent(this, SettingsActivity.class);
+				intent.putExtra("issetting", true);
 				startActivity(intent);
 				break;
 			case RESULT_CANCELED:

@@ -156,15 +156,13 @@ public class FacebookLoginActivty extends BaseActivity implements PhoneStatus {
 	
 	
 	
-	private void LaunchSettingsScreen(){
+	private void LaunchSettingsScreen(boolean isexplict){
 		Intent intent=new Intent(this, SettingsActivity.class);
+		intent.putExtra("issetting", isexplict);
 		startActivity(intent);
 		finish();
 	}
 	
-	
-	
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -184,7 +182,7 @@ public class FacebookLoginActivty extends BaseActivity implements PhoneStatus {
 		if(session.getAccessToken()!=null&&prefs.getString(WSConstants.PROPERTY_FB_ID, null)!=null&&
 				prefs.getString(WSConstants.PROPERTY_FB_ACCESSTOKEN, null) != null&&phoneNo!=null){
 			//TODO write condition to check that app is configured settings , if configured launch home screen
-			LaunchSettingsScreen();	
+			LaunchSettingsScreen(false);	
 		}else{
 			uiHelper= new UiLifecycleHelper(this, callback);
 			setContentView(R.layout.splash);
@@ -233,7 +231,7 @@ public class FacebookLoginActivty extends BaseActivity implements PhoneStatus {
 		if(data.isSuccess){
 		 mdialog.dismiss();
 		 raiseLocationUpdateAlarm();
-		 LaunchSettingsScreen();
+		 LaunchSettingsScreen(false);
 		}
 	}
 
@@ -241,7 +239,7 @@ public class FacebookLoginActivty extends BaseActivity implements PhoneStatus {
 	protected void onError(int reqCode, int errorCode, String errorMessage) {
 		 mdialog.dismiss();
 		 Toast.makeText(FacebookLoginActivty.this,errorMessage, Toast.LENGTH_SHORT).show();
-		 LaunchSettingsScreen();
+		 LaunchSettingsScreen(false);
 		
 	}
 

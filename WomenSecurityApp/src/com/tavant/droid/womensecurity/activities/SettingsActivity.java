@@ -33,6 +33,8 @@ public class SettingsActivity extends PreferenceActivity{
     private ContentResolver resolver;
     private Cursor fbCursor=null;
     private Cursor friendCursor=null;
+    
+    private boolean issettings=false;
 	
 	
 	
@@ -42,7 +44,8 @@ public class SettingsActivity extends PreferenceActivity{
 		resolver=getContentResolver();
 		fbCursor =resolver.query(ContentDescriptor.WSFacebook.CONTENT_URI, null, null, null, null);
 		friendCursor=resolver.query(ContentDescriptor.WSContact.CONTENT_URI, null, null, null, null);
-		if(fbCursor!=null&&fbCursor.getCount()>0&&friendCursor!=null&&friendCursor.getCount()>0){
+		issettings=getIntent().getBooleanExtra("issetting", false);
+		if(fbCursor!=null&&fbCursor.getCount()>0&&friendCursor!=null&&friendCursor.getCount()>0&&!issettings){
 			fbCursor.close();
 			friendCursor.close();
 		    startActivity(new Intent(this, HomeActivity.class));	
