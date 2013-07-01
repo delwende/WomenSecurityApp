@@ -39,7 +39,17 @@ import android.util.Log;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-
+/**
+ * Skeleton for application-specific {@link IntentService}s responsible for
+ * handling communication from Google Cloud Messaging service.
+ * <p>
+ * The abstract methods in this class are called from its worker thread, and
+ * hence should run in a limited amount of time. If they execute long
+ * operations, they should spawn new threads, otherwise the worker thread will
+ * be blocked.
+ * <p>
+ * Subclasses must provide a public no-arg constructor.
+ */
 public abstract class GCMBaseIntentService extends IntentService {
 
     public static final String TAG = "GCMBaseIntentService";
