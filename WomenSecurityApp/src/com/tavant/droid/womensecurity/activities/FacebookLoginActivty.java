@@ -1,5 +1,7 @@
 package com.tavant.droid.womensecurity.activities;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.regex.Pattern;
 
 import org.apache.http.client.methods.HttpRequestBase;
@@ -28,6 +30,8 @@ import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
+import com.facebook.chat.XMPPManager;
+import com.facebook.chat.XMPPManager.XMPPChatListener;
 import com.facebook.model.GraphUser;
 import com.google.android.gcm.GCMRegistrar;
 import com.tavant.droid.womensecurity.BaseActivity;
@@ -35,7 +39,6 @@ import com.tavant.droid.womensecurity.R;
 import com.tavant.droid.womensecurity.data.BaseData;
 import com.tavant.droid.womensecurity.http.HttpRequestCreater;
 import com.tavant.droid.womensecurity.service.LocationAlarmService;
-import com.tavant.droid.womensecurity.utils.CustomPhoneDialog;
 import com.tavant.droid.womensecurity.utils.PhoneStatus;
 import com.tavant.droid.womensecurity.utils.WSConstants;
 
@@ -260,6 +263,51 @@ public class FacebookLoginActivty extends BaseActivity implements PhoneStatus {
 		alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
 				firstTime, 3*60* 1000, pendingIntent);
 	}
+	
+	
+	
+	
+	private void setupXMPPLogin() {
+		// TODO Auto-generated method stub
+		String fbtocken = "";
+		if(fbtocken!=null){
+			String decodedTocken = null;
+			try {
+				decodedTocken = URLDecoder.decode(fbtocken, "utf-8");
+				XMPPManager.getInstance().init(decodedTocken, null);
+				XMPPManager.getInstance().setXMPPChatListener(this, mChatListener);
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	
+	XMPPChatListener mChatListener = new XMPPChatListener() {
+
+		@Override
+		public void receivedChatMessage(String receiverid, String message,
+				boolean isNew) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void sendChatMessage(String senderId, String message) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void showChatNotification(String receiverid, String mess) {
+			
+			
+		}
+
+	
+	};
+	
+	
 }
 
 
