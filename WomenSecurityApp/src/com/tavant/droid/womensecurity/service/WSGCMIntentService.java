@@ -35,7 +35,7 @@ public class WSGCMIntentService extends GCMBaseIntentService {
 		}
 		Resources res=  context.getResources();
 		int icon= res.getIdentifier("ic_launcher", "drawable", context.getPackageName());
-		CharSequence tickerText = " Received A Message from Winfield";
+		CharSequence tickerText = " An Alert received from your friend. He need your Help";
 		long when = System.currentTimeMillis();
 		CharSequence contentTitle = "Alert"; // expanded message title
 		CharSequence contentText = message; // expanded

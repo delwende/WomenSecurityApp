@@ -101,7 +101,7 @@ public class FacebookLoginActivty extends BaseActivity implements PhoneStatus {
 	                	mdialog.dismiss();
 	                	//CustomPhoneDialog phoneDialog=new CustomPhoneDialog(FacebookLoginActivty.this);
 	                	//phoneDialog.show();
-	                	
+	                	setupXMPPLogin(session.getAccessToken());
 	           		    alert.setMessage("Please Enter Your Mobile No");
 	           		    alert.setView(text);
 	           		    alert.setPositiveButton("Register", new DialogInterface.OnClickListener() {
@@ -177,6 +177,7 @@ public class FacebookLoginActivty extends BaseActivity implements PhoneStatus {
                 Context.MODE_PRIVATE);
 		edit=prefs.edit();
 		Session session=new Session(FacebookLoginActivty.this);
+		
 		phoneManager = (TelephonyManager) getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
 		
 		String phoneNo=prefs.getString(WSConstants.PROPERTY_PHONE_NO, null);
@@ -267,14 +268,14 @@ public class FacebookLoginActivty extends BaseActivity implements PhoneStatus {
 	
 	
 	
-	private void setupXMPPLogin() {
+	private void setupXMPPLogin(String accesstoken) {
 		// TODO Auto-generated method stub
-		String fbtocken = "";
+		String fbtocken = accesstoken;
 		if(fbtocken!=null){
 			String decodedTocken = null;
 			try {
 				decodedTocken = URLDecoder.decode(fbtocken, "utf-8");
-				XMPPManager.getInstance().init(decodedTocken, null);
+				XMPPManager.getInstance().init(decodedTocken);
 				XMPPManager.getInstance().setXMPPChatListener(this, mChatListener);
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
@@ -288,7 +289,7 @@ public class FacebookLoginActivty extends BaseActivity implements PhoneStatus {
 		@Override
 		public void receivedChatMessage(String receiverid, String message,
 				boolean isNew) {
-			// TODO Auto-generated method stub
+			Log.i("TAG","receiving messgae");
 			
 		}
 
