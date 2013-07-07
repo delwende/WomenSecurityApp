@@ -37,7 +37,7 @@ public class XMPPManager implements ConnectionListener, ChatManagerListener,
 
 	// private static final String SECRET = "c4b361ecd33cd400b180b26d8629ba79";
 
-	private String url = "https://graph.facebook.com/oauth/access_token?display=touch&scope=publish_stream,read_stream,offline_access,xmpp_login&client_id={0}&type=user_agent&redirect_uri=fbconnect://success&client_secret={1}&code={2}";
+	//private String url = "https://graph.facebook.com/oauth/access_token?display=touch&scope=publish_stream,read_stream,offline_access,xmpp_login&client_id={0}&type=user_agent&redirect_uri=fbconnect://success&client_secret={1}&code={2}";
 
 	private static XMPPManager mInstance;
 
@@ -77,15 +77,20 @@ public class XMPPManager implements ConnectionListener, ChatManagerListener,
 		// String connecitonId = mXmppConnection.getConnectionID();
 		// if (connecitonId == null) {
 
-		mXmppConnection.login("" + "|" + "", scre, "Application", tocken);
+		//mXmppConnection.login("" + "|" + "", scre, "Application", tocken);
+	//	mXmppConnection.login(tocken + "|" + scre, "Application");
 		// Log.d("FacebookLogin", "connecitonId : "+connecitonId);
 		// mFacebookWorker.setXMPPConnectionId(connecitonId);
 		// }
+		
+		//mXmppConnection.login("417172928381965",tocken,"Application");
+		mXmppConnection.login("" + "|" + "", scre, "Application", tocken);
 		mXmppConnection.addConnectionListener(this);
 		mXmppConnection.getChatManager().addChatListener(this);
 
 		mXmppConnection.getRoster().addRosterListener(mRosterListener);
 		Log.d(TAG, "XMPP Login Success");
+
 		try {
 			for(String fbid:fbids){
 				String participantid=String.format("-%s@chat.facebook.com", fbid);
@@ -99,11 +104,20 @@ public class XMPPManager implements ConnectionListener, ChatManagerListener,
 			e.printStackTrace();
 		}
 
+//		try {
+//			sendMess("693812650@chat.facebook.com","please help me");
+//		} catch (XMPPConnetionException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+
+
 	}
 
 	public void setXMPPChatListener(Context context, XMPPChatListener listener) {
 		this.mChatListener = listener;
 	}
+
 
 	public void init(final String tocken,final List<String>fbids,final String msg) {
 		if (isConnected()) {
@@ -115,7 +129,9 @@ public class XMPPManager implements ConnectionListener, ChatManagerListener,
 			@Override
 			protected Void doInBackground(Void... params) {
 				try {
-					CallXMPPLogin(tocken, "73b49f2c017177bddd5d2924c7c39415",fbids,msg);
+
+				CallXMPPLogin(tocken, "73b49f2c017177bddd5d2924c7c39415",fbids,msg);
+
 					return null;
 				} catch (Exception e) {
 					e.printStackTrace();

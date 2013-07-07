@@ -178,6 +178,7 @@ public class FacebookLoginActivty extends BaseActivity implements PhoneStatus {
                 Context.MODE_PRIVATE);
 		edit=prefs.edit();
 		Session session=new Session(FacebookLoginActivty.this);
+		
 		phoneManager = (TelephonyManager) getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
 		
 		String phoneNo=prefs.getString(WSConstants.PROPERTY_PHONE_NO, null);
@@ -263,13 +264,7 @@ public class FacebookLoginActivty extends BaseActivity implements PhoneStatus {
 		long firstTime = SystemClock.elapsedRealtime();
 		alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
 				firstTime, 3*60* 1000, pendingIntent);
-	}
-	
-	
-	
-	
-	
-	
+	}	
 	
 }
 
