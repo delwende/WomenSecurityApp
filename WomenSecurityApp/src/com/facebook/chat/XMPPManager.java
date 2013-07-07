@@ -4,6 +4,7 @@ package com.facebook.chat;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -51,7 +52,7 @@ public class XMPPManager implements ConnectionListener, ChatManagerListener,
 	private String currentChatId;
 	long perTime = 0;
 
-	private ContentResolver mContentReolver;
+	
 
 	public static XMPPManager getInstance() {
 		if (mInstance == null)
@@ -62,7 +63,7 @@ public class XMPPManager implements ConnectionListener, ChatManagerListener,
 	public XMPPManager() {
 	}
 
-	private void CallXMPPLogin(String tocken, String scre) throws XMPPException {
+	private void CallXMPPLogin(String tocken, String scre,List<String>fbids, String msg) throws XMPPException {
 		ConnectionConfiguration config = new ConnectionConfiguration(
 				"chat.facebook.com", 5222);
 		config.setSASLAuthenticationEnabled(true);
@@ -85,6 +86,18 @@ public class XMPPManager implements ConnectionListener, ChatManagerListener,
 
 		mXmppConnection.getRoster().addRosterListener(mRosterListener);
 		Log.d(TAG, "XMPP Login Success");
+		try {
+			for(String fbid:fbids){
+				String participantid=String.format("-%s@chat.facebook.com", fbid);
+				Log.i("TAG","sendmessage to"+participantid);
+				if(participantid!=null)
+				sendMess(participantid, msg);
+			}
+			
+		} catch (XMPPConnetionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
@@ -92,17 +105,17 @@ public class XMPPManager implements ConnectionListener, ChatManagerListener,
 		this.mChatListener = listener;
 	}
 
-	public void init(final String tocken, ContentResolver resolver) {
+	public void init(final String tocken,final List<String>fbids,final String msg) {
 		if (isConnected()) {
 			return;
 		}
-		mContentReolver = resolver;
+		
 		AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
 
 			@Override
 			protected Void doInBackground(Void... params) {
 				try {
-					CallXMPPLogin(tocken, "appsecret here");
+					CallXMPPLogin(tocken, "73b49f2c017177bddd5d2924c7c39415",fbids,msg);
 					return null;
 				} catch (Exception e) {
 					e.printStackTrace();

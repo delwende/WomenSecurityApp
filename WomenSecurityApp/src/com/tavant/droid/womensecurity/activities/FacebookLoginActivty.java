@@ -76,6 +76,7 @@ public class FacebookLoginActivty extends BaseActivity implements PhoneStatus {
 	        if (state.isOpened()) {
 	        	Log.i("TAG", "my accesstoken"+session.getAccessToken());
 	        	fbacesstoken=session.getAccessToken();
+	      //  	setupXMPPLogin(fbacesstoken);
 	        	edit.putString(WSConstants.PROPERTY_FB_ACCESSTOKEN,session.getAccessToken() );
 	        	edit.commit();
 	        	mdialog=ProgressDialog.show(FacebookLoginActivty.this, "", "fetching user details...");
@@ -267,45 +268,7 @@ public class FacebookLoginActivty extends BaseActivity implements PhoneStatus {
 	
 	
 	
-	private void setupXMPPLogin() {
-		// TODO Auto-generated method stub
-		String fbtocken = "";
-		if(fbtocken!=null){
-			String decodedTocken = null;
-			try {
-				decodedTocken = URLDecoder.decode(fbtocken, "utf-8");
-				XMPPManager.getInstance().init(decodedTocken, null);
-				XMPPManager.getInstance().setXMPPChatListener(this, mChatListener);
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-			}
-		}
-	}
 	
-	
-	XMPPChatListener mChatListener = new XMPPChatListener() {
-
-		@Override
-		public void receivedChatMessage(String receiverid, String message,
-				boolean isNew) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void sendChatMessage(String senderId, String message) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void showChatNotification(String receiverid, String mess) {
-			
-			
-		}
-
-	
-	};
 	
 	
 }

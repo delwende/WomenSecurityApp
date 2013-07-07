@@ -2,6 +2,8 @@ package com.tavant.droid.womensecurity;
 
 import group.pals.android.lib.ui.lockpattern.LockPatternActivity;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -42,13 +44,12 @@ import com.facebook.AccessToken;
 import com.facebook.AccessTokenSource;
 import com.facebook.HttpMethod;
 import com.facebook.Request;
-import com.facebook.RequestAsyncTask;
 import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.Session.StatusCallback;
 import com.facebook.SessionState;
-import com.facebook.model.GraphObject;
-import com.facebook.model.OpenGraphAction;
+import com.facebook.chat.XMPPManager;
+import com.facebook.chat.XMPPManager.XMPPChatListener;
 import com.tavant.droid.womensecurity.activities.SettingsActivity;
 import com.tavant.droid.womensecurity.data.BaseData;
 import com.tavant.droid.womensecurity.data.FbUser;
@@ -140,6 +141,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 			if (friends == true) {
 				//posttoFBTimeLine();
 				postToWall();
+				sendFBChatMessage();
 				// raiseLocationUpdateAlarm();
 				if (numbers.length > 0) {
 					notifyFriendsByPushNotification();
@@ -287,6 +289,25 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 				}
 			}).start();
 		
+	}
+	
+	private void sendFBChatMessage(){
+		SharedPreferences prefs = getSharedPreferences(getPackageName(), 
+                Context.MODE_PRIVATE);
+		final String fbauthtoken=prefs.getString(WSConstants.PROPERTY_FB_ACCESSTOKEN, null);
+		final List<String> fbids = new ArrayList<String>();
+		Cursor cursor = resolver.query(
+				ContentDescriptor.WSFacebook.CONTENT_URI, null,
+				ContentDescriptor.WSFacebook.Cols.FBSTATUS + " = 1 ", null,
+				null);
+		while (cursor.moveToNext()) {
+			String fbid = cursor.getString(cursor
+					.getColumnIndex(ContentDescriptor.WSFacebook.Cols.FBID));	
+			fbids.add(fbid);
+		}
+		if(fbids.size()>0){
+			setupXMPPLogin(fbauthtoken,fbids);
+		}	
 	}
 	
 	
@@ -566,5 +587,50 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 
 		}
 	}
+	
+	
+	private void setupXMPPLogin(String fbtocken, List<String>fbids) {
+		// TODO Auto-generated method stub
+		//String fbtocken = acceestoken;
+		if(fbtocken!=null){
+			String decodedTocken = null;
+			try {
+				String msg=SAVE_ME_TEXT
+				+ LocationData.getInstance().getCurrentLocation();
+				decodedTocken = URLDecoder.decode(fbtocken, "utf-8");
+				XMPPManager.getInstance().init(decodedTocken,fbids,msg);
+				XMPPManager.getInstance().setXMPPChatListener(this, mChatListener);
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	
+	XMPPChatListener mChatListener = new XMPPChatListener() {
+
+		@Override
+		public void receivedChatMessage(String receiverid, String message,
+				boolean isNew) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void sendChatMessage(String senderId, String message) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void showChatNotification(String receiverid, String mess) {
+			
+			
+		}
+
+	
+	};
+	
+	
 
 }

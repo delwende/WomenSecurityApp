@@ -116,7 +116,6 @@ public class SASLXFacebookPlatformMechanism extends SASLMechanism {
 		byte[] response = null;
 		if (challenge != null) {
 			String decodedChallenge = new String(Base64.decode(challenge));
-			Log.i("VIVOX",""+decodedChallenge);
 			Map<String, String> parameters = getQueryMap(decodedChallenge);
 
 			String version =parameters.get("version");
@@ -132,7 +131,7 @@ public class SASLXFacebookPlatformMechanism extends SASLMechanism {
 			                "&callId="+URLEncoder.encode(""+callId,"utf-8")+
 			                "&v=" + URLEncoder.encode(version, "utf-8");
 			     
-			Log.i("VIVOX", "Response============"+demoText);
+			
 			
 			response=demoText.getBytes("utf-8");
 
@@ -145,7 +144,7 @@ public class SASLXFacebookPlatformMechanism extends SASLMechanism {
 			authenticationText = Base64.encodeBytes(response,
 					Base64.DONT_BREAK_LINES);
 		}
-		Log.i("VIVOX","authenticationtext:::  "+authenticationText);
+	
 
 		// Send the authentication to the server
 		getSASLAuthentication().send(new Response(authenticationText));
