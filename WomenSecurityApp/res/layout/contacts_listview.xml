@@ -5,7 +5,7 @@
 
     <fragment
         android:id="@+id/contact_list"
-        android:name="com.tavant.droid.womensecurity.fragments.ContactsListFragment"
+        android:name="com.glaesis.droid.security.fragments.ContactsListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

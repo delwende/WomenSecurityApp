@@ -2,4 +2,7 @@
 /gen
 .DS_Store
 project.properties
+.classpath
+.settings/org.eclipse.jdt.core.prefs
+.settings/org.eclipse.core.resources.prefs
 
