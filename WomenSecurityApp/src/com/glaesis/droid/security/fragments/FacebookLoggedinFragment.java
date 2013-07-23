@@ -2,14 +2,15 @@ package com.glaesis.droid.security.fragments;
 
 import java.util.Arrays;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tavant.droid.womensecurity.R;
+import com.glaesis.droid.security.R;
+
+
 
 
 

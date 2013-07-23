@@ -16,7 +16,7 @@
 
 package com.glaesis.droid.security.utils;
 
-import com.tavant.droid.womensecurity.BuildConfig;
+
 
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
@@ -25,6 +25,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.util.LruCache;
 import android.util.Log;
+
+import com.glaesis.droid.security.BuildConfig;
 
 /**
  * This class holds our bitmap caches (memory and disk).

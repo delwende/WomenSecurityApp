@@ -1,5 +1,5 @@
 package com.glaesis.droid.security.widget;
-import com.tavant.droid.womensecurity.R;
+
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -8,6 +8,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
+
+import com.glaesis.droid.security.R;
 
 /**
  * 

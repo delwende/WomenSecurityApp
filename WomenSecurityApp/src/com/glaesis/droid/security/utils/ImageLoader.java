@@ -16,6 +16,9 @@
 
 package com.glaesis.droid.security.utils;
 
+import java.io.FileDescriptor;
+import java.lang.ref.WeakReference;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
@@ -30,11 +33,9 @@ import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.widget.ImageView;
 
+import com.glaesis.droid.security.BuildConfig;
 
-import java.io.FileDescriptor;
-import java.lang.ref.WeakReference;
 
-import com.tavant.droid.womensecurity.BuildConfig;
 
 /**
  * This class wraps up completing some arbitrary long running work when loading a bitmap to an

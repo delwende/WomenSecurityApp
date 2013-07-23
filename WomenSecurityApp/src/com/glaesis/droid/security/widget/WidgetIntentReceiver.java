@@ -2,11 +2,6 @@ package com.glaesis.droid.security.widget;
 
 import java.util.ArrayList;
 
-import com.glaesis.droid.security.HomeActivity;
-import com.glaesis.droid.security.database.ContentDescriptor;
-import com.glaesis.droid.security.sound.ScreamPlayer;
-import com.tavant.droid.womensecurity.R;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +9,9 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.widget.RemoteViews;
+
+import com.glaesis.droid.security.R;
+import com.glaesis.droid.security.database.ContentDescriptor;
 
 /**
  * Author Tavant

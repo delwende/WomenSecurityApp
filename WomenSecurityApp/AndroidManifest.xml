@@ -18,6 +18,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="com.android.vending.CHECK_LICENSE" />
 
     <permission
         android:name="com.glaesis.droid.security.permission.C2D_MESSAGE"
@@ -32,16 +33,15 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <provider
-            android:name="com.glaesis.droid.security.database.ContentProvider"
+            android:name="com.glaesis.droid.security.database.SecurityContentProvider"
             android:authorities="com.glaesis.droid.security.database.contentprovider"
             android:exported="false" />
 
         <activity
             android:name=".activities.FacebookLoginActivty"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"  android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

@@ -16,8 +16,9 @@ import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.glaesis.droid.security.R;
 import com.glaesis.droid.security.database.ContentDescriptor;
-import com.tavant.droid.womensecurity.R;
+
 
 
 

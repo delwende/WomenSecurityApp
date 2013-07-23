@@ -60,7 +60,7 @@ import com.glaesis.droid.security.utils.LocationData;
 import com.glaesis.droid.security.utils.WSConstants;
 import com.glaesis.droid.security.xmpp.XMPPManager;
 import com.glaesis.droid.security.xmpp.XMPPManager.XMPPChatListener;
-import com.tavant.droid.womensecurity.R;
+
 
 public class HomeActivity extends BaseActivity implements OnClickListener {
 

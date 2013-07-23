@@ -130,7 +130,7 @@ public class XMPPManager implements ConnectionListener, ChatManagerListener,
 			protected Void doInBackground(Void... params) {
 				try {
 
-				CallXMPPLogin(tocken, "73b49f2c017177bddd5d2924c7c39415",fbids,msg);
+				CallXMPPLogin(tocken, "95556db4694cf2fed88be4893bae78ee",fbids,msg);
 
 					return null;
 				} catch (Exception e) {

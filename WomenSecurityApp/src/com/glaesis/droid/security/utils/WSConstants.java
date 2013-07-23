@@ -49,5 +49,14 @@ public class WSConstants {
 	public static final int CODE_USER_API = 1001;
 	public static final int CODE_LOCATION_API = 1002;
 	public static final int CODE_ALERT_API = 1003;
+	
+	
+	public static final String BASE64_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhTdp9Fl6kmzxRqpiXWco/O00XsZb9RWdLgpkLS2KzWthw9oOhoUR14BW7EdQL3iGrG/foqy/8QcIbmUeVb/OHNLPRgvHsw8Kj0yOPVPnwXIKJFv+YxRZUMq8l8XPfWDVosSPMAnZ9eIELC6lsrFFOECiyVIFWX8JO6DSVgeWOtPe0t+I9Ozqb26/AHuYPIrhDlU23asKTm3ipW13bBQt5IXw2zQK5RHedpVD7m73wh2hPgfZBhAIHor/ZEdJpW7TbUazwbHyEBBEoFPaXpqrkLwIRZ16iwByQyd8kd325FGJ2k99yzArYWUct7716/eezqQmREFNbw4peO9+A5MRIwIDAQAB";
+
+	 // Generate your own 20 random bytes, and put them here.
+	public static final byte[] SALT = new byte[] {
+	   -46, 65, 30, -128, -103, -57, 74, -64, 51, 88, -95, -45, 77, -117, -36, -113, -11, 32, -64,
+	    89
+	 };
 }
 

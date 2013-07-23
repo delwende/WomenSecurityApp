@@ -5,7 +5,9 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 
-import com.tavant.droid.womensecurity.R;
+import com.glaesis.droid.security.R;
+
+
 
 
 /**

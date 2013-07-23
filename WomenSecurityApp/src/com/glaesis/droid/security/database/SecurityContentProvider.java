@@ -15,7 +15,7 @@ import android.net.Uri;
  * @author rakesh
  *
  */
-public class ContentProvider extends ContentProvider {
+public class SecurityContentProvider extends ContentProvider {
 	private ContactsDatabase wsContactsDb;
 
 	@Override

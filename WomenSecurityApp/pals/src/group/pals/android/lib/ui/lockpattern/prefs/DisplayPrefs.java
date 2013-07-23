@@ -18,7 +18,9 @@ package group.pals.android.lib.ui.lockpattern.prefs;
 
 import android.content.Context;
 
-import com.tavant.droid.womensecurity.R;
+import com.glaesis.droid.security.R;
+
+
 
 /**
  * Display Preferences.

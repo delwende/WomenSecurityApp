@@ -72,6 +72,6 @@ public class GCMBroadcastReceiver extends BroadcastReceiver {
 //                DEFAULT_INTENT_SERVICE_CLASS_NAME;
 //        return className;
         
-        return "com.tavant.droid.womensecurity.service.WSGCMIntentService";
+        return "com.glaesis.droid.security.service.GSGCMIntentService";
     }
 }

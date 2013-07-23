@@ -25,10 +25,11 @@ import com.facebook.Session;
 import com.facebook.Session.StatusCallback;
 import com.facebook.SessionState;
 import com.facebook.model.GraphUser;
+import com.glaesis.droid.security.R;
 import com.glaesis.droid.security.adapters.FbFriendsAdapter;
 import com.glaesis.droid.security.database.ContentDescriptor;
 import com.glaesis.droid.security.utils.WSConstants;
-import com.tavant.droid.womensecurity.R;
+
 
 
 public class FBFriendListActivity extends Activity

@@ -60,10 +60,11 @@ import android.widget.SearchView;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
 
+import com.glaesis.droid.security.BuildConfig;
+import com.glaesis.droid.security.R;
 import com.glaesis.droid.security.utils.ImageLoader;
 import com.glaesis.droid.security.utils.Utils;
-import com.tavant.droid.womensecurity.BuildConfig;
-import com.tavant.droid.womensecurity.R;
+
 
 /**
  * This fragment displays a list of contacts stored in the Contacts Provider.

@@ -17,9 +17,10 @@ import android.preference.PreferenceActivity;
 import android.util.Log;
 
 import com.glaesis.droid.security.HomeActivity;
+import com.glaesis.droid.security.R;
 import com.glaesis.droid.security.database.ContentDescriptor;
 import com.glaesis.droid.security.lock.LPEncrypter;
-import com.tavant.droid.womensecurity.R;
+
 
 public class SettingsActivity extends PreferenceActivity{
 	Preference facebookPref=null;

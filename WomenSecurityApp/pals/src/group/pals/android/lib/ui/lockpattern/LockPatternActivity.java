@@ -44,8 +44,10 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.tavant.droid.womensecurity.BuildConfig;
-import com.tavant.droid.womensecurity.R;
+import com.glaesis.droid.security.BuildConfig;
+import com.glaesis.droid.security.R;
+
+
 
 /**
  * Main activity for this library.

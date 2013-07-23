@@ -8,7 +8,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.tavant.droid.womensecurity.R;
+import com.glaesis.droid.security.R;
+
+
 
 public class CustomPhoneDialog extends Dialog implements android.view.View.OnClickListener {
 

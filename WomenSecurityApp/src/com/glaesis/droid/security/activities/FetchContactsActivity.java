@@ -17,12 +17,13 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.glaesis.droid.security.BuildConfig;
+import com.glaesis.droid.security.R;
 import com.glaesis.droid.security.database.ContentDescriptor;
 import com.glaesis.droid.security.fragments.ContactsListFragment;
 import com.glaesis.droid.security.utils.PhoneUtils;
 import com.glaesis.droid.security.utils.Utils;
-import com.tavant.droid.womensecurity.BuildConfig;
-import com.tavant.droid.womensecurity.R;
+
 
 public class FetchContactsActivity extends FragmentActivity implements
 		ContactsListFragment.OnContactsInteractionListener, OnClickListener {

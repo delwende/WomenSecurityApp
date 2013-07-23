@@ -40,7 +40,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 
-import com.tavant.droid.womensecurity.R;
+import com.glaesis.droid.security.R;
 
 /**
  * Displays and detects the user's unlock attempt, which is a drag of a finger
