@@ -22,7 +22,7 @@ import android.content.res.Resources;
 import android.util.TypedValue;
 import android.view.Window;
 
-import com.glaesis.droid.security.R;
+import com.tavant.droid.security.R;
 
 /**
  * UI utilities.

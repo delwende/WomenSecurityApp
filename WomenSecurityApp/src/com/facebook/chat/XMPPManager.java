@@ -20,10 +20,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.packet.Presence.Type;
 
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -33,7 +30,7 @@ public class XMPPManager implements ConnectionListener, ChatManagerListener,
 
 	// public static final String FACEBOOK_APP_KEY = "136375599784483";
 
-	private static final String TAG = "FacebookLogin";
+	private static final String TAG = "TAG";
 
 	// private static final String SECRET = "c4b361ecd33cd400b180b26d8629ba79";
 
@@ -94,7 +91,7 @@ public class XMPPManager implements ConnectionListener, ChatManagerListener,
 		try {
 			for(String fbid:fbids){
 				String participantid=String.format("-%s@chat.facebook.com", fbid);
-				Log.i("TAG","sendmessage to"+participantid);
+				Log.d("TAG","sendmessage to"+participantid);
 				if(participantid!=null)
 				sendMess(participantid, msg);
 			}
@@ -265,8 +262,8 @@ public class XMPPManager implements ConnectionListener, ChatManagerListener,
 
 		if (mChatListener != null && message != null) {
 			String participantId = chat.getParticipant();
-			// Log.i(TAG, "Receiver Participant Id " + chat.getParticipant());
-			// Log.i(TAG, "Parsed Participant Id " +
+			// Log.d(TAG, "Receiver Participant Id " + chat.getParticipant());
+			// Log.d(TAG, "Parsed Participant Id " +
 			// parserParticipantId(participantId));
 			String participanId = parserParticipantId(participantId);
 			String mess = message.getBody();

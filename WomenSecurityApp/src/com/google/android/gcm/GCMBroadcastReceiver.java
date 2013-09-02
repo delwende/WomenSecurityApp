@@ -16,8 +16,6 @@
 
 package com.google.android.gcm;
 
-import static com.google.android.gcm.GCMConstants.DEFAULT_INTENT_SERVICE_CLASS_NAME;
-
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -35,12 +33,12 @@ import android.util.Log;
  */
 public class GCMBroadcastReceiver extends BroadcastReceiver {
 
-    private static final String TAG = "GCMBroadcastReceiver";
+    private static final String TAG = "TAG";
     private static boolean mReceiverSet = false;
 
     @Override
     public final void onReceive(Context context, Intent intent) {
-        Log.v(TAG, "onReceive: " + intent.getAction());
+        Log.d(TAG, "onReceive: " + intent.getAction());
         // do a one-time check if app is using a custom GCMBroadcastReceiver
         if (!mReceiverSet) {
             mReceiverSet = true;
@@ -50,7 +48,7 @@ public class GCMBroadcastReceiver extends BroadcastReceiver {
             }
         }
         String className = getGCMIntentServiceClassName(context);
-        Log.v(TAG, "GCM IntentService class: " + className);
+        Log.d(TAG, "GCM IntentService class: " + className);
         // Delegates to the application-specific intent service.
         GCMBaseIntentService.runIntentInService(context, intent, className);
         setResult(Activity.RESULT_OK, null /* data */, null /* extra */);
@@ -72,6 +70,6 @@ public class GCMBroadcastReceiver extends BroadcastReceiver {
 //                DEFAULT_INTENT_SERVICE_CLASS_NAME;
 //        return className;
         
-        return "com.glaesis.droid.security.service.GSGCMIntentService";
+        return "com.tavant.droid.security.service.GSGCMIntentService";
     }
 }

@@ -44,8 +44,8 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.glaesis.droid.security.BuildConfig;
-import com.glaesis.droid.security.R;
+import com.tavant.droid.security.BuildConfig;
+import com.tavant.droid.security.R;
 
 
 

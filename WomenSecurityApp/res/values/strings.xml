@@ -4,11 +4,15 @@
     <string name="app_name">SecurityApp</string>
     <string name="action_settings">Settings</string>
     <string name="get_started">To get started, log in using Facebook</string>
-    <string name="app_id">173797012799224</string>
+    <string name="app_id">417172928381965</string>
+    <string name="admob_id">a1522389fed3528</string>
     <string name="unlicensed_dialog_body">This application is not licensed for this user. Please purchase it from Android Market.</string>
     <string name="configure_app">Configuring application...</string>
     <string name="fetch_details">Fetching user details...</string>
-     <string name="enter_mob_number">Please Enter Your Mobile No</string>
+    <string name="enter_mob_number">Please Enter Your Mobile No</string>
+    <string name="press_button">Please press the alert button in case of Emergency only!</string>
+     
+     
     <!-- Setting Screen Strings -->
     
     <string name="str_btn_settings">Settings</string>

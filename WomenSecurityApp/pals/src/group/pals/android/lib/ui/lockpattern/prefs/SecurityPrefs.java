@@ -18,7 +18,7 @@ package group.pals.android.lib.ui.lockpattern.prefs;
 
 import android.content.Context;
 
-import com.glaesis.droid.security.R;
+import com.tavant.droid.security.R;
 
 /**
  * Security preferences.

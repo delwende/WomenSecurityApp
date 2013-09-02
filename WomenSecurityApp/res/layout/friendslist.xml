@@ -2,8 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
-	android:id="@+id/parent"
-	>
+	android:id="@+id/parent">
 	
     <ProgressBar  android:id="@+id/loading"
                   android:layout_centerInParent="true"
@@ -15,6 +14,15 @@
 		android:layout_height="fill_parent" android:fadingEdge="none"
 		android:cacheColorHint="@android:color/transparent"
 		android:visibility="invisible"
-		android:layout_alignWithParentIfMissing="true" android:divider="#000" />
+		android:layout_alignWithParentIfMissing="true" android:divider="#000"/>
+	
+	
+	 <com.google.ads.AdView xmlns:googleads="http://schemas.android.com/apk/lib/com.google.ads"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/ad"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        googleads:adSize="BANNER"
+        googleads:adUnitId="@string/admob_id"/>
 	
 </RelativeLayout>

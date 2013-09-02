@@ -24,7 +24,7 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 
-import com.glaesis.droid.security.R;
+import com.tavant.droid.security.R;
 
 public class Prefs {
 

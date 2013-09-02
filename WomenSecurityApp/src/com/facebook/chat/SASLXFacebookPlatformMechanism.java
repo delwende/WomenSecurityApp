@@ -12,7 +12,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.sasl.SASLMechanism;
 import org.jivesoftware.smack.util.Base64;
 
-import android.util.Log;
+
 
 public class SASLXFacebookPlatformMechanism extends SASLMechanism {
 
