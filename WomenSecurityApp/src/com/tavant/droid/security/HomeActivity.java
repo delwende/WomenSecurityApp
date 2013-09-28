@@ -50,8 +50,6 @@ import com.facebook.Session.StatusCallback;
 import com.facebook.SessionState;
 import com.facebook.chat.XMPPManager;
 import com.facebook.chat.XMPPManager.XMPPChatListener;
-import com.google.ads.AdRequest;
-import com.google.ads.AdView;
 import com.tavant.droid.security.activities.SettingsActivity;
 import com.tavant.droid.security.data.BaseData;
 import com.tavant.droid.security.data.FbUser;
@@ -62,6 +60,8 @@ import com.tavant.droid.security.service.LocationAlarmService;
 import com.tavant.droid.security.sound.ScreamPlayer;
 import com.tavant.droid.security.utils.LocationData;
 import com.tavant.droid.security.utils.WSConstants;
+
+
 
 public class HomeActivity extends BaseActivity implements OnClickListener {
 
