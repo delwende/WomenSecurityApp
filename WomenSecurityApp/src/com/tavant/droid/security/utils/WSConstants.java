@@ -15,6 +15,9 @@ public class WSConstants {
 	public static final String BASEURL = "http://192.168.2.3:8080/WomenSecurityBackEnd";	//	"http://192.168.2.2:8080/WomenSecurityBackEnd";
 
 
+	
+	public static final String PREF_NAME="common_pref";
+	
 
 	public static final String FACEBOOK_APP_KEY = "";
 
@@ -39,6 +42,7 @@ public class WSConstants {
 	public static final String PROPERTY_USER_ID = "user_id";
 	public static final String PROPERTY_FB_ID = "fb_id";
 	public static final String PROPERTY_FB_ACCESSTOKEN = "fb_access_token";
+	public static final String PROPERTY_FIRST_TIME = "first_time";
 	
 	public static final String PROPERTY_PHONE_NO = "phone_num";
 

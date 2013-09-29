@@ -8,6 +8,7 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 
 import com.google.ads.AdRequest;
@@ -23,7 +24,7 @@ import com.tavant.droid.security.http.HttpHandler;
  * @author tavant
  *
  */
-public abstract class BaseActivity extends FragmentActivity {
+public abstract class BaseActivity extends ActionBarActivity {
 
 
 	protected AsyncTask<Object, Void, BaseData> task;

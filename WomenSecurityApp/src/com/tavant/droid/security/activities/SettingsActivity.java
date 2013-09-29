@@ -2,26 +2,25 @@ package com.tavant.droid.security.activities;
 
 
 import group.pals.android.lib.ui.lockpattern.LockPatternActivity;
-import group.pals.android.lib.ui.lockpattern.prefs.SecurityPrefs;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.Preference;
-import android.preference.Preference.OnPreferenceChangeListener;
-import android.preference.Preference.OnPreferenceClickListener;
-import android.preference.PreferenceActivity;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
 
-import com.tavant.droid.security.HomeActivity;
 import com.tavant.droid.security.R;
-import com.tavant.droid.security.database.ContentDescriptor;
-import com.tavant.droid.security.lock.LPEncrypter;
+import com.tavant.droid.security.adapters.SettingsAdapter;
+import com.tavant.droid.security.prefs.CommonPreferences;
 
-public class SettingsActivity extends PreferenceActivity{
+public class SettingsActivity extends ActionBarActivity implements OnItemClickListener{
 	Preference facebookPref=null;
 	Preference pattrenpref=null;
 	Preference buzzerPref=null;
@@ -33,14 +32,35 @@ public class SettingsActivity extends PreferenceActivity{
     private ContentResolver resolver;
     private Cursor fbCursor=null;
     private Cursor friendCursor=null;
+    private ListView listview=null;
     
     private boolean issettings=false;
 	
+    private  int title[]={R.string.str_facebook,
+    		R.string.str_contacts,R.string.str_buzzer,
+    		R.string.str_friends,R.string.str_volunteer,
+    		R.string.str_pattern};
+	private int desc[]={R.string.str_facebook_desc,
+			R.string.str_contacts_desc,R.string.str_buzzer_desc,
+			R.string.str_friends_desc,R.string.str_volunteer_desc,
+			R.string.str_pattern_desc};
 	
+	private SettingsAdapter adapter=null;
+	private CommonPreferences prefs=null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {		
 		super.onCreate(savedInstanceState);
+		
+		setContentView(R.layout.friendslist);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		listview=(ListView) findViewById(R.id.friendslist);
+		prefs=CommonPreferences.getInstance();
+		adapter=new SettingsAdapter(this,title,desc);
+		listview.setAdapter(adapter);
+		listview.setVisibility(View.VISIBLE);
+		
+		/*
 		resolver=getContentResolver();
 		fbCursor =resolver.query(ContentDescriptor.WSFacebook.CONTENT_URI, null, null, null, null);
 		friendCursor=resolver.query(ContentDescriptor.WSContact.CONTENT_URI, null, null, null, null);
@@ -55,7 +75,7 @@ public class SettingsActivity extends PreferenceActivity{
 		resolver=getContentResolver();
 		SecurityPrefs.setAutoSavePattern(this, true);
         SecurityPrefs.setEncrypterClass(this, LPEncrypter.class);
-		/** Setting Preferences resource to the PreferenceActivity */
+		
 		addPreferencesFromResource(R.xml.preferences);
 		facebookPref = findPreference("facebook_key");
 		pattrenpref=findPreference("security_key");
@@ -110,6 +130,7 @@ buzzerPref.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 				return true;
 			}
 		});
+		*/
 	}
 	
 	protected void startPatternLockActivity() {
@@ -146,4 +167,10 @@ buzzerPref.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
             break;
         }// REQ_ENTER_PATTERN
     }// onActivityResult()
+
+	@Override
+	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+		
+		
+	}
 }
