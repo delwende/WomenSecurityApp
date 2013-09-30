@@ -37,14 +37,22 @@ public class WSConstants {
 	public static final String FB_APP_KEY = "417172928381965";
 
 
-
+	public static final String TYPE= "type";
+    public static final int TYPE_LOGIN =1;
+    public static final int TYPE_TERMS =2;
+    public static final int TYPE_HELP =3;
+    
+    
+	
+	
 	public static final String PROPERTY_REG_ID = "gcm_id";
 	public static final String PROPERTY_USER_ID = "user_id";
 	public static final String PROPERTY_FB_ID = "fb_id";
 	public static final String PROPERTY_FB_ACCESSTOKEN = "fb_access_token";
 	public static final String PROPERTY_FIRST_TIME = "first_time";
-	
 	public static final String PROPERTY_PHONE_NO = "phone_num";
+	
+	
 
 	public static final String URL_USER_DATA = BASEURL+"/user";
 	public static final String URL_USER_LOCATION = BASEURL+"/updatelocation";
