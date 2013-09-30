@@ -6,10 +6,10 @@
     <color name="alp_pattern_path_dark">#999999</color>
     <color name="holo_blue">#FF33B5E5</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="shadow_white">#9AFFFFFF</color>
+    <color name="desc_white">#FFF9F9F9</color>
 	<color name="shadow_black">#9A000000</color>
 	<color name="about_text">#767676</color>
 	<color name="black">#000000</color>
-	<color name="grey">#4E585E</color>
+	<color name="header_grey">#FFEDEDED</color>
 	<color name="light_grey">#B4B4B4</color>
 </resources>

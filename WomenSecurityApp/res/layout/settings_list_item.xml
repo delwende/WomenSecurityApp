@@ -6,23 +6,24 @@
 <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="25dip"
-                android:background="@color/grey" 
+                android:background="@color/header_grey" 
                 android:paddingLeft="7dip">  
                 
-<TextView android:id="@+id/title"
+<com.tavant.droid.security.widget.CustomizableTextView android:id="@+id/title"
           android:layout_centerVertical="true"
-          style="@style/settings"/>
+          style="@style/settings_normal"/>
         
 </RelativeLayout> 
 <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="60dip" 
                 android:gravity="center_vertical"
+                android:background="@color/desc_white"
                 android:paddingLeft="10dip"
                 android:paddingRight="10dip">  
                 
-<TextView android:id="@+id/desc"
-          style="@style/settings.des"/>
+<com.tavant.droid.security.widget.CustomizableTextView android:id="@+id/desc"
+          style="@style/settings_normal.des"/>
 
 <CheckBox android:id="@+id/check"
           android:layout_alignParentRight="true"

@@ -5,18 +5,16 @@
 	android:layout_height="fill_parent" android:id="@+id/mainbg"
 	android:paddingTop="15dp" android:paddingBottom="10dp"
 	android:paddingLeft="7dp" android:paddingRight="7dp"
-	android:background="@color/grey">
+	android:background="@color/header_grey">
 
 	<LinearLayout android:layout_width="fill_parent"
-		android:layout_height="fill_parent" android:background="@color/grey"
+		android:layout_height="fill_parent" android:background="@color/header_grey"
 		android:gravity="center_horizontal" android:orientation="vertical">
 
 		<TextView android:id="@+id/TermsTitle" android:layout_width="wrap_content"
 			android:layout_height="wrap_content" android:text="Terms of Use"
 			android:gravity="center"
-			android:paddingTop="10dp" android:paddingBottom="6dp"
-			android:shadowDy="1.5" android:shadowColor="@color/shadow_white"
-			android:shadowRadius="0.5" />
+			android:paddingTop="10dp" android:paddingBottom="6dp"/>
 
 		<View android:layout_width="fill_parent" android:layout_height="0.3dp"
 			android:background="@color/about_text" android:layout_margin="3dp" />
@@ -25,8 +23,4 @@
 			android:layout_width="fill_parent" android:layout_margin="8dp"
 			android:scrollbars="none" />
 	</LinearLayout>
-
-	<ProgressBar android:id="@+id/TemrsProgress"
-		android:layout_width="wrap_content" android:layout_height="wrap_content"
-		android:layout_centerInParent="true" />
 </RelativeLayout>

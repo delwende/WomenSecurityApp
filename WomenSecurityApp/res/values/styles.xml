@@ -154,23 +154,51 @@
     </style>
     
     
-     <style name="settings">
+     <style name="settings_bold">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">#000000</item>
          <item name="android:textSize">14sp</item>
          <item name="android:textStyle">bold</item>
-        <item name="android:typeface">monospace</item>
+        <item name="customFont">Roboto-Bold</item>
     </style>
     
-    <style name="settings.des">
+    <style name="settings_bold.des">
         <item name="android:textSize">24sp</item>
-        <item name="android:textStyle">normal</item>
     </style> 
     
     
+    <style name="settings_normal">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">#FF606060</item>
+         <item name="android:textSize">14sp</item>
+         <item name="android:textStyle">normal</item>
+        <item name="customFont">Roboto-Regular</item>
+    </style>
     
-
+    <style name="settings_normal.des">
+        <item name="android:textSize">24sp</item>
+         <item name="android:textColor">#FF585858</item>
+    </style> 
+    
+    
+    <style name="login_bold">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+         <item name="android:textSize">16sp</item>
+         <item name="android:textColor">#FFB43535</item>
+         <item name="android:textStyle">bold</item>
+         <item name="customFont">Roboto-Bold</item>
+    </style> 
+    
+    <style name="login_bold.normal">
+         <item name="android:textColor">#FF878787</item>
+         <item name="android:textStyle">normal</item>
+         <item name="customFont">Roboto-Regular</item>   
+    </style>
+    
+    
     <item name="alp_button_bar_style" type="style">@null</item>
     <item name="alp_button_bar_button_style" type="style">@null</item>
 
@@ -180,6 +208,5 @@
     
     
     
-    
-
+   
 </resources>

@@ -1,13 +1,15 @@
 package com.tavant.droid.security.activities;
 
 
-import com.tavant.droid.security.R;
-import com.tavant.droid.security.prefs.CommonPreferences;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.DisplayMetrics;
+import android.util.Log;
+
+import com.tavant.droid.security.R;
+import com.tavant.droid.security.prefs.CommonPreferences;
 
 public class SplashScreenActivity extends Activity {
 	
@@ -19,6 +21,7 @@ public class SplashScreenActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		pxToDp(150);
 		pref=CommonPreferences.getInstance();
 		pref.load(this);
 		if(pref.isFirstTime()){
@@ -42,8 +45,14 @@ public class SplashScreenActivity extends Activity {
 	}
 	
 	private void startHomeScreen() {
-		Intent intent=new Intent(this, SettingsActivity.class);
+		Intent intent=new Intent(this, LoginActivity.class);
 		startActivity(intent);
+	}
+	public int pxToDp(int px) {
+	    DisplayMetrics displayMetrics =getResources().getDisplayMetrics();
+	    int dp = Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+	    Log.i("TAG","px in dp"+dp);
+	    return dp;
 	}
 
 }

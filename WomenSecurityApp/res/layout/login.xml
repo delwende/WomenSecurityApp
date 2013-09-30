@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/login_screen_bg"
+    android:orientation="vertical" >
+
+    <com.tavant.droid.security.widget.CustomizableTextView
+        android:id="@+id/terms"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="40dp"
+        style="@style/login_bold"
+        android:text="@string/terms"/>
+
+    <TextView
+        android:id="@+id/version"
+        android:layout_marginBottom="10dp"
+        android:layout_above="@id/terms"
+        android:layout_centerHorizontal="true"
+        style="@style/login_bold.normal"
+        android:text="@string/version"/>
+
+    <Button
+        android:id="@+id/fb_btn"
+         android:layout_marginBottom="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/version"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/fbloginbtn_selector" />
+
+</RelativeLayout>
