@@ -13,7 +13,7 @@
         style="@style/login_bold"
         android:text="@string/terms"/>
 
-    <TextView
+    <com.tavant.droid.security.widget.CustomizableTextView
         android:id="@+id/version"
         android:layout_marginBottom="10dp"
         android:layout_above="@id/terms"
@@ -21,7 +21,7 @@
         style="@style/login_bold.normal"
         android:text="@string/version"/>
 
-    <Button
+   <com.facebook.widget.LoginButton
         android:id="@+id/fb_btn"
          android:layout_marginBottom="10dp"
         android:layout_width="wrap_content"

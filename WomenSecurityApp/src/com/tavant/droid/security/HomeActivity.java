@@ -628,9 +628,5 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 
 	
 	};
-	
-	
-	
-	
 
 }

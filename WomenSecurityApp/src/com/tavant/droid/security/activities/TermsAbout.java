@@ -42,7 +42,8 @@ public class TermsAbout extends ActionBarActivity{
 				super.onPageStarted(view, url, favicon);
 			}
 		});
-		mTermsWeb.loadUrl("http://code.vivox.com/bobsled/policy/Vivox_T-Mobile_EULA.html");
+		mTermsWeb.loadUrl("file:///android_asset/gladio_terms&conditions.html");
+		//mTermsWeb.loadUrl("http://code.vivox.com/bobsled/policy/Vivox_T-Mobile_EULA.html");
 	}
 
 	private void initTerms(){

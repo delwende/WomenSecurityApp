@@ -17,7 +17,7 @@ public class WSGCMIntentService extends GCMBaseIntentService {
 	
 	
     public WSGCMIntentService(){
-		super(WSConstants.GCM_SENDER_ID2);
+		super(WSConstants.GCM_SENDER_ID1);
 	}
 	
 	@Override

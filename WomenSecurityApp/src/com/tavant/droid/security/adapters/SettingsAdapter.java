@@ -62,6 +62,7 @@ public class SettingsAdapter extends BaseAdapter {
 			holder.check.setVisibility(View.VISIBLE);
 		else
 			holder.check.setVisibility(View.GONE);
+		rowView.setId(position);
 		return rowView;
 	}
 	

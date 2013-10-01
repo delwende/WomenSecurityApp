@@ -51,7 +51,6 @@ public class SettingsActivity extends ActionBarActivity implements OnItemClickLi
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {		
 		super.onCreate(savedInstanceState);
-		
 		setContentView(R.layout.friendslist);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		listview=(ListView) findViewById(R.id.friendslist);
@@ -59,6 +58,7 @@ public class SettingsActivity extends ActionBarActivity implements OnItemClickLi
 		adapter=new SettingsAdapter(this,title,desc);
 		listview.setAdapter(adapter);
 		listview.setVisibility(View.VISIBLE);
+		listview.setOnItemClickListener(this);
 		
 		/*
 		resolver=getContentResolver();
@@ -133,6 +133,24 @@ buzzerPref.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 		*/
 	}
 	
+	@Override
+	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+		switch (arg1.getId()) {
+		case 0:
+			//facebook
+		startPickerActivity();
+		break;
+		case 1:
+			//contacts
+	    break;
+		case 5:
+			//Pattern
+		break;
+		default:
+			break;
+		}		
+	}
+
 	protected void startPatternLockActivity() {
 		Intent intentActivity = new Intent(
                 LockPatternActivity.ACTION_CREATE_PATTERN,
@@ -168,9 +186,5 @@ buzzerPref.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
         }// REQ_ENTER_PATTERN
     }// onActivityResult()
 
-	@Override
-	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-		
-		
-	}
+	
 }

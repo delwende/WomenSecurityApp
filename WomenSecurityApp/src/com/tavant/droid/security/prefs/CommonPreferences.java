@@ -32,6 +32,11 @@ public class CommonPreferences {
 	private Context mContext;
 	private SharedPreferences pref;
 	private Editor editor;
+	private String phoneNumber=null;
+	private String fbId=null;
+	private String fbAcessToken=null;
+	
+	
 	
 	private static CommonPreferences instance;
 
@@ -58,7 +63,10 @@ public class CommonPreferences {
 		pref = mContext.getSharedPreferences(WSConstants.PREF_NAME,
 				Activity.MODE_PRIVATE);
 		editor = pref.edit();
-		isFirstTime = pref.getBoolean(WSConstants.PROPERTY_FIRST_TIME, true);
+		isFirstTime=pref.getBoolean(WSConstants.PROPERTY_FIRST_TIME, true);
+		phoneNumber=pref.getString(WSConstants.PROPERTY_PHONE_NO,null);
+		fbId=pref.getString(WSConstants.PROPERTY_FB_ID, null);
+		fbAcessToken=pref.getString(WSConstants.PROPERTY_FB_ACCESSTOKEN, null);
 		/*
 		password = pref.getString(DListConstants.PREF_PASS, null);
 		sessionId = pref.getString(DListConstants.PREF_SESSION, null);
@@ -72,6 +80,36 @@ public class CommonPreferences {
 		osVersion=pref.getString(DListConstants.OSVERSION,null);
 		*/
 		
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		editor.putString(WSConstants.PROPERTY_PHONE_NO, phoneNumber);
+		editor.commit();
+		this.phoneNumber = phoneNumber;
+	}
+
+	public String getFbId() {
+		return fbId;
+	}
+
+	public void setFbId(String fbId) {
+		editor.putString(WSConstants.PROPERTY_FB_ID, fbId);
+		editor.commit();
+		this.fbId = fbId;
+	}
+
+	public String getFbAcessToken() {
+		return fbAcessToken;
+	}
+
+	public void setFbAcessToken(String fbAcessToken) {
+		editor.putString(WSConstants.PROPERTY_FB_ACCESSTOKEN, fbAcessToken);
+		editor.commit();
+		this.fbAcessToken = fbAcessToken;
 	}
 
 	public boolean isFirstTime() {

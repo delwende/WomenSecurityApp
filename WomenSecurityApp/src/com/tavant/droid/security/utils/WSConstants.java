@@ -11,9 +11,18 @@ package com.tavant.droid.security.utils;
 
 public class WSConstants {
 	
-	public static final String HOST = "";
-	public static final String BASEURL = "http://192.168.2.3:8080/WomenSecurityBackEnd";	//	"http://192.168.2.2:8080/WomenSecurityBackEnd";
+	
+	
+	
+	public static final String PROTOCOL="http://";	
+	public static final String HOST = "192.168.140.35";
+	public static final String BASEURL =PROTOCOL+HOST+"/UserData.php?type=%s";	//	"http://192.168.2.2:8080/WomenSecurityBackEnd";
 
+	
+	public static final String URL_USER_DATA = String.format(BASEURL, "user");
+    public static final String URL_USER_LOCATION = String.format(BASEURL, "location");
+    public static final String URL_USER_ALERT = BASEURL+"/UserAlert";
+	
 
 	
 	public static final String PREF_NAME="common_pref";
@@ -32,9 +41,8 @@ public class WSConstants {
 
 
 
-	public static final String GCM_SENDER_ID1 = "339234639849";  //  
-	public static final String GCM_SENDER_ID2 = "351736632081";
-	public static final String FB_APP_KEY = "417172928381965";
+	public static final String GCM_SENDER_ID1 = "351736632081";
+
 
 
 	public static final String TYPE= "type";
@@ -54,9 +62,7 @@ public class WSConstants {
 	
 	
 
-	public static final String URL_USER_DATA = BASEURL+"/user";
-	public static final String URL_USER_LOCATION = BASEURL+"/updatelocation";
-	public static final String URL_USER_ALERT = BASEURL+"/UserAlert";
+	
 
 	public static final int CODE_USER_API = 1001;
 	public static final int CODE_LOCATION_API = 1002;

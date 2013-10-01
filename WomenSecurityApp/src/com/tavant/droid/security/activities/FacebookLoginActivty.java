@@ -200,7 +200,7 @@ public class FacebookLoginActivty extends BaseActivity implements PhoneStatus {
 		GCMRegistrar.checkManifest(this);
 		mgcmId = GCMRegistrar.getRegistrationId(this);
 		if (mgcmId.equals("")) {
-			GCMRegistrar.register(this, WSConstants.GCM_SENDER_ID1,WSConstants.GCM_SENDER_ID2 );
+			GCMRegistrar.register(this, WSConstants.GCM_SENDER_ID1);
 		}	
 
 		mLicenseCheckerCallback = new GSLicenseCheckerCallback();

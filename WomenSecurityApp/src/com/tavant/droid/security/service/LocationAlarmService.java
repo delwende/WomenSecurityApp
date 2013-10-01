@@ -41,6 +41,7 @@ import com.tavant.droid.security.data.BaseData;
 import com.tavant.droid.security.data.CopsData;
 import com.tavant.droid.security.http.HttpHandler;
 import com.tavant.droid.security.http.HttpRequestCreater;
+import com.tavant.droid.security.prefs.CommonPreferences;
 import com.tavant.droid.security.utils.LocationData;
 import com.tavant.droid.security.utils.WSConstants;
 
@@ -51,11 +52,13 @@ public class LocationAlarmService extends Service implements LocationListener{
 	private String provider;
 	private LocationData location=null; 
 	private String userid=null;
-	private SharedPreferences pref=null;
+	//private SharedPreferences pref=null;
 	private Timer timer=null;
-	private Editor edit=null;
+	//private Editor edit=null;
 	private static final String REVRESE_LOCATION_API
 	="http://maps.googleapis.com/maps/api/geocode/json?latlng=%s,%s&sensor=true";
+	
+	private CommonPreferences prefrences;
 
 	@Override
 	public void onCreate() {
@@ -82,16 +85,15 @@ public class LocationAlarmService extends Service implements LocationListener{
 	public int onStartCommand(Intent intent, int flags, int startId) {			
 		Log.i("TAG","calling laram agin");
 		locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-		pref=getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
-		edit=pref.edit();
-		userid=pref.getString(WSConstants.PROPERTY_FB_ID,null);
+		prefrences=CommonPreferences.getInstance();
+//		pref=getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
+//		edit=pref.edit();
+		userid=prefrences.getFbId();
 		if(userid==null)
 			return START_NOT_STICKY; // no registartion of alram
 		Criteria criteria = new Criteria();
 		provider = locationManager.getBestProvider(criteria, false);
-
 		Log.i("TAG","best provider is"+provider);
-
 		if(provider.equals(LocationManager.NETWORK_PROVIDER.toString())&&!locationManager.isProviderEnabled(provider)&&
 				locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
 			provider= LocationManager.GPS_PROVIDER;

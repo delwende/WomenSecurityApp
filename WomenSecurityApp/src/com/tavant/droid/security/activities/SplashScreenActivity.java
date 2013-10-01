@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
+import com.tavant.droid.security.HomeActivity;
 import com.tavant.droid.security.R;
 import com.tavant.droid.security.prefs.CommonPreferences;
 
@@ -45,7 +46,7 @@ public class SplashScreenActivity extends Activity {
 	}
 	
 	private void startHomeScreen() {
-		Intent intent=new Intent(this, LoginActivity.class);
+		Intent intent=new Intent(this, HomeActivity.class);
 		startActivity(intent);
 	}
 	public int pxToDp(int px) {
