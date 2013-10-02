@@ -42,10 +42,6 @@
 			android:configChanges="orientation|keyboardHidden|keyboard|screenLayout"
 			android:screenOrientation="portrait" android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"
 			android:noHistory="true">
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN" />
-				<category android:name="android.intent.category.LAUNCHER" />
-			</intent-filter>
 		</activity>
 		
         <activity android:name=".activities.LoginActivity"
@@ -92,7 +88,12 @@
             android:name=".activities.SettingsActivity"
             android:label="@string/app_name"
             android:parentActivityName="com.tavant.droid.security.HomeActivity">
-			 <meta-data
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter> 
+            
+           <meta-data
             android:name="android.support.PARENT_ACTIVITY"
             android:value="com.tavant.droid.security.HomeActivity" />
             

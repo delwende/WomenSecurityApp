@@ -24,8 +24,10 @@ import android.provider.Settings.Secure;
 import android.telephony.TelephonyManager;
 import android.text.InputType;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -75,6 +77,8 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 			"^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
 			+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 	
+	private LinearLayout alertView=null;
+	private LayoutInflater inflater=null;
 	
 	
 	
@@ -118,7 +122,8 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 						mdialog.dismiss();
 						alert.setMessage(getString(R.string.enter_mob_number));
 						text.setInputType(InputType.TYPE_CLASS_PHONE);
-						alert.setView(text);
+						alertView=(LinearLayout)inflater.inflate(R.layout.custom_dialog, null);
+						alert.setView(alertView);
 						alert.setPositiveButton("Register", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int whichButton) {
 								String value = text.getText().toString().trim();
@@ -145,6 +150,7 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		text = new EditText(this);
+		inflater=LayoutInflater.from(this);
 		alert = new AlertDialog.Builder(this);
 		emailPattern=Pattern.compile(EMAIL_PATTERN);
 		mctx=(PhoneStatus)this;

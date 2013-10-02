@@ -36,6 +36,9 @@ public class CommonPreferences {
 	private String fbId=null;
 	private String fbAcessToken=null;
 	
+	private boolean isNeedbuzzer=false;
+	private boolean isInformFriends=false;
+	private boolean isvolunteer=false;
 	
 	
 	private static CommonPreferences instance;
@@ -122,6 +125,41 @@ public class CommonPreferences {
 		this.isFirstTime = isFirstTime;
 	}
 
+	public boolean isNeedbuzzer() {
+		return isNeedbuzzer;
+	}
+
+	public void setNeedbuzzer(boolean isNeedbuzzer) {
+		editor.putBoolean(WSConstants.PROPERTY_BUZZER, isNeedbuzzer);
+		editor.commit();
+		this.isNeedbuzzer = isNeedbuzzer;
+	}
+
+	public boolean isInformFriends() {
+		return isInformFriends;
+	}
+
+	public void setInformFriends(boolean isInformFriends) {
+		editor.putBoolean(WSConstants.PROPERTY_FRIENDS, isInformFriends);
+		editor.commit();
+		this.isInformFriends = isInformFriends;
+	}
+
+	public boolean isIsvolunteer() {
+		return isvolunteer;
+	}
+
+	public void setIsvolunteer(boolean isvolunteer) {
+		editor.putBoolean(WSConstants.PROPERTY_VOLUNTEER, isvolunteer);
+		editor.commit();
+		this.isvolunteer = isvolunteer;
+	}
+
+	
+	
+	
+	
+	
 	/*
 	public String getUsername() {
 		return username;

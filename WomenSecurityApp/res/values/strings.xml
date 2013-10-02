@@ -36,7 +36,8 @@
 	<string name="str_pattern">Pattern</string>
 	<string name="str_pattern_desc">Pattern Security</string>
 	
-	<string name="str_password">Password</string>
+	<string name="full_name">Full Name</string>
+	<string name="phon_number">Phone Number</string>
 	
 	<string name="terms"><u>Terms &amp; Conditions</u></string>
 	<string name="version">Version:</string>

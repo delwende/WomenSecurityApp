@@ -2,6 +2,11 @@ package com.tavant.droid.security.activities;
 
 
 import group.pals.android.lib.ui.lockpattern.LockPatternActivity;
+import group.pals.android.lib.ui.lockpattern.prefs.SecurityPrefs;
+
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
+
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -9,18 +14,23 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.Preference;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
+import com.tavant.droid.security.BaseActivity;
 import com.tavant.droid.security.R;
 import com.tavant.droid.security.adapters.SettingsAdapter;
+import com.tavant.droid.security.data.BaseData;
+import com.tavant.droid.security.http.HttpRequestCreater;
+import com.tavant.droid.security.lock.LPEncrypter;
 import com.tavant.droid.security.prefs.CommonPreferences;
+import com.tavant.droid.security.utils.VolunteerStatus;
+import com.tavant.droid.security.utils.WSConstants;
 
-public class SettingsActivity extends ActionBarActivity implements OnItemClickListener{
+public class SettingsActivity extends BaseActivity implements OnItemClickListener,VolunteerStatus{
 	Preference facebookPref=null;
 	Preference pattrenpref=null;
 	Preference buzzerPref=null;
@@ -59,6 +69,8 @@ public class SettingsActivity extends ActionBarActivity implements OnItemClickLi
 		listview.setAdapter(adapter);
 		listview.setVisibility(View.VISIBLE);
 		listview.setOnItemClickListener(this);
+		SecurityPrefs.setAutoSavePattern(this, true);
+        SecurityPrefs.setEncrypterClass(this, LPEncrypter.class);
 		
 		/*
 		resolver=getContentResolver();
@@ -137,14 +149,12 @@ buzzerPref.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		switch (arg1.getId()) {
 		case 0:
-			//facebook
-		startPickerActivity();
-		break;
+			starPickerActivity("facebook");
 		case 1:
-			//contacts
+			starPickerActivity("contacts");
 	    break;
 		case 5:
-			//Pattern
+			startPatternLockActivity();
 		break;
 		default:
 			break;
@@ -160,10 +170,14 @@ buzzerPref.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
                 REQ_CREATE_PATTERN);
 		
 	}
-	protected void startPickerActivity() {
+	
+	
+	
+	private void starPickerActivity(String type) {
 		Intent intent = new Intent();
 		// intent.setData(PickerActivity.FRIEND_PICKER);
 		intent.setClass(this, FBFriendListActivity.class);
+		intent.putExtra("type", type);
 		startActivityForResult(intent, 2000);		
 	}
 
@@ -186,5 +200,25 @@ buzzerPref.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
         }// REQ_ENTER_PATTERN
     }// onActivityResult()
 
-	
+	@Override
+	public void changetoVolunteer(boolean status) {
+		HttpRequestBase post=HttpRequestCreater.editUser(prefs.getFbId(), null,null,null,null,status ? 1:0);
+		onExecute(WSConstants.CODE_EDIT_USER, post, false);
+	}
+
+	@Override
+	protected void onComplete(int reqCode, BaseData data) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void onError(int reqCode, int errorCode, String errorMessage) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
+	
+
+

@@ -59,14 +59,16 @@ public class WSConstants {
 	public static final String PROPERTY_FB_ACCESSTOKEN = "fb_access_token";
 	public static final String PROPERTY_FIRST_TIME = "first_time";
 	public static final String PROPERTY_PHONE_NO = "phone_num";
+	public static final String PROPERTY_BUZZER = "buzzer_key";
+	public static final String PROPERTY_FRIENDS = "friends_key";
+	public static final String PROPERTY_VOLUNTEER = "volunteer_key";
 	
-	
-
 	
 
 	public static final int CODE_USER_API = 1001;
 	public static final int CODE_LOCATION_API = 1002;
 	public static final int CODE_ALERT_API = 1003;
+	public static final int CODE_EDIT_USER = 1004;
 	public static final String BASE64_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhTdp9Fl6kmzxRqpiXWco/O00XsZb9RWdLgpkLS2KzWthw9oOhoUR14BW7EdQL3iGrG/foqy/8QcIbmUeVb/OHNLPRgvHsw8Kj0yOPVPnwXIKJFv+YxRZUMq8l8XPfWDVosSPMAnZ9eIELC6lsrFFOECiyVIFWX8JO6DSVgeWOtPe0t+I9Ozqb26/AHuYPIrhDlU23asKTm3ipW13bBQt5IXw2zQK5RHedpVD7m73wh2hPgfZBhAIHor/ZEdJpW7TbUazwbHyEBBEoFPaXpqrkLwIRZ16iwByQyd8kd325FGJ2k99yzArYWUct7716/eezqQmREFNbw4peO9+A5MRIwIDAQAB";
 
 	 // Generate your own 20 random bytes, and put them here.

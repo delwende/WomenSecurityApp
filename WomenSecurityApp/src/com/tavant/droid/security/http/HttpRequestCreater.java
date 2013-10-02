@@ -49,11 +49,12 @@ public class HttpRequestCreater {
 	}
 	
 	
-	public static HttpRequestBase editUser(String uid,String phone,String email, String gcmid, String authtoken) {
+	public static HttpRequestBase editUser(String uid,String phone,String email, String gcmid, String authtoken,int app_type) {
 		HttpPost post=new HttpPost(WSConstants.URL_USER_DATA);
 		JSONObject object=new JSONObject();
 		try{
 		object.put("userid", uid);
+		object.put("apptype", app_type);
 		if(phone!=null)
 		object.put("phone", phone);
 		if(email!=null)
