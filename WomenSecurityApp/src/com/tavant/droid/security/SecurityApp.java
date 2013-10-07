@@ -1,5 +1,6 @@
 package com.tavant.droid.security;
 
+import com.tavant.droid.security.prefs.CommonPreferences;
 import com.tavant.droid.security.utils.FontLoader;
 
 import android.app.Application;
@@ -10,6 +11,7 @@ public class SecurityApp extends Application {
 	public  void onCreate() {
 		super.onCreate();
 		FontLoader.getMngr().setTypeFont(getAssets());
+		CommonPreferences.getInstance().load(getApplicationContext());
 	}	
 
 

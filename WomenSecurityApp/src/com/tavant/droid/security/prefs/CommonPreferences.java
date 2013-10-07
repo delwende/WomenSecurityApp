@@ -60,8 +60,7 @@ public class CommonPreferences {
 	 * called each  time when application launches, can access through a singleton object
 	 * 
 	 */
-	public void load(Context context) {
-		
+	public void load(Context context) {		
 		this.mContext = context;
 		pref = mContext.getSharedPreferences(WSConstants.PREF_NAME,
 				Activity.MODE_PRIVATE);
@@ -70,19 +69,9 @@ public class CommonPreferences {
 		phoneNumber=pref.getString(WSConstants.PROPERTY_PHONE_NO,null);
 		fbId=pref.getString(WSConstants.PROPERTY_FB_ID, null);
 		fbAcessToken=pref.getString(WSConstants.PROPERTY_FB_ACCESSTOKEN, null);
-		/*
-		password = pref.getString(DListConstants.PREF_PASS, null);
-		sessionId = pref.getString(DListConstants.PREF_SESSION, null);
-		latitude=pref.getString(DListConstants.LATITUDE,"0");
-		longitude=pref.getString(DListConstants.LONGITUDE,"0");
-
-		deviceId=pref.getString(DListConstants.DEVICEID,null);
-		devicetype=pref.getString(DListConstants.DEVICETYPE,null);
-		applicationid=pref.getString(DListConstants.APPLICATIONID,null);
-		applicationversion=pref.getString(DListConstants.APPLICATIONVERSION,null);
-		osVersion=pref.getString(DListConstants.OSVERSION,null);
-		*/
-		
+		isNeedbuzzer=pref.getBoolean(WSConstants.PROPERTY_BUZZER, false);
+		isInformFriends=pref.getBoolean(WSConstants.PROPERTY_FRIENDS,true);
+		isvolunteer=pref.getBoolean(WSConstants.PROPERTY_VOLUNTEER,true);
 	}
 
 	public String getPhoneNumber() {

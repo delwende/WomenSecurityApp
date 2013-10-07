@@ -22,16 +22,14 @@ public class SplashScreenActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		pxToDp(150);
 		pref=CommonPreferences.getInstance();
-		pref.load(this);
+		//pref.load(this);
 		if(pref.isFirstTime()){
 			setContentView(R.layout.splashscreen);
 			handleSplash();
 		}else{
-			startHomeScreen();
+			startLoginScreen();
 		}
-		
 	}
 	
 	private void handleSplash(){
@@ -40,13 +38,13 @@ public class SplashScreenActivity extends Activity {
 			@Override
 			public void run() {
 				pref.setFirstTime(false);
-			    startHomeScreen();
+				startLoginScreen();
 			}
 		}, 3000L);
 	}
 	
-	private void startHomeScreen() {
-		Intent intent=new Intent(this, HomeActivity.class);
+	private void startLoginScreen() {
+		Intent intent=new Intent(this, LoginActivity.class);
 		startActivity(intent);
 	}
 	public int pxToDp(int px) {

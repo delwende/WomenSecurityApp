@@ -16,7 +16,7 @@
 </RelativeLayout> 
 <RelativeLayout
                 android:layout_width="fill_parent"
-                android:layout_height="60dip" 
+                android:layout_height="wrap_content" 
                 android:gravity="center_vertical"
                 android:background="@color/desc_white"
                 android:paddingLeft="10dip"
@@ -24,6 +24,11 @@
                 
 <com.tavant.droid.security.widget.CustomizableTextView android:id="@+id/desc"
           style="@style/settings_normal.des"/>
+<com.tavant.droid.security.widget.CustomizableTextView android:layout_below="@+id/desc"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:id="@+id/desc_long"
+          android:ellipsize="none"/>
 
 <CheckBox android:id="@+id/check"
           android:layout_alignParentRight="true"

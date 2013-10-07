@@ -4,7 +4,6 @@ package com.tavant.droid.security.activities;
 import group.pals.android.lib.ui.lockpattern.LockPatternActivity;
 import group.pals.android.lib.ui.lockpattern.prefs.SecurityPrefs;
 
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 
 import android.content.ContentResolver;
@@ -19,11 +18,14 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.tavant.droid.security.BaseActivity;
+import com.tavant.droid.security.HomeActivity;
 import com.tavant.droid.security.R;
 import com.tavant.droid.security.adapters.SettingsAdapter;
 import com.tavant.droid.security.data.BaseData;
+import com.tavant.droid.security.database.ContentDescriptor;
 import com.tavant.droid.security.http.HttpRequestCreater;
 import com.tavant.droid.security.lock.LPEncrypter;
 import com.tavant.droid.security.prefs.CommonPreferences;
@@ -43,6 +45,7 @@ public class SettingsActivity extends BaseActivity implements OnItemClickListene
     private Cursor fbCursor=null;
     private Cursor friendCursor=null;
     private ListView listview=null;
+    private boolean isVolunteer=false;
     
     private boolean issettings=false;
 	
@@ -54,6 +57,13 @@ public class SettingsActivity extends BaseActivity implements OnItemClickListene
 			R.string.str_contacts_desc,R.string.str_buzzer_desc,
 			R.string.str_friends_desc,R.string.str_volunteer_desc,
 			R.string.str_pattern_desc};
+	private int desc_long[]={R.string.str_facebook_desc_long,
+			R.string.str_contacts_desc_long,R.string.str_buzzer_desc_long,
+			R.string.str_friends_desc_long,R.string.str_volunteer_desc_long,
+			R.string.str_pattern_desc_long};
+	
+	
+	
 	
 	private SettingsAdapter adapter=null;
 	private CommonPreferences prefs=null;
@@ -65,18 +75,15 @@ public class SettingsActivity extends BaseActivity implements OnItemClickListene
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		listview=(ListView) findViewById(R.id.friendslist);
 		prefs=CommonPreferences.getInstance();
-		adapter=new SettingsAdapter(this,title,desc);
+		adapter=new SettingsAdapter(this,title,desc,desc_long);
 		listview.setAdapter(adapter);
 		listview.setVisibility(View.VISIBLE);
 		listview.setOnItemClickListener(this);
 		SecurityPrefs.setAutoSavePattern(this, true);
         SecurityPrefs.setEncrypterClass(this, LPEncrypter.class);
-		
-		/*
-		resolver=getContentResolver();
-		fbCursor =resolver.query(ContentDescriptor.WSFacebook.CONTENT_URI, null, null, null, null);
+        resolver=getContentResolver();
+        fbCursor =resolver.query(ContentDescriptor.WSFacebook.CONTENT_URI, null, null, null, null);
 		friendCursor=resolver.query(ContentDescriptor.WSContact.CONTENT_URI, null, null, null, null);
-		issettings=getIntent().getBooleanExtra("issetting", false);
 		if(fbCursor!=null&&fbCursor.getCount()>0&&friendCursor!=null&&friendCursor.getCount()>0&&!issettings){
 			fbCursor.close();
 			friendCursor.close();
@@ -84,65 +91,6 @@ public class SettingsActivity extends BaseActivity implements OnItemClickListene
 		    finish();
 		    return;
 		}
-		resolver=getContentResolver();
-		SecurityPrefs.setAutoSavePattern(this, true);
-        SecurityPrefs.setEncrypterClass(this, LPEncrypter.class);
-		
-		addPreferencesFromResource(R.xml.preferences);
-		facebookPref = findPreference("facebook_key");
-		pattrenpref=findPreference("security_key");
-		buzzerPref=findPreference("buzzer_key");
-		friendsPref=findPreference("friends_key");
-		
-		pref= getApplicationContext().getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
-		final Editor editor = pref.edit();
-		editor.commit();
-		
-		facebookPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-
-			@Override
-			public boolean onPreferenceClick(Preference preference) {
-				startPickerActivity();
-				return true;
-			}
-		});
-
-		pattrenpref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-			@Override
-			public boolean onPreferenceClick(Preference preference) {
-				startPatternLockActivity();
-				return true;
-			}
-		});
-		
-buzzerPref.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-			
-			@Override
-			public boolean onPreferenceChange(Preference preference, Object newValue) {
-				if((Boolean) newValue){
-				editor.putBoolean("buzzer_key", true);
-				}else{
-					editor.putBoolean("buzzer_key", false);
-				}
-				editor.commit();
-				return true;
-			}
-		});
-		
-		friendsPref.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-			
-			@Override
-			public boolean onPreferenceChange(Preference preference, Object newValue) {
-				if((Boolean) newValue){
-                editor.putBoolean("friends_key", true);
-				}else{
-					editor.putBoolean("friends_key", false);
-				}
-                editor.commit();
-				return true;
-			}
-		});
-		*/
 	}
 	
 	@Override
@@ -202,20 +150,19 @@ buzzerPref.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
 	@Override
 	public void changetoVolunteer(boolean status) {
-		HttpRequestBase post=HttpRequestCreater.editUser(prefs.getFbId(), null,null,null,null,status ? 1:0);
-		onExecute(WSConstants.CODE_EDIT_USER, post, false);
+		isVolunteer=status;
+		HttpRequestBase post=HttpRequestCreater.editUser(prefs.getFbId(), null,null,null,null,(isVolunteer ? 1:0),null);
+		onExecute(WSConstants.CODE_USER_API,post, false);
 	}
 
 	@Override
 	protected void onComplete(int reqCode, BaseData data) {
-		// TODO Auto-generated method stub
-		
+		 prefs.setIsvolunteer(isVolunteer);
 	}
 
 	@Override
 	protected void onError(int reqCode, int errorCode, String errorMessage) {
-		// TODO Auto-generated method stub
-		
+		Toast.makeText(this, "server error", Toast.LENGTH_SHORT).show();
 	}
 
 }

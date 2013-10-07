@@ -10,6 +10,8 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpRequestBase;
 
+import android.util.Log;
+
 import com.tavant.droid.security.data.BaseData;
 import com.tavant.droid.security.parser.LocationResponseParser;
 import com.tavant.droid.security.parser.UserDataParser;

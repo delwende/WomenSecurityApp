@@ -4,6 +4,7 @@ package com.tavant.droid.security.adapters;
 import android.content.Context;
 import android.content.res.Resources;
 import android.media.MediaRouter.VolumeCallback;
+import android.support.v7.appcompat.R.bool;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,17 +21,25 @@ public class SettingsAdapter extends BaseAdapter implements android.view.View.On
 	
 	 private  int mdesc[] =null;
 	 private  int mtitle[]=null;
+	 private int mdesclong[]=null;
 	 private Context mctx=null;
 	 private LayoutInflater inflater=null;
 	 private Resources res=null;
 	 private CommonPreferences prefs=null;
+	 private boolean isvolunteer=false;
+	 private boolean informfriends=false;
+	 private boolean buzzer=false;
 	
-	public SettingsAdapter(Context ctx,Object title,Object desc) {
+	public SettingsAdapter(Context ctx,Object title,Object desc,Object desc_long) {
 		mctx=ctx;
 		mdesc= (int[]) desc;
 		mtitle=(int[]) title;
+		mdesclong=(int[])desc_long;
 		res=mctx.getResources();
 		prefs=CommonPreferences.getInstance();
+		isvolunteer=prefs.isIsvolunteer();
+		informfriends=prefs.isInformFriends();
+		buzzer=prefs.isNeedbuzzer();
 	}
 	
 	@Override
@@ -58,15 +67,23 @@ public class SettingsAdapter extends BaseAdapter implements android.view.View.On
 			holder.title=(TextView) rowView.findViewById(R.id.title);
 			holder.desc=(TextView) rowView.findViewById(R.id.desc);	
 			holder.check=(CheckBox)rowView.findViewById(R.id.check);
+			holder.desc_long=(TextView)rowView.findViewById(R.id.desc_long);
 			rowView.setTag(holder);
 		}
 		ViewHolder holder=(ViewHolder) rowView.getTag();
 		holder.title.setText(res.getString(mtitle[position]));
 		holder.desc.setText(res.getString(mdesc[position]));
+		holder.desc_long.setText(res.getString(mdesclong[position]));
 		if(position==2||position==3||position==4){
 			holder.check.setVisibility(View.VISIBLE);
 			holder.check.setId(position);
 			holder.check.setOnClickListener(this);
+			if(position==2)
+				holder.check.setChecked(buzzer);
+			else if(position==3)
+				holder.check.setChecked(informfriends);
+			else if(position==4)
+				holder.check.setChecked(isvolunteer);
 		}
 		else
 			holder.check.setVisibility(View.GONE);
@@ -77,6 +94,7 @@ public class SettingsAdapter extends BaseAdapter implements android.view.View.On
 	static class ViewHolder {
 		  TextView title;
 		  TextView desc;
+		  TextView desc_long;
 		  CheckBox check;
 		}
 

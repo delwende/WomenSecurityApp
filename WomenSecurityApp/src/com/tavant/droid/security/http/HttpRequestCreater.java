@@ -10,6 +10,8 @@ import org.apache.http.entity.StringEntity;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import android.util.Log;
+
 import com.tavant.droid.security.utils.WSConstants;
 /**
  * 
@@ -27,7 +29,8 @@ public class HttpRequestCreater {
 	
 	
 	
-	public static HttpRequestBase createUesr(String uid,String Idtype,String phonenumber,String email,String gcmid,int app_type,String osname, String authtoken ) {
+	public static HttpRequestBase createUesr(String uid,String Idtype,String phonenumber,String email,String gcmid,
+			int app_type,String osname, String authtoken, String userName) {
 		HttpPut put=new HttpPut(WSConstants.URL_USER_DATA);
 		JSONObject object=new JSONObject();
 		try{
@@ -39,6 +42,9 @@ public class HttpRequestCreater {
 		object.put("apptype", app_type);
 		object.put("osname", osname);
 		object.put("authtoken", authtoken);
+		object.put("username", userName);
+		Log.i("TAG",""+object.toString());
+		
 		put.addHeader("Content-type", "application/json");
 		put.setEntity(new StringEntity(object.toString(), "utf-8"));
         return  put;
@@ -49,20 +55,24 @@ public class HttpRequestCreater {
 	}
 	
 	
-	public static HttpRequestBase editUser(String uid,String phone,String email, String gcmid, String authtoken,int app_type) {
-		HttpPost post=new HttpPost(WSConstants.URL_USER_DATA);
+	public static HttpRequestBase editUser(String uid,String phone,String email, String gcmid, String authtoken,
+			int app_type,String userName) {
+		HttpPut post=new HttpPut(WSConstants.URL_USER_DATA);
 		JSONObject object=new JSONObject();
 		try{
 		object.put("userid", uid);
 		object.put("apptype", app_type);
 		if(phone!=null)
 		object.put("phone", phone);
-		if(email!=null)
+		else if(email!=null)
 		object.put("email", email);
-		if(gcmid!=null)
+		else if(gcmid!=null)
 		object.put("gcmid", gcmid);
-		if(authtoken!=null)
+		else if(authtoken!=null)
 		object.put("authtoken", authtoken);
+		else if(userName!=null)
+		object.put("username", userName);
+		Log.i("TAG",""+object.toString());
 		post.addHeader("Content-type", "application/json");
 		post.setEntity(new StringEntity(object.toString(), "utf-8"));
         return post;

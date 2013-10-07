@@ -22,7 +22,6 @@ import android.os.Handler;
 import android.os.SystemClock;
 import android.provider.Settings.Secure;
 import android.telephony.TelephonyManager;
-import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,9 +66,11 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 	private static Handler handler=new Handler();
 	private ProgressDialog mdialog=null;
 	private boolean isResumed = false;
-	private EditText text = null;
+	private EditText phoneText = null;
+	private EditText userNametext = null;
 	private String fbacesstoken="";
 	private String phonenumber="";
+	private String userName="";
 	private String userId="";
 	private PhoneStatus mctx=null;
 	private Pattern emailPattern = null;
@@ -120,18 +121,22 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 						userId=user.getId();
 						preferences.setFbId(userId);
 						mdialog.dismiss();
-						alert.setMessage(getString(R.string.enter_mob_number));
-						text.setInputType(InputType.TYPE_CLASS_PHONE);
+						alert.setMessage(getString(R.string.app_name));
 						alertView=(LinearLayout)inflater.inflate(R.layout.custom_dialog, null);
+						userNametext=(EditText)alertView.findViewById(R.id.dialog_name);
+						phoneText=(EditText)alertView.findViewById(R.id.dialog_phone);
+						
 						alert.setView(alertView);
-						alert.setPositiveButton("Register", new DialogInterface.OnClickListener() {
+						alert.setPositiveButton(getString(R.string.register), new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int whichButton) {
-								String value = text.getText().toString().trim();
-								Toast.makeText(getApplicationContext(), value, Toast.LENGTH_SHORT).show();
-								if(text.getText().toString().length()==0)
+								String phoneNo = phoneText.getText().toString().trim();
+								String userName = userNametext.getText().toString().trim();
+								if(phoneNo.length()==0||userName.length()==0){
+									Toast.makeText(getApplicationContext(), getString(R.string.enter_mob_number), Toast.LENGTH_LONG).show();
 									return;
+								}
 								else{
-									mctx.onEntered(text.getText().toString());
+									mctx.onEntered(phoneNo,userName);
 								}
 							}
 						});
@@ -149,7 +154,6 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		text = new EditText(this);
 		inflater=LayoutInflater.from(this);
 		alert = new AlertDialog.Builder(this);
 		emailPattern=Pattern.compile(EMAIL_PATTERN);
@@ -206,8 +210,9 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 	
 	
 	@Override
-	public void onEntered(String PhoneNo) {
+	public void onEntered(String PhoneNo, String uName) {
 		phonenumber=PhoneNo;
+		userName=uName;
 		preferences.setPhoneNumber(phonenumber);
 		createUser();
 	}
@@ -226,7 +231,7 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 		}
 		String gcmid=GCMRegistrar.getRegistrationId(this);
 		Log.i("TAG",""+gcmid);
-		HttpRequestBase put=HttpRequestCreater.createUesr(userId, "facebook", phonenumber, possibleEmail, gcmid, 0,"android",fbacesstoken);
+		HttpRequestBase put=HttpRequestCreater.createUesr(userId, "facebook", phonenumber, possibleEmail, gcmid, 0,"android",fbacesstoken,userName);
 		onExecute(WSConstants.CODE_USER_API, put, false);
 	}
 	
@@ -288,7 +293,6 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 		mdialog.dismiss();
 		Toast.makeText(this,errorMessage, Toast.LENGTH_SHORT).show();
 		LaunchSettingsScreen(false);
-
 	}
 	
 	
