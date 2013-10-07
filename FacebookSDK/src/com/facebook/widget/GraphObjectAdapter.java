@@ -48,7 +48,7 @@ import com.facebook.FacebookException;
 import com.facebook.android.R;
 import com.facebook.model.GraphObject;
 
-class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements SectionIndexer {
+public class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements SectionIndexer {
     private static final int DISPLAY_SECTIONS_THRESHOLD = 1;
     private static final int HEADER_VIEW_TYPE = 0;
     private static final int GRAPH_OBJECT_VIEW_TYPE = 1;

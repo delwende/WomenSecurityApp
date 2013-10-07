@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.util.Log;
@@ -71,13 +72,12 @@ public class SettingsActivity extends BaseActivity implements OnItemClickListene
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {		
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.friendslist);
+		setContentView(R.layout.settingslist);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		listview=(ListView) findViewById(R.id.friendslist);
 		prefs=CommonPreferences.getInstance();
 		adapter=new SettingsAdapter(this,title,desc,desc_long);
 		listview.setAdapter(adapter);
-		listview.setVisibility(View.VISIBLE);
 		listview.setOnItemClickListener(this);
 		SecurityPrefs.setAutoSavePattern(this, true);
         SecurityPrefs.setEncrypterClass(this, LPEncrypter.class);
@@ -97,9 +97,10 @@ public class SettingsActivity extends BaseActivity implements OnItemClickListene
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		switch (arg1.getId()) {
 		case 0:
-			starPickerActivity("facebook");
+			starPickerActivity(PickerFriendListActivity.FRIEND_PICKER);
+			break;
 		case 1:
-			starPickerActivity("contacts");
+			starPickerActivity(PickerFriendListActivity.CONTACTS_PICKER);
 	    break;
 		case 5:
 			startPatternLockActivity();
@@ -121,11 +122,10 @@ public class SettingsActivity extends BaseActivity implements OnItemClickListene
 	
 	
 	
-	private void starPickerActivity(String type) {
+	private void starPickerActivity(Uri type) {
 		Intent intent = new Intent();
-		// intent.setData(PickerActivity.FRIEND_PICKER);
-		intent.setClass(this, FBFriendListActivity.class);
-		intent.putExtra("type", type);
+		intent.setClass(this, PickerFriendListActivity.class);
+		intent.setData(type);
 		startActivityForResult(intent, 2000);		
 	}
 

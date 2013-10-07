@@ -8,6 +8,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -30,10 +31,11 @@ import com.tavant.droid.security.R;
 import com.tavant.droid.security.adapters.FbFriendsAdapter;
 import com.tavant.droid.security.data.BaseData;
 import com.tavant.droid.security.database.ContentDescriptor;
+import com.tavant.droid.security.prefs.CommonPreferences;
 import com.tavant.droid.security.utils.WSConstants;
 
 
-public class FBFriendListActivity extends BaseActivity
+public class PickerFriendListActivity extends BaseActivity
 {
 
 private ProgressBar progress=null;
@@ -42,8 +44,11 @@ private ContentResolver resolver=null;
 private FbFriendsAdapter adapter=null;	
 private Session session=null;
 private RelativeLayout layout=null;
-private SharedPreferences prefs=null;
+private CommonPreferences prefs=null;
 
+
+public static final Uri FRIEND_PICKER = Uri.parse("picker://friend");
+public static final Uri CONTACTS_PICKER = Uri.parse("picker://contacts");
 
 @Override
 protected void onCreate(Bundle savedInstanceState) {	
@@ -53,18 +58,16 @@ protected void onCreate(Bundle savedInstanceState) {
 	listview=(ListView)findViewById(R.id.friendslist);
 	layout=(RelativeLayout)findViewById(R.id.parent);
 	resolver=getContentResolver();
-	prefs=getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
+	prefs=CommonPreferences.getInstance();
 	session=new Session(this);
-	AccessToken token=AccessToken.createFromExistingAccessToken(prefs.getString(WSConstants.PROPERTY_FB_ACCESSTOKEN, null),null,null,
-			AccessTokenSource.FACEBOOK_APPLICATION_WEB,null);
+	AccessToken token=AccessToken.createFromExistingAccessToken(prefs.getFbAcessToken(),null,null,
+			AccessTokenSource.FACEBOOK_APPLICATION_SERVICE,null);
 	session.open(token, new StatusCallback() {
 		@Override
 		public void call(Session msession, SessionState state, Exception exception) {
-			  session=msession;
 			  checkintialiLoading();
 		}
 	});
-	initAdd();
 }
 
 private void checkintialiLoading() {
@@ -85,7 +88,7 @@ private void checkintialiLoading() {
 				
 				TextView nofriendtext=null;
 				if(users.size()==0){
-					 nofriendtext=new TextView(FBFriendListActivity.this);
+					 nofriendtext=new TextView(PickerFriendListActivity.this);
 					 nofriendtext.setText("No friends");
 					 RelativeLayout.LayoutParams params=new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 					 params.addRule(RelativeLayout.CENTER_IN_PARENT);
@@ -102,7 +105,7 @@ private void checkintialiLoading() {
 						resolver.insert(ContentDescriptor.WSFacebook.CONTENT_URI, values);
 					}
 					Cursor curosr=resolver.query(ContentDescriptor.WSFacebook.CONTENT_URI, null, null, null, null);
-					adapter=new FbFriendsAdapter(FBFriendListActivity.this,curosr);
+					adapter=new FbFriendsAdapter(PickerFriendListActivity.this,curosr);
 					listview.setAdapter(adapter);
 					progress.setVisibility(View.INVISIBLE);
 					listview.setVisibility(View.VISIBLE);
