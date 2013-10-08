@@ -1,6 +1,8 @@
 
 package com.tavant.droid.security.adapters;
 
+import java.util.Map;
+
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -9,14 +11,16 @@ import android.provider.BaseColumns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AlphabetIndexer;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.CursorAdapter;
 import android.widget.ImageView;
+import android.widget.SectionIndexer;
 import android.widget.TextView;
 
 import com.tavant.droid.security.R;
+import com.tavant.droid.security.adapters.SettingsAdapter.ViewHolder;
 import com.tavant.droid.security.database.ContentDescriptor;
 
 
@@ -24,27 +28,55 @@ import com.tavant.droid.security.database.ContentDescriptor;
 
 
 
-public class FbFriendsAdapter extends CursorAdapter implements OnCheckedChangeListener{
+public class FbFriendsAdapter extends 	android.support.v4.widget.CursorAdapter implements OnCheckedChangeListener,SectionIndexer{
 	
 	
-	private LayoutInflater mLayoutInflater;
+	
 	private ContentResolver mResolver = null; 
 	private String imgurl;
 	private String uName=null;
 	private int selected=0;
 	private int id=-1;
     private ContentValues values=null;
-	public FbFriendsAdapter(Context context, Cursor c) {
-		super(context, c, true);
+    
+    private static final int TYPE_HEADER = 1;
+	private static final int TYPE_NORMAL = 0;
+	private static final int TYPE_COUNT = 2;
+	private AlphabetIndexer indexer;
+	private int[] usedSectionNumbers;
+	private Map<Integer, Integer> sectionToOffset = null;
+	private Map<Integer, Integer> sectionToPosition = null;
+	private ViewHolder adapter = null;
+	private LayoutInflater mLayoutInflater;
+	private int mNewPosition = -1;
+    
+    
+	
+	
+	
+    
+    
+	public FbFriendsAdapter(Context context, Cursor c, AlphabetIndexer indexer,
+			int[] usedSectionNumbers, Map<Integer, Integer> sectionToOffset,
+			Map<Integer, Integer> sectionToPosition) {
+		super(context, c,true);
+		this.indexer = indexer;
+		this.usedSectionNumbers = usedSectionNumbers;
+		this.sectionToOffset = sectionToOffset;
+		this.sectionToPosition = sectionToPosition;
 		mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		mResolver=context.getContentResolver();
 	}
-
-
+	
+	
+	
 
 	@Override
 	public int getCount() {
-		return super.getCount();
+		if (super.getCount() != 0) {
+			return super.getCount() + usedSectionNumbers.length;
+		}
+		return 0;
 	}
 
 	@Override
@@ -53,6 +85,57 @@ public class FbFriendsAdapter extends CursorAdapter implements OnCheckedChangeLi
 	}
 
 	
+	@Override
+	public int getPositionForSection(int section) {
+		if (!sectionToOffset.containsKey(section)) {
+			int i = 0;
+			int maxLength = usedSectionNumbers.length;
+			while (i < maxLength && section > usedSectionNumbers[i]) {
+				i++;
+			}
+			if (i == maxLength)
+				return getCount();
+			return indexer.getPositionForSection(usedSectionNumbers[i])
+			+ sectionToOffset.get(usedSectionNumbers[i]);
+		}
+		return indexer.getPositionForSection(section) + sectionToOffset.get(section);
+	}
+
+	@Override
+	public int getSectionForPosition(int position) {
+		int i = 0;
+		try{
+			int maxLength = usedSectionNumbers.length;
+			while (i < maxLength
+					&& position >= sectionToPosition.get(usedSectionNumbers[i])) {
+				i++;
+			}
+			return usedSectionNumbers[i - 1];
+		}catch (Exception e) {
+			return i;
+		}
+	}
+	@Override
+	public Object[] getSections() {
+		return indexer.getSections();
+	}
+	@Override
+	public int getItemViewType(int position) {
+		try{
+			if (position == getPositionForSection(getSectionForPosition(position))) {
+				return TYPE_HEADER;
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return TYPE_NORMAL;
+	}
+
+	@Override
+	public int getViewTypeCount() {
+		return TYPE_COUNT;
+	}
+
 	
 	
 	@Override
@@ -127,4 +210,6 @@ public class FbFriendsAdapter extends CursorAdapter implements OnCheckedChangeLi
 			}
 	}
 
+
+	
 }

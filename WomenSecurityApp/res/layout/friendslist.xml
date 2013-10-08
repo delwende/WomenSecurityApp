@@ -18,6 +18,7 @@
         android:layout_height="fill_parent"
         android:cacheColorHint="#FFFFFF"
         android:divider="@drawable/com_facebook_list_divider"
+        android:layout_alignWithParentIfMissing="true"
         android:fadingEdge="none"
         android:fastScrollEnabled="true"
         android:listSelector="@drawable/com_facebook_picker_list_selector"
