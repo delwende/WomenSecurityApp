@@ -11,6 +11,7 @@ import android.util.Log;
 import com.tavant.droid.security.HomeActivity;
 import com.tavant.droid.security.R;
 import com.tavant.droid.security.prefs.CommonPreferences;
+import com.tavant.droid.security.utils.Utils;
 
 public class SplashScreenActivity extends Activity {
 	
@@ -22,6 +23,7 @@ public class SplashScreenActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Utils.enableStrictMode();
 		pref=CommonPreferences.getInstance();
 		//pref.load(this);
 		if(pref.isFirstTime()){

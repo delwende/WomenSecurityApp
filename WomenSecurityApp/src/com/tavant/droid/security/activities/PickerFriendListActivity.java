@@ -12,7 +12,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.AsyncTask.Status;
 import android.os.Bundle;
-import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
@@ -30,6 +29,7 @@ import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.Session.StatusCallback;
 import com.facebook.SessionState;
+import com.facebook.model.GraphObject;
 import com.facebook.model.GraphUser;
 import com.tavant.droid.security.R;
 import com.tavant.droid.security.adapters.FbFriendsAdapter;
@@ -37,7 +37,9 @@ import com.tavant.droid.security.database.ContentDescriptor;
 import com.tavant.droid.security.prefs.CommonPreferences;
 
 
-public class PickerFriendListActivity extends ActionBarActivity implements android.support.v4.app.LoaderManager.LoaderCallbacks<Cursor> 
+
+
+public class PickerFriendListActivity extends ActionBarActivity
 {
 
 	private ProgressBar progress=null;
@@ -48,6 +50,7 @@ public class PickerFriendListActivity extends ActionBarActivity implements andro
 	private RelativeLayout layout=null;
 	private CommonPreferences prefs=null;
 	private static final int LOADER_ID = 0x02;
+	private Cursor mCursor=null;
 
 
 
@@ -69,26 +72,17 @@ public class PickerFriendListActivity extends ActionBarActivity implements andro
 		resolver=getContentResolver();
 		prefs=CommonPreferences.getInstance();
 		session=new Session(this);
-		getSupportLoaderManager().initLoader(LOADER_ID, null, this);
-		loadFBSession();
+		getNewCursor();
 	}
-
-	@Override
-	public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
-		return new android.support.v4.content.CursorLoader(this,ContentDescriptor.WSFacebook.CONTENT_URI, null, null, null, null);	
+		
+	private void getNewCursor() {
+		mCursor=resolver.query(ContentDescriptor.WSFacebook.CONTENT_URI, null, null, null, ContentDescriptor.WSFacebook.Cols.FBNAME + " ASC");
+		if(mCursor.getCount()>0){
+		 sortUsingSectionIndexor();
+		}else{
+			loadFBSession();
+		}
 	}
-
-	@Override
-	public void onLoadFinished(Loader<Cursor> arg0, Cursor arg1) {
-		Log.i("TAG1","cursorLength"+arg1.getCount());
-		sortUsingSectionIndexor(arg1);
-	}
-
-	@Override
-	public void onLoaderReset(Loader<Cursor> arg0) {
-		Log.i("TAG1","Loader reset");
-		adapter.swapCursor(null);
-	}	
 	private void loadFBSession() {
 		AccessToken token=AccessToken.createFromExistingAccessToken(prefs.getFbAcessToken(),null,null,
 				AccessTokenSource.FACEBOOK_APPLICATION_SERVICE,null);
@@ -119,20 +113,22 @@ public class PickerFriendListActivity extends ActionBarActivity implements andro
 						@Override
 						public void run() {
 							for(GraphUser user:users){
+								Log.i("TAG",""+user.getInnerJSONObject().toString());
 								ContentValues values=new ContentValues();
-								Log.d("TAG",""+user.getId()+"::"+user.getFirstName()+user.getLastName()+"::"+user.getMiddleName()+":"+user.getName());
+								Log.d("TAG",""+user.getId()+"::"+user.getFirstName()+user.getLastName()+"::"+user.getMiddleName()+":"+user.getUsername());
 								values.put(ContentDescriptor.WSFacebook.Cols.FBID, user.getId());
 								values.put(ContentDescriptor.WSFacebook.Cols.FBNAME, user.getName());
-								values.put(ContentDescriptor.WSFacebook.Cols.IMGURL, "");           
+								Log.i("TAG","dd"+user.getLink());
+								values.put(ContentDescriptor.WSFacebook.Cols.IMGURL, "http://profile.ak.fbcdn.net/hprofile-ak-ash1/203011_693812650_6324910_q.jpg");           
 								int numRows=resolver.update(ContentDescriptor.WSFacebook.CONTENT_URI, values, ContentDescriptor.WSFacebook.Cols.FBID+"=?", new String[]{user.getId()});
 						        if(numRows==0){
 						           values.put(ContentDescriptor.WSFacebook.Cols.FBSTATUS, 0);    	
 								   resolver.insert(ContentDescriptor.WSFacebook.CONTENT_URI, values);
 						        }
-							}	
-							
+							}
+							getNewCursor();
 						}
-					});
+					}).start();
 				}
 			}
 		});
@@ -140,9 +136,11 @@ public class PickerFriendListActivity extends ActionBarActivity implements andro
 	}
 	
 	
-	private void sortUsingSectionIndexor(final Cursor mCursor) {
+	private void sortUsingSectionIndexor() {
 		if (mTask != null && (mTask.getStatus() == Status.RUNNING))
 			return;
+		else if (mCursor != null)
+			mCursor.requery();
 		mTask = new AsyncTask<Void, Void, Integer>() {
 			@Override
 			protected Integer doInBackground(Void... params) {
@@ -192,19 +190,20 @@ public class PickerFriendListActivity extends ActionBarActivity implements andro
 
 			@Override
 			protected void onPostExecute(Integer params) {
+				
 				if(params ==-1){
 					return;
 				}
+				Log.i("TAG","calling onPost execute");
 				if (adapter == null) {
 					adapter = new FbFriendsAdapter(PickerFriendListActivity.this, mCursor, indexer, usedSectionNumbers,sectionToOffset, sectionToPosition);
 					listview.setAdapter(adapter);
 					progress.setVisibility(View.INVISIBLE);
-					listview.setVisibility(View.VISIBLE);
-				} 
-				//else if (mAdapter != null) {
-//					mAdapter.refresh(indexer, usedSectionNumbers,
-//							sectionToOffset, sectionToPosition);
-//				}
+					listview.setVisibility(View.VISIBLE);}
+				else{
+					adapter.refresh(indexer, usedSectionNumbers,
+							sectionToOffset, sectionToPosition);
+				}
 			}
 		};
 		mTask.execute();
@@ -215,7 +214,6 @@ public class PickerFriendListActivity extends ActionBarActivity implements andro
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		getSupportLoaderManager().destroyLoader(LOADER_ID);
 	}
 
 }

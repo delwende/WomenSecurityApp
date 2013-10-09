@@ -20,8 +20,8 @@ import android.widget.SectionIndexer;
 import android.widget.TextView;
 
 import com.tavant.droid.security.R;
-import com.tavant.droid.security.adapters.SettingsAdapter.ViewHolder;
 import com.tavant.droid.security.database.ContentDescriptor;
+
 
 
 
@@ -46,20 +46,17 @@ public class FbFriendsAdapter extends 	android.support.v4.widget.CursorAdapter i
 	private int[] usedSectionNumbers;
 	private Map<Integer, Integer> sectionToOffset = null;
 	private Map<Integer, Integer> sectionToPosition = null;
-	private ViewHolder adapter = null;
+	private com.tavant.droid.security.adapters.ViewHolder adapter = null;
 	private LayoutInflater mLayoutInflater;
 	private int mNewPosition = -1;
+	private TextView textView = null;
     
-    
-	
-	
-	
-    
+   
     
 	public FbFriendsAdapter(Context context, Cursor c, AlphabetIndexer indexer,
 			int[] usedSectionNumbers, Map<Integer, Integer> sectionToOffset,
 			Map<Integer, Integer> sectionToPosition) {
-		super(context, c,true);
+		super(context, c,false);
 		this.indexer = indexer;
 		this.usedSectionNumbers = usedSectionNumbers;
 		this.sectionToOffset = sectionToOffset;
@@ -68,9 +65,6 @@ public class FbFriendsAdapter extends 	android.support.v4.widget.CursorAdapter i
 		mResolver=context.getContentResolver();
 	}
 	
-	
-	
-
 	@Override
 	public int getCount() {
 		if (super.getCount() != 0) {
@@ -81,6 +75,10 @@ public class FbFriendsAdapter extends 	android.support.v4.widget.CursorAdapter i
 
 	@Override
 	public Object getItem(int position) {
+		if (getItemViewType(position) == TYPE_NORMAL) {// we define this
+			// function later
+			return super.getItem(position- sectionToOffset.get(getSectionForPosition(position)) - 1);
+		}
 		return null;
 	}
 
@@ -135,58 +133,112 @@ public class FbFriendsAdapter extends 	android.support.v4.widget.CursorAdapter i
 	public int getViewTypeCount() {
 		return TYPE_COUNT;
 	}
+	
+	
+	@Override
+	public View getView(int position, View convertView, ViewGroup parent) {
+		final int type = getItemViewType(position);
+		if (type == TYPE_HEADER) {
+			try{
+				adapter = new com.tavant.droid.security.adapters.ViewHolder();
+				convertView = mLayoutInflater.inflate(R.layout.com_facebook_picker_list_section_header, null);
+				textView = (TextView) convertView.findViewById(R.id.com_facebook_picker_list_section_header);
+				adapter.isTitle = true;
+				convertView.setTag(adapter);
+				textView.setText((String) getSections()[getSectionForPosition(position)]);
+			}catch (Exception e) {}
+			return convertView;
+		}
+		try{
+			mNewPosition = position - sectionToOffset.get(getSectionForPosition(position))- 1;
+		}catch (Exception e) {
+			return convertView;
+		}
+		return super.getView(mNewPosition, convertView, parent);
+	}
 
+	    // these two methods just disable the headers
+		@Override
+		public boolean areAllItemsEnabled() {
+			return false;
+		}
+
+		@Override
+		public boolean isEnabled(int position) {
+			if (getItemViewType(position) == TYPE_HEADER) {
+				return false;
+			}
+			return true;
+		}
 	
 	
 	@Override
 	public View newView(Context context, Cursor cursor, ViewGroup parent) {
-		View convertView;
-		convertView = LayoutInflater.from(context).inflate(
+		View convertView = LayoutInflater.from(context).inflate(
 					R.layout.list_row, null);
+		adapter = getAdapter(convertView);
+		convertView.setTag(adapter);
 		return convertView;
+	}
+	
+	private ViewHolder getAdapter(View convertView) {
+		ViewHolder adapter = new ViewHolder();
+		adapter.mName = (TextView) convertView.findViewById(R.id.fb_name);
+		adapter.mAvathar = (ImageView) convertView.findViewById(R.id.com_facebook_image);
+		adapter.mCheckBox=(CheckBox)convertView.findViewById(R.id.com_fb_checkbox);
+		convertView.setTag(adapter);
+		return adapter;
 	}
 	
 	
 	@Override
 	public void bindView(View view, Context context, Cursor cursor) {
 		
-		id=cursor.getInt(cursor
-				.getColumnIndex(BaseColumns._ID));
+		adapter = (ViewHolder) view.getTag();
+		if (adapter.isTitle) {
+			view = null;
+			adapter = null;
+			view = mLayoutInflater.inflate(R.layout.list_row, null, false);
+			adapter = getAdapter(view);
+		}
+
+		adapter.position = getCursor().getPosition();
+		view.setTag(adapter);
 		
-		imgurl= cursor.getString(cursor
-				.getColumnIndex(ContentDescriptor.WSFacebook.Cols.IMGURL));
 		
-		uName= cursor.getString(cursor
-				.getColumnIndex(ContentDescriptor.WSFacebook.Cols.FBNAME));
-		selected=cursor.getInt(cursor
+		
+		String id = cursor.getString(cursor.getColumnIndex(BaseColumns._ID));
+		String uName = cursor.getString(cursor.getColumnIndex(ContentDescriptor.WSFacebook.Cols.FBNAME));
+		String imgurl = cursor.getString(cursor.getColumnIndex(ContentDescriptor.WSFacebook.Cols.IMGURL));
+		int selected=cursor.getInt(cursor
 				.getColumnIndex(ContentDescriptor.WSFacebook.Cols.FBSTATUS));
 		
 		
-		TextView name = (TextView) view
-				.findViewById(R.id.fb_name);
-		name.setText(uName);
+		adapter.mName.setText(uName);
+		adapter.mCheckBox.setChecked(selected==1 ? true:false );
+		adapter.mCheckBox.setTag(id);
+		adapter.mCheckBox.setOnCheckedChangeListener(this); 
+		adapter.mAvathar.setTag(R.string.ImageUrl, imgurl);
 		ImageView img=(ImageView)view.findViewById(R.id.com_facebook_image);
 		img.setTag(imgurl);
-		CheckBox mcheckbox = (CheckBox) view
-				.findViewById(R.id.com_fb_checkbox);
-
-		mcheckbox.setChecked(selected==1 ? true:false );
-		mcheckbox.setTag(id);
-		mcheckbox.setOnCheckedChangeListener(this);
+		ImageLoader.getInstance().DisplayImage(imgurl,
+				adapter.mAvathar.getContext(), adapter.mAvathar,null);
+				
 	}
 	
 	
 	
 	
-	public void refresh(){
+	public void refresh(AlphabetIndexer indxr,int[] usdsecnum,Map<Integer, Integer> s2off,Map<Integer, Integer> sec2Pos) {
 		try{
-			getCursor().requery();
-			notifyDataSetChanged();
+			indexer = indxr;
+			usedSectionNumbers = usdsecnum;
+			sectionToOffset = s2off;
+			sectionToPosition = sec2Pos;
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-
 
 	@Override
 	public void onCheckedChanged(CompoundButton arg0, boolean arg1) {
@@ -197,18 +249,14 @@ public class FbFriendsAdapter extends 	android.support.v4.widget.CursorAdapter i
 					mResolver.update(ContentDescriptor.WSFacebook.CONTENT_URI, values,
 							BaseColumns._ID+ " = " + _id + " ",
 							null);
-					//getCursor().requery();
-					//notifyDataSetChanged();
 				
 			} else {
 				values.put(ContentDescriptor.WSFacebook.Cols.FBSTATUS, 0);
 				mResolver.update(ContentDescriptor.WSFacebook.CONTENT_URI, values,
 						BaseColumns._ID+ " = " + _id + " ",
 						null);
-				//getCursor().requery();
-				//notifyDataSetChanged();
 			}
-	}
+	 }
 
 
 	

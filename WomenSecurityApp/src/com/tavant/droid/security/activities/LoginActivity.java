@@ -169,7 +169,8 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 			uiHelper= new UiLifecycleHelper(this, callback); 	
 			setContentView(R.layout.login);
 			loginbtn=(LoginButton)findViewById(R.id.fb_btn);
-			loginbtn.setReadPermissions(Arrays.asList("xmpp_login", "user_online_presence","friends_online_presence")); 
+			loginbtn.setReadPermissions(Arrays.asList("xmpp_login", "user_online_presence","friends_online_presence","read_friendlists","read_stream","read_requests",
+					"read_friendlists")); 
 			versionText=(TextView)findViewById(R.id.version);
 			versionText.setText(versionText.getText()+getApplicationversionName());
 			termsText=(TextView)findViewById(R.id.terms);

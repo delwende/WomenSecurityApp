@@ -48,12 +48,10 @@ public class WSContentProvider extends ContentProvider {
 		switch(token){
 			case ContentDescriptor.WSContact.PATH_TOKEN:{
 				long id = db.insert(ContentDescriptor.WSContact.NAME, null, values);
-				getContext().getContentResolver().notifyChange(uri, null);
 				return ContentDescriptor.WSContact.CONTENT_URI.buildUpon().appendPath(String.valueOf(id)).build();
 			}
 			case ContentDescriptor.WSFacebook.PATH_TOKEN:{
 				long id = db.insert(ContentDescriptor.WSFacebook.NAME_TABLE, null, values);
-				getContext().getContentResolver().notifyChange(uri, null);
 				return ContentDescriptor.WSFacebook.CONTENT_URI.buildUpon().appendPath(String.valueOf(id)).build();
 			}
             default: {
@@ -76,14 +74,13 @@ public class WSContentProvider extends ContentProvider {
 			case ContentDescriptor.WSContact.PATH_TOKEN:{
 				SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
 				builder.setTables(ContentDescriptor.WSContact.NAME);
-				Cursor cur= builder.query(db, null, null, null, null, null, null);
+				Cursor cur= builder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
 				return cur;
 			}
 			case ContentDescriptor.WSFacebook.PATH_TOKEN:{
 				SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
 				builder.setTables(ContentDescriptor.WSFacebook.NAME_TABLE);
-				Cursor cur= builder.query(db, null, null, null, null, null, null);
-				cur.setNotificationUri(getContext().getContentResolver(), uri);
+				Cursor cur= builder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
 				return cur;
 			}
 			default: return null;
@@ -97,7 +94,6 @@ public class WSContentProvider extends ContentProvider {
 		final int match = ContentDescriptor.URI_MATCHER.match(uri);
 		switch (match) {
 		case ContentDescriptor.WSFacebook.PATH_TOKEN:{
-			getContext().getContentResolver().notifyChange(uri, null);
 			return db.update(ContentDescriptor.WSFacebook.NAME_TABLE, values, selection, selectionArgs);
 		 }
 		default:
