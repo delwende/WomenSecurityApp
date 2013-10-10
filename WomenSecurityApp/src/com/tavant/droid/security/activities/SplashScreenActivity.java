@@ -23,7 +23,7 @@ public class SplashScreenActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Utils.enableStrictMode();
+		//Utils.enableStrictMode();
 		pref=CommonPreferences.getInstance();
 		//pref.load(this);
 		if(pref.isFirstTime()){

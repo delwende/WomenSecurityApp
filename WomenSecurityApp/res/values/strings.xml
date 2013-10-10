@@ -19,11 +19,11 @@
 	
 	<string name="str_facebook">Facebook</string>
 	<string name="str_facebook_desc">Add Facebook Friends</string>
-	<string name="str_facebook_desc_long">Add three maximum facebook friend that you wish to contact in emergency.</string>
+	<string name="str_facebook_desc_long">Add facebook friends that you wish to contact in emergency.</string>
 	
 	<string name="str_contacts">Contacts</string>
 	<string name="str_contacts_desc">Add phone Contacts</string>
-	<string name="str_contacts_desc_long">Add three maximum phone contact that you wish to contact in emergency.</string>
+	<string name="str_contacts_desc_long">Add  phone contacts that you wish to contact in emergency.</string>
 	
 	<string name="str_buzzer">Buzzer</string>
 	<string name="str_buzzer_desc">Set Buzzer</string>  
@@ -49,7 +49,7 @@
 	<string name="register">Register</string>
 	<string name="enter_mob_number">Please Enter Your Mobile number and Name to proceed</string>
 	<string name="ImageUrl">urlforimageview</string>
-	
+	 <string name="done">Done</string>
 	
 	
 	

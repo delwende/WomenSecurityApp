@@ -19,11 +19,22 @@ package com.tavant.droid.security.utils;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import com.tavant.droid.security.activities.FetchContactsActivity;
-
 import android.annotation.TargetApi;
+import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.StrictMode;
+import android.provider.ContactsContract;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+
+import com.tavant.droid.security.R;
+import com.tavant.droid.security.activities.FetchContactsActivity;
 
 
 /**
@@ -114,5 +125,48 @@ public class Utils {
 			}
 		} catch (Exception ex) {
 		}
+	}
+    public static Bitmap loadContactPhoto(ContentResolver cr, long  id,ImageView iv,ProgressBar pg,int scaledHeight,int scaledWidth) {
+		iv.setImageBitmap(null);
+		Uri uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, id);
+		InputStream input = android.provider.ContactsContract.Contacts.openContactPhotoInputStream(cr, uri);
+		if (input == null) {
+			if(pg!=null)
+				pg.setVisibility(View.GONE);
+			if(iv!=null)
+				iv.setImageResource(R.drawable.com_facebook_profile_default_icon);
+			return null;
+		}
+		Bitmap map = BitmapFactory.decodeStream(input);
+		int height = map.getHeight();
+		int width = map.getWidth();
+
+
+		float value = 1;
+		if(height > scaledHeight || width > scaledWidth){
+
+			float x = (float)width/100;
+			float y = (float)height/100;
+
+			value = x > y ? x : y;
+
+			float delta = scaledHeight/value;
+			height = (int) (delta * y);
+			width = (int) (delta * x);
+
+
+		}
+		Bitmap bitmap = Bitmap.createScaledBitmap(map, width, height, true);
+		BitmapDrawable drawable = new BitmapDrawable(bitmap);
+		if(iv!=null)
+			iv.setImageDrawable(drawable);
+		if(pg!=null)
+			pg.setVisibility(View.GONE);	
+		if(map!=null){
+			map.recycle();
+			map = null;
+		}
+
+		return bitmap;
 	}
 }

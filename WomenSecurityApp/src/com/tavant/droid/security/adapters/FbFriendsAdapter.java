@@ -7,7 +7,10 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.provider.BaseColumns;
+import android.provider.ContactsContract.Contacts;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,12 +23,9 @@ import android.widget.SectionIndexer;
 import android.widget.TextView;
 
 import com.tavant.droid.security.R;
+import com.tavant.droid.security.activities.PickerFriendListActivity;
 import com.tavant.droid.security.database.ContentDescriptor;
-
-
-
-
-
+import com.tavant.droid.security.utils.Utils;
 
 
 public class FbFriendsAdapter extends 	android.support.v4.widget.CursorAdapter implements OnCheckedChangeListener,SectionIndexer{
@@ -50,13 +50,17 @@ public class FbFriendsAdapter extends 	android.support.v4.widget.CursorAdapter i
 	private LayoutInflater mLayoutInflater;
 	private int mNewPosition = -1;
 	private TextView textView = null;
+	private Cursor cur;
+	private Uri muri;
     
    
     
 	public FbFriendsAdapter(Context context, Cursor c, AlphabetIndexer indexer,
 			int[] usedSectionNumbers, Map<Integer, Integer> sectionToOffset,
-			Map<Integer, Integer> sectionToPosition) {
-		super(context, c,false);
+			Map<Integer, Integer> sectionToPosition,Uri uri) {
+		super(context, c);
+		this.muri=uri;
+		this.cur=c;
 		this.indexer = indexer;
 		this.usedSectionNumbers = usedSectionNumbers;
 		this.sectionToOffset = sectionToOffset;
@@ -194,6 +198,11 @@ public class FbFriendsAdapter extends 	android.support.v4.widget.CursorAdapter i
 	@Override
 	public void bindView(View view, Context context, Cursor cursor) {
 		
+		String id;
+		String uName;
+		String imgurl;
+		int selected=0;
+		
 		adapter = (ViewHolder) view.getTag();
 		if (adapter.isTitle) {
 			view = null;
@@ -206,23 +215,33 @@ public class FbFriendsAdapter extends 	android.support.v4.widget.CursorAdapter i
 		view.setTag(adapter);
 		
 		
-		
-		String id = cursor.getString(cursor.getColumnIndex(BaseColumns._ID));
-		String uName = cursor.getString(cursor.getColumnIndex(ContentDescriptor.WSFacebook.Cols.FBNAME));
-		String imgurl = cursor.getString(cursor.getColumnIndex(ContentDescriptor.WSFacebook.Cols.IMGURL));
-		int selected=cursor.getInt(cursor
+		if(muri.equals(PickerFriendListActivity.FRIEND_PICKER)){
+		id = cursor.getString(cursor.getColumnIndex(BaseColumns._ID));
+		uName = cursor.getString(cursor.getColumnIndex(ContentDescriptor.WSFacebook.Cols.FBNAME));
+		imgurl = cursor.getString(cursor.getColumnIndex(ContentDescriptor.WSFacebook.Cols.IMGURL));
+		selected=cursor.getInt(cursor
 				.getColumnIndex(ContentDescriptor.WSFacebook.Cols.FBSTATUS));
-		
+		}else{
+			uName=cursor.getString(cursor.getColumnIndex(Contacts.DISPLAY_NAME));
+			id=cursor.getString(cursor
+					.getColumnIndex(Contacts._ID));
+			imgurl=""+cursor.getLong(cursor.getColumnIndex(Contacts._ID));
+		}
 		
 		adapter.mName.setText(uName);
+		adapter.mCheckBox.setOnCheckedChangeListener(null);
 		adapter.mCheckBox.setChecked(selected==1 ? true:false );
 		adapter.mCheckBox.setTag(id);
 		adapter.mCheckBox.setOnCheckedChangeListener(this); 
 		adapter.mAvathar.setTag(R.string.ImageUrl, imgurl);
+		if(muri.equals(PickerFriendListActivity.FRIEND_PICKER)){
 		ImageView img=(ImageView)view.findViewById(R.id.com_facebook_image);
 		img.setTag(imgurl);
 		ImageLoader.getInstance().DisplayImage(imgurl,
 				adapter.mAvathar.getContext(), adapter.mAvathar,null);
+		}else{
+			Utils.loadContactPhoto(context.getContentResolver(), Long.parseLong(id), adapter.mAvathar, null, 60, 60);
+		}
 				
 	}
 	
@@ -242,6 +261,7 @@ public class FbFriendsAdapter extends 	android.support.v4.widget.CursorAdapter i
 
 	@Override
 	public void onCheckedChanged(CompoundButton arg0, boolean arg1) {
+		Log.i("TAG",""+"refreshing listview");
 		Integer _id = new Integer(arg0.getTag().toString());
 			values = new ContentValues();
 			if (arg1) { 
@@ -256,6 +276,8 @@ public class FbFriendsAdapter extends 	android.support.v4.widget.CursorAdapter i
 						BaseColumns._ID+ " = " + _id + " ",
 						null);
 			}
+			cur.requery();
+			notifyDataSetChanged();
 	 }
 
 

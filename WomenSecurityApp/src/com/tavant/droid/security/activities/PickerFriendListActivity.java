@@ -14,6 +14,7 @@ import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AlphabetIndexer;
@@ -35,6 +36,8 @@ import com.tavant.droid.security.R;
 import com.tavant.droid.security.adapters.FbFriendsAdapter;
 import com.tavant.droid.security.database.ContentDescriptor;
 import com.tavant.droid.security.prefs.CommonPreferences;
+import android.provider.ContactsContract;
+import android.provider.ContactsContract.Contacts;
 
 
 
@@ -45,7 +48,8 @@ public class PickerFriendListActivity extends ActionBarActivity
 	private ProgressBar progress=null;
 	private ListView listview=null;
 	private ContentResolver resolver=null;
-	private FbFriendsAdapter adapter=null;	
+	private FbFriendsAdapter adapter=null;
+	//private Cursor mPhContactCursor=null;
 	private Session session=null;
 	private RelativeLayout layout=null;
 	private CommonPreferences prefs=null;
@@ -71,18 +75,32 @@ public class PickerFriendListActivity extends ActionBarActivity
 		layout=(RelativeLayout)findViewById(R.id.parent);
 		resolver=getContentResolver();
 		prefs=CommonPreferences.getInstance();
+		if(getIntent().getData().equals(FRIEND_PICKER)){
 		session=new Session(this);
-		getNewCursor();
+		getNewFBCursor();
+		}else if(getIntent().getData().equals(CONTACTS_PICKER)){
+			getPhoneContactCursor();
+		}
 	}
-		
-	private void getNewCursor() {
+
+	private void getNewFBCursor() {
 		mCursor=resolver.query(ContentDescriptor.WSFacebook.CONTENT_URI, null, null, null, ContentDescriptor.WSFacebook.Cols.FBNAME + " ASC");
 		if(mCursor.getCount()>0){
-		 sortUsingSectionIndexor();
+			sortUsingSectionIndexor();
 		}else{
 			loadFBSession();
 		}
 	}
+	
+	
+	private void getPhoneContactCursor(){
+		
+		mCursor = getContentResolver().query(ContactsContract.Contacts.CONTENT_URI,null,
+				Contacts.HAS_PHONE_NUMBER +" = 1", null, ContactsContract.Contacts.DISPLAY_NAME + " ASC");
+		sortUsingSectionIndexor();
+	}
+	
+	
 	private void loadFBSession() {
 		AccessToken token=AccessToken.createFromExistingAccessToken(prefs.getFbAcessToken(),null,null,
 				AccessTokenSource.FACEBOOK_APPLICATION_SERVICE,null);
@@ -90,12 +108,12 @@ public class PickerFriendListActivity extends ActionBarActivity
 			@Override
 			public void call(Session msession, SessionState state, Exception exception) {
 				if(state.isOpened()){
-                  getFBFriends();
+					getFBFriends();
 				}
 			}
 		});
 	}
-	
+
 	private void getFBFriends(){
 		Request req= Request.newMyFriendsRequest(session,  new Request.GraphUserListCallback() {
 			@Override
@@ -121,12 +139,12 @@ public class PickerFriendListActivity extends ActionBarActivity
 								Log.i("TAG","dd"+user.getLink());
 								values.put(ContentDescriptor.WSFacebook.Cols.IMGURL, "http://profile.ak.fbcdn.net/hprofile-ak-ash1/203011_693812650_6324910_q.jpg");           
 								int numRows=resolver.update(ContentDescriptor.WSFacebook.CONTENT_URI, values, ContentDescriptor.WSFacebook.Cols.FBID+"=?", new String[]{user.getId()});
-						        if(numRows==0){
-						           values.put(ContentDescriptor.WSFacebook.Cols.FBSTATUS, 0);    	
-								   resolver.insert(ContentDescriptor.WSFacebook.CONTENT_URI, values);
-						        }
+								if(numRows==0){
+									values.put(ContentDescriptor.WSFacebook.Cols.FBSTATUS, 0);    	
+									resolver.insert(ContentDescriptor.WSFacebook.CONTENT_URI, values);
+								}
 							}
-							getNewCursor();
+							getNewFBCursor();
 						}
 					}).start();
 				}
@@ -134,20 +152,24 @@ public class PickerFriendListActivity extends ActionBarActivity
 		});
 		req.executeAsync();
 	}
-	
-	
+
+
 	private void sortUsingSectionIndexor() {
 		if (mTask != null && (mTask.getStatus() == Status.RUNNING))
 			return;
-		else if (mCursor != null)
-			mCursor.requery();
 		mTask = new AsyncTask<Void, Void, Integer>() {
 			@Override
 			protected Integer doInBackground(Void... params) {
 				try {
+					if(getIntent().getData().equals(FRIEND_PICKER)){
 					indexer = new AlphabetIndexer(mCursor,
 							mCursor.getColumnIndexOrThrow(ContentDescriptor.WSFacebook.Cols.FBNAME),
-					"#ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+							"#ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+					}else{
+						indexer = new AlphabetIndexer(mCursor,
+								mCursor.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME),
+								"#ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+					}
 
 					sectionToOffset = new HashMap<Integer, Integer>();
 					sectionToPosition = new TreeMap<Integer, Integer>();
@@ -190,13 +212,17 @@ public class PickerFriendListActivity extends ActionBarActivity
 
 			@Override
 			protected void onPostExecute(Integer params) {
-				
+
 				if(params ==-1){
 					return;
 				}
-				Log.i("TAG","calling onPost execute");
+				Log.i("TAG","calling onPost execute"+mCursor.getCount());
 				if (adapter == null) {
-					adapter = new FbFriendsAdapter(PickerFriendListActivity.this, mCursor, indexer, usedSectionNumbers,sectionToOffset, sectionToPosition);
+					if(getIntent().getData().equals(FRIEND_PICKER)){
+					adapter = new FbFriendsAdapter(PickerFriendListActivity.this, mCursor, indexer, usedSectionNumbers,sectionToOffset, sectionToPosition,FRIEND_PICKER);
+					}else{
+						adapter = new FbFriendsAdapter(PickerFriendListActivity.this, mCursor, indexer, usedSectionNumbers,sectionToOffset, sectionToPosition,CONTACTS_PICKER);
+					}
 					listview.setAdapter(adapter);
 					progress.setVisibility(View.INVISIBLE);
 					listview.setVisibility(View.VISIBLE);}
@@ -208,9 +234,17 @@ public class PickerFriendListActivity extends ActionBarActivity
 		};
 		mTask.execute();
 	}
-	
-	
-	
+
+
+
+
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.fb_friends, menu);
+		return true;
+	}
+
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
