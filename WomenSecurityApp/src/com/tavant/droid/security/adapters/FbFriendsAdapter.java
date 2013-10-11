@@ -1,6 +1,7 @@
 
 package com.tavant.droid.security.adapters;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import android.content.ContentResolver;
@@ -52,12 +53,13 @@ public class FbFriendsAdapter extends 	android.support.v4.widget.CursorAdapter i
 	private TextView textView = null;
 	private Cursor cur;
 	private Uri muri;
+	private ArrayList<String>miDs=null;
     
    
     
 	public FbFriendsAdapter(Context context, Cursor c, AlphabetIndexer indexer,
 			int[] usedSectionNumbers, Map<Integer, Integer> sectionToOffset,
-			Map<Integer, Integer> sectionToPosition,Uri uri) {
+			Map<Integer, Integer> sectionToPosition,Uri uri,ArrayList<String>ids) {
 		super(context, c);
 		this.muri=uri;
 		this.cur=c;
@@ -67,6 +69,7 @@ public class FbFriendsAdapter extends 	android.support.v4.widget.CursorAdapter i
 		this.sectionToPosition = sectionToPosition;
 		mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		mResolver=context.getContentResolver();
+		miDs=ids;
 	}
 	
 	@Override
@@ -225,6 +228,8 @@ public class FbFriendsAdapter extends 	android.support.v4.widget.CursorAdapter i
 			uName=cursor.getString(cursor.getColumnIndex(Contacts.DISPLAY_NAME));
 			id=cursor.getString(cursor
 					.getColumnIndex(Contacts._ID));
+			if(miDs.contains(id))
+				selected=1;
 			imgurl=""+cursor.getLong(cursor.getColumnIndex(Contacts._ID));
 		}
 		
@@ -240,6 +245,7 @@ public class FbFriendsAdapter extends 	android.support.v4.widget.CursorAdapter i
 		ImageLoader.getInstance().DisplayImage(imgurl,
 				adapter.mAvathar.getContext(), adapter.mAvathar,null);
 		}else{
+			adapter.mCheckBox.setTag(R.string.contacts_name,uName);
 			Utils.loadContactPhoto(context.getContentResolver(), Long.parseLong(id), adapter.mAvathar, null, 60, 60);
 		}
 				
@@ -261,7 +267,9 @@ public class FbFriendsAdapter extends 	android.support.v4.widget.CursorAdapter i
 
 	@Override
 	public void onCheckedChanged(CompoundButton arg0, boolean arg1) {
+		
 		Log.i("TAG",""+"refreshing listview");
+		if(muri.equals(PickerFriendListActivity.FRIEND_PICKER)){
 		Integer _id = new Integer(arg0.getTag().toString());
 			values = new ContentValues();
 			if (arg1) { 
@@ -276,8 +284,20 @@ public class FbFriendsAdapter extends 	android.support.v4.widget.CursorAdapter i
 						BaseColumns._ID+ " = " + _id + " ",
 						null);
 			}
+		 }else{
+			 String id=arg0.getTag().toString();
+			 values = new ContentValues();
+			 if(arg1){
+				    values.put(ContentDescriptor.WSContact.Cols.CONTACTS_ID, id);
+					
+			 }else{
+				 
+			 }
+		 }
+		     
 			cur.requery();
 			notifyDataSetChanged();
+			
 	 }
 
 

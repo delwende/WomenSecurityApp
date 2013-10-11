@@ -56,9 +56,7 @@ public class ContentDescriptor {
 		public static class Cols {
 			public static final String ID = BaseColumns._ID; // convention
 			public static final String NAME = "wscontact_name";
-			public static final String ADDRESS  = "wscontact_addr";
-			public static final String CITY = "wscontact_city";
-			public static final String STATE = "wscontact_state";
+			public static final String CONTACTS_ID="wscontact_id";
 			public static final String PHONE = "wscontact_phone";
 		}
 		

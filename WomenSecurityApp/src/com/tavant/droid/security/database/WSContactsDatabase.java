@@ -28,9 +28,7 @@ public class WSContactsDatabase extends SQLiteOpenHelper {
 		db.execSQL("CREATE TABLE " + ContentDescriptor.WSContact.NAME+ " ( " +
 				ContentDescriptor.WSContact.Cols.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
 				ContentDescriptor.WSContact.Cols.NAME + " TEXT NOT NULL, " +
-				ContentDescriptor.WSContact.Cols.ADDRESS 	+ " TEXT , " +
-				ContentDescriptor.WSContact.Cols.CITY + " TEXT, " +
-				ContentDescriptor.WSContact.Cols.STATE + " TEXT, " +
+				ContentDescriptor.WSContact.Cols.CONTACTS_ID 	+ " TEXT NOT NULL, " +
 				ContentDescriptor.WSContact.Cols.PHONE + " TEXT NOT NULL, " +
 				"UNIQUE (" + 
 					ContentDescriptor.WSContact.Cols.ID + 

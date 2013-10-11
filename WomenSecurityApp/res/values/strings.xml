@@ -104,5 +104,6 @@
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
     <string name="announce">Announce</string>
-
+    <string name="contacts_name">name</string>
+    
 </resources>

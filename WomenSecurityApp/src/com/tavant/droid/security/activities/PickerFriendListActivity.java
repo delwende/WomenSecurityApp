@@ -1,5 +1,6 @@
 package com.tavant.droid.security.activities;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.AsyncTask.Status;
 import android.os.Bundle;
+import android.provider.ContactsContract;
+import android.provider.ContactsContract.Contacts;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -30,14 +33,12 @@ import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.Session.StatusCallback;
 import com.facebook.SessionState;
-import com.facebook.model.GraphObject;
 import com.facebook.model.GraphUser;
 import com.tavant.droid.security.R;
 import com.tavant.droid.security.adapters.FbFriendsAdapter;
 import com.tavant.droid.security.database.ContentDescriptor;
+import com.tavant.droid.security.database.ContentDescriptor.WSContact;
 import com.tavant.droid.security.prefs.CommonPreferences;
-import android.provider.ContactsContract;
-import android.provider.ContactsContract.Contacts;
 
 
 
@@ -65,6 +66,7 @@ public class PickerFriendListActivity extends ActionBarActivity
 	private Map<Integer, Integer> sectionToOffset;
 	private Map<Integer, Integer> sectionToPosition;
 	private AsyncTask<Void, Void,Integer> mTask = null;
+	private ArrayList<String>mIDs=null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {	
@@ -97,9 +99,20 @@ public class PickerFriendListActivity extends ActionBarActivity
 		
 		mCursor = getContentResolver().query(ContactsContract.Contacts.CONTENT_URI,null,
 				Contacts.HAS_PHONE_NUMBER +" = 1", null, ContactsContract.Contacts.DISPLAY_NAME + " ASC");
+		getCurrentlySelectedCursor();
 		sortUsingSectionIndexor();
 	}
 	
+	
+	private void getCurrentlySelectedCursor(){
+		Cursor temp=getContentResolver().query(ContentDescriptor.WSContact.CONTENT_URI,null,null,null,null);
+		if(temp!=null&&temp.getCount()>0){
+		  mIDs=new ArrayList<String>();
+		  while(temp.moveToNext()){
+			mIDs.add(temp.getString(temp.getColumnIndex(WSContact.Cols.CONTACTS_ID)));  
+		  }
+		}		
+	}
 	
 	private void loadFBSession() {
 		AccessToken token=AccessToken.createFromExistingAccessToken(prefs.getFbAcessToken(),null,null,
@@ -219,9 +232,9 @@ public class PickerFriendListActivity extends ActionBarActivity
 				Log.i("TAG","calling onPost execute"+mCursor.getCount());
 				if (adapter == null) {
 					if(getIntent().getData().equals(FRIEND_PICKER)){
-					adapter = new FbFriendsAdapter(PickerFriendListActivity.this, mCursor, indexer, usedSectionNumbers,sectionToOffset, sectionToPosition,FRIEND_PICKER);
+					adapter = new FbFriendsAdapter(PickerFriendListActivity.this, mCursor, indexer, usedSectionNumbers,sectionToOffset, sectionToPosition,FRIEND_PICKER,null);
 					}else{
-						adapter = new FbFriendsAdapter(PickerFriendListActivity.this, mCursor, indexer, usedSectionNumbers,sectionToOffset, sectionToPosition,CONTACTS_PICKER);
+						adapter = new FbFriendsAdapter(PickerFriendListActivity.this, mCursor, indexer, usedSectionNumbers,sectionToOffset, sectionToPosition,CONTACTS_PICKER,mIDs);
 					}
 					listview.setAdapter(adapter);
 					progress.setVisibility(View.INVISIBLE);
