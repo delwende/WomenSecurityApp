@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.tavant.droid.security.R;
 import com.tavant.droid.security.activities.PickerFriendListActivity;
 import com.tavant.droid.security.database.ContentDescriptor;
+import com.tavant.droid.security.utils.PhoneUtils;
 import com.tavant.droid.security.utils.Utils;
 
 
@@ -247,8 +248,7 @@ public class FbFriendsAdapter extends 	android.support.v4.widget.CursorAdapter i
 		}else{
 			adapter.mCheckBox.setTag(R.string.contacts_name,uName);
 			Utils.loadContactPhoto(context.getContentResolver(), Long.parseLong(id), adapter.mAvathar, null, 60, 60);
-		}
-				
+		}		
 	}
 	
 	
@@ -289,12 +289,15 @@ public class FbFriendsAdapter extends 	android.support.v4.widget.CursorAdapter i
 			 values = new ContentValues();
 			 if(arg1){
 				    values.put(ContentDescriptor.WSContact.Cols.CONTACTS_ID, id);
-					
+				    values.put(ContentDescriptor.WSContact.Cols.NAME, id);
+				    values.put(ContentDescriptor.WSContact.Cols.PHONE, PhoneUtils.getContactPhoneNumber(mContext,id));
+				    mResolver.insert(ContentDescriptor.WSContact.CONTENT_URI, values);
+				    miDs.add(id);
 			 }else{
-				 
+				 mResolver.delete(ContentDescriptor.WSContact.CONTENT_URI, ContentDescriptor.WSContact.Cols.CONTACTS_ID+"= ?", new String[]{id}); 
+				 miDs.remove(id);
 			 }
 		 }
-		     
 			cur.requery();
 			notifyDataSetChanged();
 			

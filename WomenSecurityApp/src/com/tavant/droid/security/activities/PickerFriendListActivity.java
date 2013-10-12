@@ -106,8 +106,9 @@ public class PickerFriendListActivity extends ActionBarActivity
 	
 	private void getCurrentlySelectedCursor(){
 		Cursor temp=getContentResolver().query(ContentDescriptor.WSContact.CONTENT_URI,null,null,null,null);
+		Log.i("TAG","length of cursor"+temp.getCount());
+		mIDs=new ArrayList<String>();
 		if(temp!=null&&temp.getCount()>0){
-		  mIDs=new ArrayList<String>();
 		  while(temp.moveToNext()){
 			mIDs.add(temp.getString(temp.getColumnIndex(WSContact.Cols.CONTACTS_ID)));  
 		  }
@@ -150,7 +151,8 @@ public class PickerFriendListActivity extends ActionBarActivity
 								values.put(ContentDescriptor.WSFacebook.Cols.FBID, user.getId());
 								values.put(ContentDescriptor.WSFacebook.Cols.FBNAME, user.getName());
 								Log.i("TAG","dd"+user.getLink());
-								values.put(ContentDescriptor.WSFacebook.Cols.IMGURL, "http://profile.ak.fbcdn.net/hprofile-ak-ash1/203011_693812650_6324910_q.jpg");           
+								
+								values.put(ContentDescriptor.WSFacebook.Cols.IMGURL, "http://graph.facebook.com/"+user.getId()+"/picture?type=square");           
 								int numRows=resolver.update(ContentDescriptor.WSFacebook.CONTENT_URI, values, ContentDescriptor.WSFacebook.Cols.FBID+"=?", new String[]{user.getId()});
 								if(numRows==0){
 									values.put(ContentDescriptor.WSFacebook.Cols.FBSTATUS, 0);    	

@@ -67,7 +67,7 @@ public class WSContentProvider extends ContentProvider {
 	@Override
 	public Cursor query(Uri uri, String[] projection, String selection,
 			String[] selectionArgs, String sortOrder) {
-		SQLiteDatabase db = wsContactsDb.getReadableDatabase();
+		SQLiteDatabase db = wsContactsDb.getWritableDatabase();
 		final int match = ContentDescriptor.URI_MATCHER.match(uri);
 		switch(match){
 			// retrieve wscontacts list
@@ -104,6 +104,14 @@ public class WSContentProvider extends ContentProvider {
 	
 	@Override
 	public int delete(Uri uri, String selection, String[] selectionArgs) {
+		SQLiteDatabase db = wsContactsDb.getWritableDatabase();
+		final int match = ContentDescriptor.URI_MATCHER.match(uri);
+		switch (match) {
+		case ContentDescriptor.WSContact.PATH_TOKEN:
+			return db.delete(ContentDescriptor.WSContact.NAME,selection, selectionArgs);
+		default:
+			break;
+		}
 		return 0;
 	}
 

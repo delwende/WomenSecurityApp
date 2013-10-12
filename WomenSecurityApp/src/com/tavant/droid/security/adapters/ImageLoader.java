@@ -20,7 +20,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -254,7 +253,6 @@ public class ImageLoader {
 							photoToLoad = photosQueue.photosToLoad.pop();
 						}
 						if(photoToLoad.url != null ){
-							Log.i("TAG","imageurl"+photoToLoad.url);
 							Bitmap bmp = getBitmap(photoToLoad.url,photoToLoad.imageView.getContext());
 							if (bmp != null) {
 								if (cache.size() == FILE_LIMIT) {
