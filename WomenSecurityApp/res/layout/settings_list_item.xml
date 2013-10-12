@@ -20,7 +20,7 @@
                 android:gravity="center_vertical"
                 android:background="@color/desc_white"
                 android:paddingLeft="10dip"
-                android:paddingRight="10dip">  
+                android:paddingRight="2dip">  
                 
 <com.tavant.droid.security.widget.CustomizableTextView android:id="@+id/desc"
           style="@style/settings_normal.des"/>
@@ -28,10 +28,12 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:id="@+id/desc_long"
+          android:paddingRight="30dip"
           android:ellipsize="none"/>
 
 <CheckBox android:id="@+id/check"
           android:layout_alignParentRight="true"
+          android:layout_centerVertical="true"
           android:visibility="gone"
           android:button="@drawable/selector_checkbox"
           android:layout_width="wrap_content"

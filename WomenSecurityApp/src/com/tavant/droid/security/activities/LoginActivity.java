@@ -188,8 +188,6 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 		if (mgcmId.equals("")) {
 			GCMRegistrar.register(this, WSConstants.GCM_SENDER_ID1);
 		}
-		
-
 		/*
 		mLicenseCheckerCallback = new GSLicenseCheckerCallback();
 		// Construct the LicenseChecker with a policy.

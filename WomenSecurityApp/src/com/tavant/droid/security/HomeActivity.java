@@ -475,7 +475,6 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 	public boolean onOptionsItemSelected(MenuItem item) {
 
 		switch (item.getItemId()) {
-
 		case R.id.action_settings:
 			loadSettings();
 		}
@@ -501,7 +500,6 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 			Intent intent=new Intent(HomeActivity.this, SettingsActivity.class);
 			intent.putExtra("issetting", true);
 			startActivity(intent);
-			
 		}
 
 	}

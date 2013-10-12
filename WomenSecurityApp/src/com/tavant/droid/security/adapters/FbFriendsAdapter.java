@@ -8,6 +8,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.provider.BaseColumns;
 import android.provider.ContactsContract.Contacts;
@@ -26,6 +27,7 @@ import android.widget.TextView;
 import com.tavant.droid.security.R;
 import com.tavant.droid.security.activities.PickerFriendListActivity;
 import com.tavant.droid.security.database.ContentDescriptor;
+import com.tavant.droid.security.utils.FontLoader;
 import com.tavant.droid.security.utils.PhoneUtils;
 import com.tavant.droid.security.utils.Utils;
 
@@ -35,10 +37,6 @@ public class FbFriendsAdapter extends 	android.support.v4.widget.CursorAdapter i
 	
 	
 	private ContentResolver mResolver = null; 
-	private String imgurl;
-	private String uName=null;
-	private int selected=0;
-	private int id=-1;
     private ContentValues values=null;
     
     private static final int TYPE_HEADER = 1;
@@ -55,6 +53,8 @@ public class FbFriendsAdapter extends 	android.support.v4.widget.CursorAdapter i
 	private Cursor cur;
 	private Uri muri;
 	private ArrayList<String>miDs=null;
+	private Typeface mTypeFace_bold = null;
+	private Typeface mTypeFace_normal = null;
     
    
     
@@ -71,6 +71,8 @@ public class FbFriendsAdapter extends 	android.support.v4.widget.CursorAdapter i
 		mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		mResolver=context.getContentResolver();
 		miDs=ids;
+		mTypeFace_bold=FontLoader.getMngr().getTfRobotBold();
+		mTypeFace_normal	=FontLoader.getMngr().getTfRobotNormal();	
 	}
 	
 	@Override
@@ -151,6 +153,7 @@ public class FbFriendsAdapter extends 	android.support.v4.widget.CursorAdapter i
 				adapter = new com.tavant.droid.security.adapters.ViewHolder();
 				convertView = mLayoutInflater.inflate(R.layout.com_facebook_picker_list_section_header, null);
 				textView = (TextView) convertView.findViewById(R.id.com_facebook_picker_list_section_header);
+				textView.setTypeface(mTypeFace_bold);
 				adapter.isTitle = true;
 				convertView.setTag(adapter);
 				textView.setText((String) getSections()[getSectionForPosition(position)]);
@@ -235,6 +238,7 @@ public class FbFriendsAdapter extends 	android.support.v4.widget.CursorAdapter i
 		}
 		
 		adapter.mName.setText(uName);
+		adapter.mName.setTypeface(mTypeFace_normal);
 		adapter.mCheckBox.setOnCheckedChangeListener(null);
 		adapter.mCheckBox.setChecked(selected==1 ? true:false );
 		adapter.mCheckBox.setTag(id);

@@ -2,13 +2,13 @@
 
     <!--
         Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     -->
     <style name="AppBaseTheme" parent="android:Theme.Light">
         <!--
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
+            backward-compatibility can go here.
         -->
     </style>
 
@@ -16,17 +16,17 @@
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
-    
-   <style name="quickContactBadgeStyle">
+
+    <style name="quickContactBadgeStyle">
         <item name="android:background">@drawable/quickcontact_badge_small</item>
     </style>
-     <style name="searchTextHiglight">
+
+    <style name="searchTextHiglight">
         <item name="android:textColor">@color/holo_blue</item>
         <item name="android:textStyle">bold</item>
     </style>
-     
-    
-     <style name="Alp.BaseTheme.Dark" parent="@android:style/Theme" />
+
+    <style name="Alp.BaseTheme.Dark" parent="@android:style/Theme" />
 
     <style name="Alp.BaseThemeHelper.Dark" parent="@style/Alp.BaseTheme.Dark" />
 
@@ -98,9 +98,11 @@
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
         <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
-        <!-- <item name="android:windowActionBar">false</item>
+        <!--
+        <item name="android:windowActionBar">false</item>
         <item name="android:windowActionModeOverlay">true</item>
-        <item name="android:windowCloseOnTouchOutside">true</item> -->
+        <item name="android:windowCloseOnTouchOutside">true</item>
+        -->
         <item name="android:colorBackgroundCacheHint">@null</item>
     </style>
 
@@ -124,91 +126,53 @@
         <item name="android:textAppearance">@android:style/TextAppearance.DialogWindowTitle</item>
     </style>
     
-    
-    
-     <!-- the theme applied to the application or activity -->
-    <style name="CustomActionBarTheme"
-           parent="@style/Theme.AppCompat.Light">
-        <item name="android:actionBarStyle">@style/ActionBar</item>
-        <!-- Support library compatibility -->
-        <item name="actionBarStyle">@style/ActionBar</item>
-    </style>
-    
-    <!-- ActionBar styles -->
-    <style name="ActionBar"
-           parent="@style/Widget.AppCompat.Light.ActionBar.Solid">
-        <item name="android:background">@color/actionbar_color</item>
-        <!-- Support library compatibility -->
-        <item name="background">@color/actionbar_color</item>
-        
-        <item name="android:windowContentOverlay">@null</item>
-       <item name="android:titleTextStyle">@style/ActionBarTitleText</item>
-        <!-- Support library compatibility -->
-        <item name="titleTextStyle">@style/ActionBarTitleText</item>
-
-    </style>
-    
-     <!-- ActionBar title text -->
-    <style name="ActionBarTitleText"
-           parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
-         <!-- The textColor property is backward compatible with the Support Library -->
-        <item name="android:textColor">@color/white</item>
-    </style>
-    
-    
-     <style name="settings_bold">
+    <style name="settings_bold">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">#FF636363</item>
-         <item name="android:textSize">14sp</item>
-         <item name="android:textStyle">bold</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
         <item name="customFont">Roboto-Bold</item>
     </style>
-    
+
     <style name="settings_bold.des">
         <item name="android:textSize">24sp</item>
-    </style> 
-    
-    
+    </style>
+
     <style name="settings_normal">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">#FF606060</item>
-         <item name="android:textSize">14sp</item>
-         <item name="android:textStyle">normal</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">normal</item>
         <item name="customFont">Roboto-Regular</item>
     </style>
-    
+
     <style name="settings_normal.des">
         <item name="android:textSize">24sp</item>
-         <item name="android:textColor">#FF585858</item>
-    </style> 
-    
-    
+        <item name="android:textColor">#FF585858</item>
+    </style>
+
     <style name="login_bold">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-         <item name="android:textSize">16sp</item>
-         <item name="android:textColor">#FFB43535</item>
-         <item name="android:textStyle">bold</item>
-         <item name="customFont">Roboto-Bold</item>
-    </style> 
-    
-    <style name="login_bold.normal">
-         <item name="android:textColor">#FF878787</item>
-         <item name="android:textStyle">normal</item>
-         <item name="customFont">Roboto-Regular</item>   
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#FFB43535</item>
+        <item name="android:textStyle">bold</item>
+        <item name="customFont">Roboto-Bold</item>
     </style>
-    
-    
+
+    <style name="login_bold.normal">
+        <item name="android:textColor">#FF878787</item>
+        <item name="android:textStyle">normal</item>
+        <item name="customFont">Roboto-Regular</item>
+    </style>
+
     <item name="alp_button_bar_style" type="style">@null</item>
     <item name="alp_button_bar_button_style" type="style">@null</item>
 
     <attr name="alp_button_bar_style" format="reference" />
     <attr name="alp_button_bar_button_style" format="reference" />
     <attr name="alp_theme_dialog" format="reference" />
-    
-    
-    
-   
+
 </resources>

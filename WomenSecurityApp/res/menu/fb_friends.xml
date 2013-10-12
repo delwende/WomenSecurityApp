@@ -2,7 +2,7 @@
        xmlns:gladio="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_settings"
-        gladio:showAsAction="always"
+        gladio:showAsAction="always|withText"
         android:titleCondensed="@string/done"
-        android:title="@string/action_settings"/>
+        android:title="@string/done"/>
 </menu>
