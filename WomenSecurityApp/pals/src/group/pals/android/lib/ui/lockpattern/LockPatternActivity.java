@@ -44,8 +44,12 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.tavant.droid.security.BaseActivity;
 import com.tavant.droid.security.BuildConfig;
 import com.tavant.droid.security.R;
+import com.tavant.droid.security.data.BaseData;
+
+
 
 
 
@@ -75,7 +79,7 @@ import com.tavant.droid.security.R;
  * @author Hai Bison
  * @since v1.0
  */
-public class LockPatternActivity extends Activity {
+public class LockPatternActivity extends BaseActivity {
 
     private static final String CLASS_NAME = LockPatternActivity.class
             .getName();
@@ -226,7 +230,7 @@ public class LockPatternActivity extends Activity {
 
         if (getIntent().hasExtra(EXTRA_THEME))
             setTheme(getIntent().getIntExtra(EXTRA_THEME,
-                    R.style.Alp_Theme_Dark));
+                    R.style.Alp_Theme_Light));
 
         super.onCreate(savedInstanceState);
 
@@ -640,4 +644,16 @@ public class LockPatternActivity extends Activity {
             }
         }// onClick()
     };// mBtnConfirmOnClickListener
+
+	@Override
+	protected void onComplete(int reqCode, BaseData data) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void onError(int reqCode, int errorCode, String errorMessage) {
+		// TODO Auto-generated method stub
+		
+	}
 }

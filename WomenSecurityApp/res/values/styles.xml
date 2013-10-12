@@ -1,56 +1,45 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!--
-        Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
-    -->
-    <style name="AppBaseTheme" parent="android:Theme.Light">
-        <!--
-            Theme customizations available in newer API levels can go in
-            res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
-        -->
+    
+     <!-- the theme applied to the application or activity -->
+    <style name="CustomActionBarTheme" parent="@style/Theme.AppCompat.Light">
+        <item name="android:actionBarStyle">@style/ActionBar</item>
+        <!-- Support library compatibility -->
+        <item name="actionBarStyle">@style/ActionBar</item>
     </style>
 
-    <!-- Application theme. -->
-    <style name="AppTheme" parent="AppBaseTheme">
-        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    <!-- ActionBar styles -->
+    <style name="ActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid">
+        <item name="android:background">@color/actionbar_color</item>
+        <!-- Support library compatibility -->
+        <item name="background">@color/actionbar_color</item>
+    
+        <item name="android:titleTextStyle">@style/ActionBarTitleText</item>
+        <!-- Support library compatibility -->
+        <item name="titleTextStyle">@style/ActionBarTitleText</item>
+        <!-- -action menu text apperance -->
+        <item name="android:actionMenuTextAppearance">@style/MyActionBar.MenuTextStyle</item>
+         <!-- -action menu text apperance suport -->
+        <item name="actionMenuTextAppearance">@style/MyActionBar.MenuTextStyle</item>
     </style>
 
-    <style name="quickContactBadgeStyle">
-        <item name="android:background">@drawable/quickcontact_badge_small</item>
+    <!-- ActionBar title text -->
+    <style name="ActionBarTitleText" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+
+        <!-- The textColor property is backward compatible with the Support Library -->
+        <item name="android:textColor">@color/white</item>
     </style>
 
-    <style name="searchTextHiglight">
-        <item name="android:textColor">@color/holo_blue</item>
+    <style name="MyActionBar.MenuTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Menu">
+        <item name="android:textColor">#F0F</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:textSize">24dip</item>
     </style>
+    
+   
+   
 
-    <style name="Alp.BaseTheme.Dark" parent="@android:style/Theme" />
-
-    <style name="Alp.BaseThemeHelper.Dark" parent="@style/Alp.BaseTheme.Dark" />
-
-    <style name="Alp.Theme.Dark" parent="@style/Alp.BaseThemeHelper.Dark">
-
-        <!-- AOSP -->
-
-        <item name="android:windowBackground">@drawable/aosp_background_holo_dark</item>
-
-        <!-- android-lockpattern -->
-
-        <item name="alp_theme_dialog">@style/Alp.Theme.Dialog.Dark</item>
-        <item name="alp_drawable_btn_code_lock_default_holo">@drawable/alp_btn_code_lock_default_holo_light</item>
-        <item name="alp_drawable_btn_code_lock_touched_holo">@drawable/alp_btn_code_lock_touched_holo_light</item>
-        <item name="alp_drawable_indicator_code_lock_point_area_default_holo">@drawable/alp_indicator_code_lock_point_area_default_holo_light</item>
-        <item name="alp_color_pattern_path">@color/alp_pattern_path_light</item>
-        <item name="aosp_drawable_indicator_code_lock_point_area_normal">@drawable/aosp_indicator_code_lock_point_area_green_holo</item>
-    </style>
-
-    <style name="Alp.BaseTheme.Light" parent="@android:style/Theme.Light" />
-
-    <style name="Alp.BaseThemeHelper.Light" parent="@style/Alp.BaseTheme.Light" />
-
-    <style name="Alp.Theme.Light" parent="@style/Alp.BaseThemeHelper.Light">
+    <style name="Alp.Theme.Light" parent="@style/CustomActionBarTheme">
 
         <!-- AOSP -->
 
@@ -58,74 +47,14 @@
 
         <!-- android-lockpattern -->
 
-        <item name="alp_theme_dialog">@style/Alp.Theme.Dialog.Light</item>
+      
         <item name="alp_drawable_btn_code_lock_default_holo">@drawable/alp_btn_code_lock_default_holo_dark</item>
         <item name="alp_drawable_btn_code_lock_touched_holo">@drawable/alp_btn_code_lock_touched_holo_dark</item>
         <item name="alp_drawable_indicator_code_lock_point_area_default_holo">@drawable/alp_indicator_code_lock_point_area_default_holo_dark</item>
         <item name="alp_color_pattern_path">@color/alp_pattern_path_dark</item>
         <item name="aosp_drawable_indicator_code_lock_point_area_normal">@drawable/aosp_indicator_code_lock_point_area_blue_holo</item>
     </style>
-
-    <style name="Alp.BaseTheme.Dialog.Dark" parent="@android:style/Theme.Dialog">
-
-        <!-- AOSP -->
-
-        <item name="android:windowBackground">@drawable/aosp_dialog_full_holo_dark</item>
-    </style>
-
-    <style name="Alp.BaseThemeHelper.Dialog.Dark" parent="@style/Alp.BaseTheme.Dialog.Dark" />
-
-    <style name="Alp.Theme.Dialog.Dark" parent="@style/Alp.BaseThemeHelper.Dialog.Dark">
-
-        <!-- android-lockpattern -->
-
-        <item name="alp_theme_dialog">@style/Alp.Theme.Dialog.Dark</item>
-        <item name="alp_drawable_btn_code_lock_default_holo">@drawable/alp_btn_code_lock_default_holo_light</item>
-        <item name="alp_drawable_btn_code_lock_touched_holo">@drawable/alp_btn_code_lock_touched_holo_light</item>
-        <item name="alp_drawable_indicator_code_lock_point_area_default_holo">@drawable/alp_indicator_code_lock_point_area_default_holo_light</item>
-        <item name="alp_color_pattern_path">@color/alp_pattern_path_light</item>
-        <item name="aosp_drawable_indicator_code_lock_point_area_normal">@drawable/aosp_indicator_code_lock_point_area_green_holo</item>
-    </style>
-
-    <style name="Alp.BaseTheme.Dialog.Light" parent="@android:style/Theme.Light">
-
-        <!-- AOSP -->
-
-        <item name="android:windowFrame">@null</item>
-        <item name="android:windowTitleStyle">@style/AOSP_DialogWindowTitle</item>
-        <item name="android:windowBackground">@drawable/aosp_dialog_full_holo_light</item>
-        <item name="android:windowIsFloating">true</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
-        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
-        <!--
-        <item name="android:windowActionBar">false</item>
-        <item name="android:windowActionModeOverlay">true</item>
-        <item name="android:windowCloseOnTouchOutside">true</item>
-        -->
-        <item name="android:colorBackgroundCacheHint">@null</item>
-    </style>
-
-    <style name="Alp.BaseThemeHelper.Dialog.Light" parent="@style/Alp.BaseTheme.Dialog.Light" />
-
-    <style name="Alp.Theme.Dialog.Light" parent="@style/Alp.BaseThemeHelper.Dialog.Light">
-
-        <!-- android-lockpattern -->
-
-        <item name="alp_theme_dialog">@style/Alp.Theme.Dialog.Light</item>
-        <item name="alp_drawable_btn_code_lock_default_holo">@drawable/alp_btn_code_lock_default_holo_dark</item>
-        <item name="alp_drawable_btn_code_lock_touched_holo">@drawable/alp_btn_code_lock_touched_holo_dark</item>
-        <item name="alp_drawable_indicator_code_lock_point_area_default_holo">@drawable/alp_indicator_code_lock_point_area_default_holo_dark</item>
-        <item name="alp_color_pattern_path">@color/alp_pattern_path_dark</item>
-        <item name="aosp_drawable_indicator_code_lock_point_area_normal">@drawable/aosp_indicator_code_lock_point_area_blue_holo</item>
-    </style>
-
-    <style name="AOSP_DialogWindowTitle">
-        <item name="android:maxLines">1</item>
-        <item name="android:scrollHorizontally">true</item>
-        <item name="android:textAppearance">@android:style/TextAppearance.DialogWindowTitle</item>
-    </style>
-    
+ 
     <style name="settings_bold">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>

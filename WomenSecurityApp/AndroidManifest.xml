@@ -9,7 +9,7 @@
         android:targetSdkVersion="18" />
 
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -30,74 +30,78 @@
     <application
         android:name=".SecurityApp"
         android:allowBackup="false"
-        android:icon="@drawable/app_icon"
+        android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/CustomActionBarTheme" >
         <provider
             android:name=".database.WSContentProvider"
             android:authorities="com.tavant.droid.security.database.contentprovider"
             android:exported="false" />
-        
-        <activity android:name=".activities.SplashScreenActivity"
-			android:configChanges="orientation|keyboardHidden|keyboard|screenLayout"
-			android:screenOrientation="portrait" android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"
-			android:noHistory="true">
-            <intent-filter>
-				<action android:name="android.intent.action.MAIN" />
-				<category android:name="android.intent.category.LAUNCHER" />
-			</intent-filter> 
-		</activity>
-		
-        <activity android:name=".activities.LoginActivity"
-			android:configChanges="orientation|keyboardHidden|keyboard|screenLayout" android:windowSoftInputMode="adjustPan">
-		</activity>
-		
-        <activity android:name=".activities.TermsAbout"
-			android:configChanges="orientation|keyboardHidden|keyboard|screenLayout"
-			android:parentActivityName="com.tavant.droid.security.activities.LoginActivity">
-			 <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="com.tavant.droid.security.activities.LoginActivity" />            
-        </activity>
-        
-         <activity
-            android:name=".lock.LockScreenActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
-            android:screenOrientation="user">
-              <!-- 
+
+        <activity
+            android:name=".activities.SplashScreenActivity"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenLayout"
+            android:noHistory="true"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-             - -->
-         </activity>   
-        
+        </activity>
+        <activity
+            android:name=".activities.LoginActivity"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenLayout"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" >
+        </activity>
+        <activity
+            android:name=".activities.TermsAbout"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenLayout"
+            android:parentActivityName="com.tavant.droid.security.activities.LoginActivity"
+            android:screenOrientation="portrait" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.tavant.droid.security.activities.LoginActivity" />
+        </activity>
+        <activity
+            android:name=".lock.LockScreenActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
+            android:screenOrientation="portrait" >
+        </activity>
         <activity
             android:name=".HomeActivity"
-            android:label="@string/app_name">
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".activities.SettingsActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
             android:label="@string/app_name"
-            android:parentActivityName="com.tavant.droid.security.HomeActivity">
-           <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="com.tavant.droid.security.HomeActivity" />
-            
+            android:parentActivityName="com.tavant.droid.security.HomeActivity"
+            android:screenOrientation="portrait" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.tavant.droid.security.HomeActivity" />
         </activity>
-        <activity android:name=".activities.PickerFriendListActivity" />
+        <activity
+            android:name=".activities.PickerFriendListActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
+            android:screenOrientation="portrait" />
         <activity android:name=".activities.DummyActivity" />
         <activity
             android:name="group.pals.android.lib.ui.lockpattern.LockPatternActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
-            android:screenOrientation="user"
-            android:theme="@style/Alp.Theme.Dark" />
-       
+            android:screenOrientation="portrait"
+            android:theme="@style/Alp.Theme.Light"/>
 
         <receiver
             android:name="com.google.android.gcm.GCMBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
+
                 <!-- Receives the actual messages. -->
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
                 <!-- Receives the registration id. -->
@@ -130,11 +134,17 @@
         <service android:name=".service.WSGCMIntentService" />
         <service android:name=".service.LocationAlarmService" />
 
-        <activity android:name="com.google.ads.AdActivity"
-              android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"/>
-        <activity android:name="com.facebook.LoginActivity"
-                  android:theme="@android:style/Theme.Translucent.NoTitleBar"
-                  android:label="@string/app_name" />
+        <activity
+            android:name="com.google.ads.AdActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" />
+        <activity
+            android:name="com.facebook.LoginActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
+            android:screenOrientation="portrait"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/app_id" />

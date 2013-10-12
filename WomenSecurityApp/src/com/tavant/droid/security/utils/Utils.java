@@ -34,7 +34,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.tavant.droid.security.R;
-import com.tavant.droid.security.activities.FetchContactsActivity;
 
 
 /**
@@ -65,17 +64,6 @@ public class Utils {
                     new StrictMode.VmPolicy.Builder()
                             .detectAll()
                             .penaltyLog();
-
-            // Honeycomb introduced some additional strict mode features
-            if (Utils.hasHoneycomb()) {
-                // Flash screen when thread policy is violated
-                threadPolicyBuilder.penaltyFlashScreen();
-                // For each activity class, set an instance limit of 1. Any more instances and
-                // there could be a memory leak.
-                vmPolicyBuilder
-                        .setClassInstanceLimit(FetchContactsActivity.class, 1);
-            }
-
             // Use builders to enable strict mode policies
             StrictMode.setThreadPolicy(threadPolicyBuilder.build());
             StrictMode.setVmPolicy(vmPolicyBuilder.build());

@@ -182,8 +182,8 @@ public class PickerFriendListActivity extends ActionBarActivity
 							"#ABCDEFGHIJKLMNOPQRSTUVWXYZ");
 					}else{
 						indexer = new AlphabetIndexer(mCursor,
-								mCursor.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME),
-								"#ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+								mCursor.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME),getString(R.string.alphabet)
+								);
 					}
 
 					sectionToOffset = new HashMap<Integer, Integer>();

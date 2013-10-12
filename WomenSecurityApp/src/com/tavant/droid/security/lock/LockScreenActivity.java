@@ -1,6 +1,9 @@
 package com.tavant.droid.security.lock;
 
 
+import com.tavant.droid.security.BaseActivity;
+import com.tavant.droid.security.data.BaseData;
+
 import group.pals.android.lib.ui.lockpattern.LockPatternActivity;
 import group.pals.android.lib.ui.lockpattern.prefs.SecurityPrefs;
 import android.app.Activity;
@@ -11,7 +14,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
-public class LockScreenActivity extends Activity {
+public class LockScreenActivity extends BaseActivity {
 	
 	
 	  public static final int REQ_CREATE_PATTERN = 0;
@@ -89,4 +92,18 @@ public class LockScreenActivity extends Activity {
         }// REQ_ENTER_PATTERN
         }
     }// onActivityResult()
+
+
+	@Override
+	protected void onComplete(int reqCode, BaseData data) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	protected void onError(int reqCode, int errorCode, String errorMessage) {
+		// TODO Auto-generated method stub
+		
+	}
 }
