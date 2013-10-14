@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -17,7 +19,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 
-import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.ContentResolver;
@@ -26,7 +27,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.telephony.PhoneStateListener;
@@ -40,22 +40,14 @@ import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.facebook.AccessToken;
-import com.facebook.AccessTokenSource;
-import com.facebook.HttpMethod;
-import com.facebook.Request;
-import com.facebook.Response;
-import com.facebook.Session;
-import com.facebook.Session.StatusCallback;
-import com.facebook.SessionState;
 import com.facebook.chat.XMPPManager;
 import com.facebook.chat.XMPPManager.XMPPChatListener;
 import com.tavant.droid.security.activities.SettingsActivity;
 import com.tavant.droid.security.data.BaseData;
-import com.tavant.droid.security.data.FbUser;
 import com.tavant.droid.security.database.ContentDescriptor;
 import com.tavant.droid.security.http.HttpRequestCreater;
 import com.tavant.droid.security.lock.LockScreenActivity;
+import com.tavant.droid.security.prefs.CommonPreferences;
 import com.tavant.droid.security.service.LocationAlarmService;
 import com.tavant.droid.security.sound.ScreamPlayer;
 import com.tavant.droid.security.utils.LocationData;
@@ -66,55 +58,41 @@ import com.tavant.droid.security.utils.WSConstants;
 public class HomeActivity extends BaseActivity implements OnClickListener {
 
 	ImageButton panicButton;
-	private static String SAVE_ME_TEXT = "Please call police. I am in danger. PLEASE HELP . My location is:";
-
-	// private TextToSpeech mTts;
-	// This code can be any value you want, its just a checksum.
-	private static final int MY_DATA_CHECK_CODE = 1234;
 	TelephonyManager telephonyManager;
 	PhoneStateListener listener;
-	private SharedPreferences copPhonePreferences;
-	private SharedPreferences.Editor copPrefsEditor;
-	String copNumber;
+	private String volunteerNumber;
 	private PendingIntent pendingIntent;
 	String stateString = "N/A";
 	boolean callNext = false;
 	private static String[] numbers;
 	private int callRepeatCount = 1;
 	private ContentResolver resolver;
-	private SharedPreferences pref = null;
 	private boolean buzzer;
-	private boolean friends;
-	 private static final List<String> PERMISSIONS = Arrays.asList("publish_actions");
+	private boolean isSocialnetworkingenabled;
+	private String alertText="";
+	private Timer timer=null;
+	private int mNumberofClicks=0;
+	private CommonPreferences commonpref=null;
+	private boolean isTriggered=false;
 
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	
 	@Override
 	protected void onCreate(Bundle instance3) {
 		super.onCreate(instance3);
 		setContentView(R.layout.activity_main);
 		resolver = getContentResolver();
-		pref = getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
-		// Get the telephony manager
-		copPhonePreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
-
-		// copNumber = copPhonePreferences.getString("COP_NUMBER", "");
-
+		commonpref=CommonPreferences.getInstance();
 		panicButton = (ImageButton) findViewById(R.id.panic_button);
 		panicButton.setOnClickListener(this);
-
-		// Fire off an intent to check if a TTS engine is installed
-		/*
-		 * Intent checkIntent = new Intent();
-		 * checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
-		 * startActivityForResult(checkIntent, MY_DATA_CHECK_CODE);
-		 */
-		buzzer = pref.getBoolean("buzzer_key", false);
-		friends = pref.getBoolean("friends_key", true);
 		initAdd();
+		alertText=getString(R.string.alert_text);
+		
 	}
 	
-
+	@Override
 	protected void onResume() {
+		buzzer = commonpref.isNeedbuzzer();
+		isSocialnetworkingenabled = commonpref.isInformFriends();
 		super.onResume();
 		if (callNext == true) {
 			for (int i = 0; i < callRepeatCount; i++) {
@@ -125,16 +103,22 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 			}
 			callNext = false;
 			callRepeatCount = 0;
+			resetTriggeringStatus();
 		}
 	}
-
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+	}
+       /*
 	@Override
 	public void onClick(View v) {
 		if (v.getId() == R.id.panic_button) {
-			copNumber = copPhonePreferences.getString("COP_NUMBER", "");
-			System.out.println("String phone number in calls >> " + copNumber);
+			volunteerNumber =commonpref.getVolunteerNumber();
+			Log.d("TAG","cop number"+volunteerNumber);
 			numbers = retrievePhoneNumbers();
-			getCallStates();
+			
 			if (buzzer == true) {
 				ScreamPlayer screamPlayer = new ScreamPlayer(this);
 				screamPlayer.setRepeatCount(3);
@@ -154,132 +138,70 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 			makeEmergencyCallToNearestCop();
 		}
 	}
-
-	public void posttoFBTimeLine() {
-		final List<FbUser> fbids = new ArrayList<FbUser>();
-		FbUser user;
-		Cursor cursor = resolver.query(
-				ContentDescriptor.WSFacebook.CONTENT_URI, null,
-				ContentDescriptor.WSFacebook.Cols.FBSTATUS + " = 1 ", null,
-				null);
-		int i = 0;
-		while (cursor.moveToNext()) {
-
-			String fbid = cursor.getString(cursor
-					.getColumnIndex(ContentDescriptor.WSFacebook.Cols.FBID));
-			user = new FbUser();
-			user.setId(fbid);
-			fbids.add(user);
-			i++;
-			if (i == 1)
-				break;
-		}
-
-		Session session = new Session(this);
-		
-		
-		 List<String> permissions = session.getPermissions();
-	        if (!permissions.containsAll(PERMISSIONS)) {
-	           
-	            return;
-	        }
-		
-		
-		AccessToken token = AccessToken.createFromExistingAccessToken(
-				pref.getString(WSConstants.PROPERTY_FB_ACCESSTOKEN, null),
-				null, null, AccessTokenSource.FACEBOOK_APPLICATION_NATIVE, PERMISSIONS);
-		session.open(token, new StatusCallback() {
-			@Override
-			public void call(Session msession, SessionState state,
-					Exception exception) {
-				if(state.isOpened()){
-				   postToWall(fbids, msession);
+	*/
+	
+	@Override
+	public void onClick(View v) {
+		if (v.getId() == R.id.panic_button) {
+			if(!isTriggered){
+			  isTriggered=true; 
+			  mNumberofClicks++;
+			  volunteerNumber =commonpref.getVolunteerNumber();
+			  numbers=retrieveFriendnumbers();  // getting friend numbers
+			  Toast.makeText(HomeActivity.this, getString(R.string.confirm_click_alert), Toast.LENGTH_SHORT).show();
+			  makeSmsAlert(numbers);
+			  try{
+			  timer=new Timer();	 
+			  timer.schedule(new TimerTask() {
+				@Override
+				public void run() {
+					resetTriggeringStatus();
+					//cancel();
+					//timer.cancel();
+				}
+			}, 7*1000);
+			  }catch(Exception e){e.printStackTrace();}
+			}else{
+				mNumberofClicks++;
+				if(mNumberofClicks==3)
+				{
+					if (buzzer) {
+						ScreamPlayer screamPlayer = new ScreamPlayer(this);
+						screamPlayer.setRepeatCount(3);
+						screamPlayer.startRinging();
+					}
+					//notifyFriendsByPushNotification();
+					if(isSocialnetworkingenabled){
+					//postToWall();   // posting in the wall
+					//sendFBChatMessage();
+					}
+					getCallStates();
+					makeEmergencyCallToNearestVolunteer();
 				}
 			}
-		});
-	}
-
-	private void postToWall(List<FbUser> fbid, Session msession) {
-//		OpenGraphAction action = GraphObject.Factory
-//				.create(OpenGraphAction.class);
-//		FbUser me = new FbUser();
-//		me.setId(pref.getString(WSConstants.PROPERTY_FB_ID, ""));
-//		action.setTags(fbid);
-//		action.setFrom(me);
-//		action.setCreatedTime(Calendar.getInstance().getTime());
-//		action.setMessage("please help me i am in Danger");
-		
-//		Request request = new Request(Session.getActiveSession(),
-//				"me/women_security:Ws", null, HttpMethod.POST);
-//		request.setCallback(new Request.Callback() {
-//			
-//			@Override
-//			public void onCompleted(Response response) {
-//				Log.i("TAG", "post to facebook failed");
-//
-//			}
-//		});
-//		
-//		request.setGraphObject(action);
-//		request.executeAsync();
-		Bundle params = new Bundle();
-		//.putString("type", "women_security:alert");
-		params.putString("url", "http://samples.ogp.me/431195650313026");
-		params.putString("title", "Sample Alert");
-		params.putString("description", "");
-
-		
-	
-		
-		Request request = new Request(
-				msession,
-		    "me/objects/women_security:alert",
-		    params,
-		    HttpMethod.POST
-		);
-		request.setCallback(new Request.Callback() {
-			
-			@Override
-			public void onCompleted(Response response) {
-				Log.d("TAG", response.toString());
-				
-			}
-		});
-		request.executeAsync();
-		
-		// handle the response
-
-		// Request req=Request.newPostRequest(msession, "me/women_security:Ws",
-		// action, new Request.Callback() {
-		// @Override
-		// public void onCompleted(Response response) {
-		// // TODO Auto-generated method stub
-		// if(response.getError()!=null){
-		// Log.i("TAG","post to facebook failed");
-		// }
-		// }
-		// });
-		// request.executeAsync();
+		}
 	}
 	
+	
+	
+	private void resetTriggeringStatus(){
+		isTriggered=false;
+		mNumberofClicks=0;
+	}
 	
 	private void postToWall(){
-		SharedPreferences prefs = getSharedPreferences(getPackageName(), 
-                Context.MODE_PRIVATE);
-		final String fbappaid=prefs.getString(WSConstants.PROPERTY_FB_ID, null);
-		final String fbauthtoken=prefs.getString(WSConstants.PROPERTY_FB_ACCESSTOKEN, null);
-		
+		final String fbID=commonpref.getFbId();
+		final String fbauthtoken=commonpref.getFbAcessToken();
 			new Thread(new Runnable() {
 				@Override
 				public void run() {
 					try{
-						
 					DefaultHttpClient client=new DefaultHttpClient();
-					HttpPost post=new HttpPost("https://graph.facebook.com/"+fbappaid+"/feed");
+					HttpPost post=new HttpPost("https://graph.facebook.com/"+fbID+"/feed");
 					post.addHeader("Content-Type", "multipart/form-data");
 					List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
 		            nameValuePairs.add(new BasicNameValuePair("access_token", fbauthtoken));
-		            nameValuePairs.add(new BasicNameValuePair("message", SAVE_ME_TEXT
+		            nameValuePairs.add(new BasicNameValuePair("message", alertText
 							+ LocationData.getInstance().getCurrentLocation()));
 		            post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 		            HttpResponse res=client.execute(post);
@@ -290,7 +212,6 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 					}
 				}
 			}).start();
-		
 	}
 	
 	private void sendFBChatMessage(){
@@ -317,12 +238,10 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 	private void notifyFriendsByPushNotification() {
 		List<String> phNumbers = Arrays.asList(numbers);
 		JSONArray jsonNumbers = new JSONArray(phNumbers);
-		if(copNumber.length()!=0){
-			jsonNumbers.put(copNumber);
+		if(volunteerNumber.length()!=0){
+			jsonNumbers.put(volunteerNumber);
 		}
-		pref = getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
-		String userid = pref.getString(WSConstants.PROPERTY_FB_ID, null);
-
+		String userid = commonpref.getFbId();
 		onExecute(WSConstants.CODE_ALERT_API,
 				HttpRequestCreater.alertUsers(jsonNumbers, userid), false);
 	}
@@ -339,21 +258,13 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 				case TelephonyManager.CALL_STATE_IDLE:
 					stateString = "Idle";
 					callNext = true;
-					/*
-					 * Toast.makeText(HomeActivity.this, "Phone state Idle",
-					 * Toast.LENGTH_LONG).show();
-					 */
 					break;
 				case TelephonyManager.CALL_STATE_OFFHOOK:
 					stateString = "Off Hook";
 					callNext = false;
-					Toast.makeText(HomeActivity.this, "Phone state Off hook",
-							Toast.LENGTH_LONG).show();
 					break;
 				case TelephonyManager.CALL_STATE_RINGING:
 					stateString = "Ringing";
-					Toast.makeText(HomeActivity.this, "Phone state Ringing",
-							Toast.LENGTH_LONG).show();
 					break;
 				}
 			}
@@ -377,27 +288,26 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 				calendar.getTimeInMillis(), 50 * 1000, pendingIntent);
 	}
 
-	public static void makeSmsAlert(final String[] phNumber) {
-		
+	private   void makeSmsAlert(final String[] phNumber) {
+	   if(volunteerNumber!=null)
+		phNumber[numbers.length]=volunteerNumber;  // adding volunteer number also
 		Handler handler = new Handler();
 		handler.postDelayed(new Runnable() {
-
 			@Override
 			public void run() {
-				System.out.println("Text to send.." + SAVE_ME_TEXT
+				System.out.println("Text to send.." + alertText
 						+ LocationData.getInstance().getCurrentLocation());
 				if (LocationData.getInstance().getCurrentLocation() != null) {
 					try {
-						sendSmsMessage(phNumber, SAVE_ME_TEXT
+						sendSmsMessage(phNumber, alertText
 								+ LocationData.getInstance()
 										.getCurrentLocation());
 					} catch (Exception e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
 			}
-		}, 10000);
+		},0);
 	}
 
 	protected void makeEmergencyCalls(String numbers) {
@@ -413,13 +323,10 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 
 	}
 
-	private void makeEmergencyCallToNearestCop() {
-
-		
-		// getCallStates();
-		if (copNumber.length() != 0) {
+	private void makeEmergencyCallToNearestVolunteer() {
+		if (volunteerNumber.length() != 0) {
 			Intent intent = new Intent(Intent.ACTION_CALL);
-			intent.setData(Uri.parse("tel:" + copNumber));
+			intent.setData(Uri.parse("tel:" + volunteerNumber));
 			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			intent.addFlags(Intent.FLAG_FROM_BACKGROUND);
 			startActivity(intent);
@@ -430,14 +337,12 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 	public static void sendSmsMessage(String[] number, String message)
 			throws Exception {
 		SmsManager smsMgr = SmsManager.getDefault();
-		smsMgr.sendTextMessage(number[0], null, message, null, null);
-
 		for (int i = 0; i < number.length; i++) {
 			smsMgr.sendTextMessage(number[i], null, message, null, null);
 		}
 	}
 
-	private String[] retrievePhoneNumbers() {
+	private String[] retrieveFriendnumbers() {
 		ArrayList<String> phoneList = new ArrayList<String>();
 
 		Cursor cur = getContentResolver()
@@ -447,9 +352,9 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 		if (cur != null) {
 			cur.moveToFirst();
 			while (cur.isAfterLast() == false) {
-				phoneList.add(cur.getString(5));
+				phoneList.add(cur.getString(cur.getColumnIndex(ContentDescriptor.WSContact.Cols.PHONE)));
 				System.out
-						.println("String phone number >> " + cur.getString(5));
+						.println("String phone number >> " + cur.getString(cur.getColumnIndex(ContentDescriptor.WSContact.Cols.PHONE)));
 				cur.moveToNext();
 			}
 			cur.close();
@@ -591,8 +496,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 		if(fbtocken!=null){
 			String decodedTocken = null;
 			try {
-				String msg=SAVE_ME_TEXT
-				+ LocationData.getInstance().getCurrentLocation();
+				String msg=alertText+ LocationData.getInstance().getCurrentLocation();
 				decodedTocken = URLDecoder.decode(fbtocken, "utf-8");
 				XMPPManager.getInstance().init(decodedTocken,fbids,msg);
 				XMPPManager.getInstance().setXMPPChatListener(this, mChatListener);

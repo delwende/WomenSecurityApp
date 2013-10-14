@@ -21,8 +21,6 @@ import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
@@ -86,8 +84,6 @@ public class LocationAlarmService extends Service implements LocationListener{
 		Log.i("TAG","calling laram agin");
 		locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 		prefrences=CommonPreferences.getInstance();
-//		pref=getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
-//		edit=pref.edit();
 		userid=prefrences.getFbId();
 		if(userid==null)
 			return START_NOT_STICKY; // no registartion of alram
@@ -232,11 +228,7 @@ public class LocationAlarmService extends Service implements LocationListener{
 				Log.i("TAG","clearing location listenre");
 				CopsData data=(CopsData)base;
 				if(data!=null&&data.phoneNumber!=null) {
-					SharedPreferences copPhonePreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
-					Editor edit=copPhonePreferences.edit();
-					Log.i("TAG","Phone number"+data.phoneNumber);
-					edit.putString("COP_NUMBER", data.phoneNumber);
-					edit.commit();
+					prefrences.setVolunteerNumber(data.phoneNumber);
 				}	
 				stopSelfResult(Activity.RESULT_OK);
 				locationManager.removeUpdates(LocationAlarmService.this);

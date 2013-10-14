@@ -9,6 +9,8 @@
     <string name="configure_app">Configuring application...</string>
     <string name="fetch_details">Fetching user details...</string>
     <string name="press_button">Please press the alert button in case of Emergency only!</string>
+    <string name="alert_text">Please call police or help me I am in danger. PLEASE HELP. I am at :</string>
+    <string name="confirm_click_alert">Please click two or more times to confirm the alert within 5 Seconds.</string>
      
      
     <!-- Setting Screen Strings -->
@@ -29,8 +31,8 @@
 	<string name="str_buzzer_desc_long">Enable Siren Buzzer.</string> 
 	
 	<string name="str_friends">Friends</string>
-	<string name="str_friends_desc">Inform Friends</string>
-	<string name="str_friends_desc_long">This will enable alerting your friends through call,email,push notification,facebook chat message.</string>
+	<string name="str_friends_desc">Inform Friends through Facebook</string>
+	<string name="str_friends_desc_long">This will enable alerting your friends through facebook chat message and timeline post</string>
 	
 	<string name="str_volunteer">Volunteer</string>
 	<string name="str_volunteer_desc">I am a Volunteer</string>
