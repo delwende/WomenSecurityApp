@@ -286,7 +286,7 @@ public class LockPatternView extends View {
 
         // lot's of bitmaps!
         mBitmapBtnDefault = getBitmapFor(UI.resolveAttribute(getContext(),
-                R.attr.circle_default));
+                R.attr.alp_drawable_btn_code_lock_default_holo));
         mBitmapBtnTouched = getBitmapFor(UI.resolveAttribute(getContext(),
                 R.attr.alp_drawable_btn_code_lock_touched_holo));
         mBitmapCircleDefault = getBitmapFor(UI
@@ -296,10 +296,12 @@ public class LockPatternView extends View {
 
         mBitmapCircleGreen = getBitmapFor(UI.resolveAttribute(getContext(),
                 R.attr.aosp_drawable_indicator_code_lock_point_area_normal));
-        mBitmapCircleRed = getBitmapFor(R.drawable.aosp_indicator_code_lock_point_area_red_holo);
+        mBitmapCircleRed = getBitmapFor(R.drawable.circle_red);
 
         mBitmapArrowGreenUp = getBitmapFor(R.drawable.aosp_indicator_code_lock_drag_direction_green_up);
         mBitmapArrowRedUp = getBitmapFor(R.drawable.aosp_indicator_code_lock_drag_direction_red_up);
+
+
 
         // bitmaps have the size of the largest bitmap in this group
         final Bitmap bitmaps[] = {mBitmapBtnDefault, mBitmapBtnTouched,
@@ -973,7 +975,7 @@ public class LockPatternView extends View {
         final float squareWidth = mSquareWidth;
         final float squareHeight = mSquareHeight;
 
-        float radius = (squareWidth * mDiameterFactor * 0.5f);
+        float radius = (squareWidth * mDiameterFactor * 0.8f);
         mPathPaint.setStrokeWidth(radius);
 
         final Path currentPath = mCurrentPath;
