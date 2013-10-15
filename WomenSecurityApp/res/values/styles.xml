@@ -48,7 +48,7 @@
         <!-- android-lockpattern -->
 
       
-        <item name="alp_drawable_btn_code_lock_default_holo">@drawable/alp_btn_code_lock_default_holo_dark</item>
+        <item name="circle_default">@drawable/circle_default</item>
         <item name="alp_drawable_btn_code_lock_touched_holo">@drawable/alp_btn_code_lock_touched_holo_dark</item>
         <item name="alp_drawable_indicator_code_lock_point_area_default_holo">@drawable/alp_indicator_code_lock_point_area_default_holo_dark</item>
         <item name="alp_color_pattern_path">@color/alp_pattern_path_dark</item>

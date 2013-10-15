@@ -57,6 +57,7 @@ public class WSConstants {
 	public static final String PROPERTY_FRIENDS = "friends_key";
 	public static final String PROPERTY_VOLUNTEER = "volunteer_key";
 	public static final String PROPERTY_VOLUNTEER_NUMBER = "volunteer_number";
+	public static final String PROPERTY_USERLOCATION = "user_location";
 	
 	
 	

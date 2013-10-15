@@ -290,7 +290,7 @@ public class LocationAlarmService extends Service implements LocationListener{
 					JSONArray jsonarray=  resJson.getJSONArray("results");
 					JSONObject firstobject=(JSONObject) jsonarray.get(0);	
 					Log.i("TAG","userlocationforsms"+firstobject.get("formatted_address").toString());
-					LocationData.getInstance().setCurrentLocation(firstobject.get("formatted_address").toString());		
+					prefrences.setUserlocation(firstobject.get("formatted_address").toString());
 				}catch(Exception e){
 					e.printStackTrace();
 				}

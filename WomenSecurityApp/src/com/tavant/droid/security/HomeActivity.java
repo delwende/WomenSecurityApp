@@ -170,10 +170,10 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 						screamPlayer.setRepeatCount(3);
 						screamPlayer.startRinging();
 					}
-					//notifyFriendsByPushNotification();
+					notifyFriendsByPushNotification();
 					if(isSocialnetworkingenabled){
-					//postToWall();   // posting in the wall
-					//sendFBChatMessage();
+					 //postToWall();   // posting in the wall
+					 //sendFBChatMessage();
 					}
 					getCallStates();
 					makeEmergencyCallToNearestVolunteer();
@@ -202,7 +202,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 					List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
 		            nameValuePairs.add(new BasicNameValuePair("access_token", fbauthtoken));
 		            nameValuePairs.add(new BasicNameValuePair("message", alertText
-							+ LocationData.getInstance().getCurrentLocation()));
+							+  commonpref.getUserlocation()));
 		            post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 		            HttpResponse res=client.execute(post);
 		            Log.d("TAG","htpp status code"+res.getStatusLine().getStatusCode());
@@ -238,7 +238,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 	private void notifyFriendsByPushNotification() {
 		List<String> phNumbers = Arrays.asList(numbers);
 		JSONArray jsonNumbers = new JSONArray(phNumbers);
-		if(volunteerNumber.length()!=0){
+		if(volunteerNumber!=null&&volunteerNumber.length()!=0){
 			jsonNumbers.put(volunteerNumber);
 		}
 		String userid = commonpref.getFbId();
@@ -289,19 +289,17 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 	}
 
 	private   void makeSmsAlert(final String[] phNumber) {
-	   if(volunteerNumber!=null)
-		phNumber[numbers.length]=volunteerNumber;  // adding volunteer number also
+	   //if(volunteerNumber!=null)
+		//phNumber[numbers.length]=volunteerNumber;  // adding volunteer number also
 		Handler handler = new Handler();
 		handler.postDelayed(new Runnable() {
 			@Override
 			public void run() {
-				System.out.println("Text to send.." + alertText
-						+ LocationData.getInstance().getCurrentLocation());
-				if (LocationData.getInstance().getCurrentLocation() != null) {
+				
+				if ( commonpref.getUserlocation() != null) {
 					try {
 						sendSmsMessage(phNumber, alertText
-								+ LocationData.getInstance()
-										.getCurrentLocation());
+								+ commonpref.getUserlocation());
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -324,7 +322,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 	}
 
 	private void makeEmergencyCallToNearestVolunteer() {
-		if (volunteerNumber.length() != 0) {
+		if (volunteerNumber!=null&&volunteerNumber.length() != 0) {
 			Intent intent = new Intent(Intent.ACTION_CALL);
 			intent.setData(Uri.parse("tel:" + volunteerNumber));
 			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -338,7 +336,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 			throws Exception {
 		SmsManager smsMgr = SmsManager.getDefault();
 		for (int i = 0; i < number.length; i++) {
-			smsMgr.sendTextMessage(number[i], null, message, null, null);
+			smsMgr.sendMultipartTextMessage(number[i], null, smsMgr.divideMessage(message), null, null);
 		}
 	}
 
@@ -496,7 +494,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 		if(fbtocken!=null){
 			String decodedTocken = null;
 			try {
-				String msg=alertText+ LocationData.getInstance().getCurrentLocation();
+				String msg=alertText+ commonpref.getUserlocation();
 				decodedTocken = URLDecoder.decode(fbtocken, "utf-8");
 				XMPPManager.getInstance().init(decodedTocken,fbids,msg);
 				XMPPManager.getInstance().setXMPPChatListener(this, mChatListener);

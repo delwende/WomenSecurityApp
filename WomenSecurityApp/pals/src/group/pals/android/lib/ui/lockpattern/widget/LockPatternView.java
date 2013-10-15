@@ -286,7 +286,7 @@ public class LockPatternView extends View {
 
         // lot's of bitmaps!
         mBitmapBtnDefault = getBitmapFor(UI.resolveAttribute(getContext(),
-                R.attr.alp_drawable_btn_code_lock_default_holo));
+                R.attr.circle_default));
         mBitmapBtnTouched = getBitmapFor(UI.resolveAttribute(getContext(),
                 R.attr.alp_drawable_btn_code_lock_touched_holo));
         mBitmapCircleDefault = getBitmapFor(UI

@@ -5,7 +5,7 @@ public class LocationData {
 	//private String currentLocation;
 	private double latitude=0.0; 
 	private double longitude=0.0;
-	private String currentLocation="";
+	
 
 	private LocationData() {
 
@@ -40,15 +40,5 @@ public class LocationData {
 
 	public void setLongitude(double longitude) {
 		this.longitude = longitude;
-	}
-
-
-	public String getCurrentLocation() {
-		return currentLocation;
-	}
-
-	public void setCurrentLocation(String currentLocation) {
-		this.currentLocation = currentLocation;
-	}
-
+	}	
 }

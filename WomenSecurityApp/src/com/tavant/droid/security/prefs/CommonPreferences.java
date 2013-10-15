@@ -36,6 +36,7 @@ public class CommonPreferences {
 	private String fbId=null;
 	private String fbAcessToken=null;
 	private String volunteerNumber=null;
+	private String userlocation=null;
 	
 	private boolean isNeedbuzzer=false;
 	private boolean isInformFriends=false;
@@ -74,6 +75,19 @@ public class CommonPreferences {
 		isInformFriends=pref.getBoolean(WSConstants.PROPERTY_FRIENDS,true);
 		isvolunteer=pref.getBoolean(WSConstants.PROPERTY_VOLUNTEER,true);
 		volunteerNumber=pref.getString(WSConstants.PROPERTY_VOLUNTEER_NUMBER, null);
+		userlocation=pref.getString(WSConstants.PROPERTY_USERLOCATION, "");
+	}
+	
+	
+
+	public String getUserlocation() {
+		return userlocation;
+	}
+
+	public void setUserlocation(String userlocation) {
+		editor.putString(WSConstants.PROPERTY_USERLOCATION, userlocation);
+		editor.commit();
+		this.userlocation = userlocation;
 	}
 
 	public String getVolunteerNumber() {

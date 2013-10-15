@@ -71,16 +71,6 @@ public class XMPPManager implements ConnectionListener, ChatManagerListener,
 				SASLXFacebookPlatformMechanism.class);
 		SASLAuthentication.supportSASLMechanism("X-FACEBOOK-PLATFORM", 0);
 		mXmppConnection.connect();
-		// String connecitonId = mXmppConnection.getConnectionID();
-		// if (connecitonId == null) {
-
-		//mXmppConnection.login("" + "|" + "", scre, "Application", tocken);
-	//	mXmppConnection.login(tocken + "|" + scre, "Application");
-		// Log.d("FacebookLogin", "connecitonId : "+connecitonId);
-		// mFacebookWorker.setXMPPConnectionId(connecitonId);
-		// }
-		
-		//mXmppConnection.login("417172928381965",tocken,"Application");
 		mXmppConnection.login("" + "|" + "", scre, "Application", tocken);
 		mXmppConnection.addConnectionListener(this);
 		mXmppConnection.getChatManager().addChatListener(this);
@@ -127,7 +117,7 @@ public class XMPPManager implements ConnectionListener, ChatManagerListener,
 			protected Void doInBackground(Void... params) {
 				try {
 
-				CallXMPPLogin(tocken, "95556db4694cf2fed88be4893bae78ee",fbids,msg);
+				CallXMPPLogin(tocken, "8295c0c7fdfa947c45193d0c207a8d15",fbids,msg);
 
 					return null;
 				} catch (Exception e) {
