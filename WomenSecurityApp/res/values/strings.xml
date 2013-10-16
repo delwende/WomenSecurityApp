@@ -40,7 +40,7 @@
 	
 	<string name="str_pattern">Pattern</string>
 	<string name="str_pattern_desc">Pattern Security</string>
-	<string name="str_pattern_desc_long">Save your current settings with a pattern lock.Recommanded</string>
+	<string name="str_pattern_desc_long">Save your current settings with a pattern lock.Recommended</string>
 	
 	<string name="full_name">Full Name</string>
 	<string name="phon_number">Phone Number</string>
@@ -74,19 +74,7 @@
     <string name="alp_msg_your_new_unlock_pattern">Your new unlock pattern:</string>
     <string name="alp_pmsg_connect_x_dots">Connect at least %1$d dots.\nTry again…</string>
     
-    <!-- Strings for contact list and search -->
-    <string name="activity_contacts_list">Contacts List</string>
-    <string name="activity_contact_detail">Contact Detail</string>
-    <string name="contacts_list_search_results_title">Contacts List Search for \"%s\"</string>
-    <string name="imageview_description">Contact Thumbnail</string>
-    <string name="address_button_description">View Address</string>
-    <string name="menu_search">Search</string>
-    <string name="menu_add_contact">Add Contact</string>
-    <string name="menu_edit_contact">Edit Contact</string>
-    <string name="no_contacts">No Contacts Found</string>
-    <string name="no_contact_selected">No Contact Selected</string>
-    <string name="search_hint">Find contacts</string>
-
+    
     <!-- Used for the AlphabetIndexer in ContactsListFragment to provide quick navigation by
          alphabet using ListView fast scroll. -->
     <string name="alphabet">#ABCDEFGHIJKLMNOPQRSTUVWXYZ</string>

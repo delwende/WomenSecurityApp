@@ -117,7 +117,6 @@ public class SettingsActivity extends BaseActivity implements OnItemClickListene
                 LockPatternActivity.class);
         startActivityForResult(intentActivity,
                 REQ_CREATE_PATTERN);
-		
 	}
 	
 	

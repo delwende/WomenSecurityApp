@@ -48,6 +48,7 @@ import com.tavant.droid.security.BaseActivity;
 import com.tavant.droid.security.BuildConfig;
 import com.tavant.droid.security.R;
 import com.tavant.droid.security.data.BaseData;
+import com.tavant.droid.security.utils.FontLoader;
 
 
 
@@ -309,8 +310,9 @@ public class LockPatternActivity extends BaseActivity {
 
         mFooter = findViewById(R.id.alp_footer);
         mBtnCancel = (Button) findViewById(R.id.alp_cancel);
+        mBtnCancel.setTypeface(FontLoader.getMngr().getTfRobotNormal());
         mBtnConfirm = (Button) findViewById(R.id.alp_confirm);
-
+        mBtnConfirm.setTypeface(FontLoader.getMngr().getTfRobotNormal());
         /*
          * LOCK EXTRA_PATTERN VIEW
          */
@@ -456,11 +458,20 @@ public class LockPatternActivity extends BaseActivity {
             mLastPattern.addAll(pattern);
             mTxtInfo.setText(R.string.alp_msg_pattern_recorded);
             mBtnConfirm.setEnabled(true);
+            mBtnConfirm.setBackgroundResource(R.drawable.btn_normal);
+            mBtnCancel.setBackgroundResource(R.drawable.btn_disable);
+            mBtnConfirm.setTextColor(getResources().getColor(R.color.white));
+            mBtnCancel.setTextColor(getResources().getColor(R.color.btn_confirm_color));
         } else {
             if (Arrays.equals(encodePattern(mLastPattern),
                     encodePattern(pattern))) {
                 mTxtInfo.setText(R.string.alp_msg_your_new_unlock_pattern);
                 mBtnConfirm.setEnabled(true);
+                mBtnConfirm.setEnabled(true);
+                mBtnConfirm.setBackgroundResource(R.drawable.btn_normal);
+                mBtnCancel.setBackgroundResource(R.drawable.btn_disable);
+                mBtnConfirm.setTextColor(getResources().getColor(R.color.white));
+                mBtnCancel.setTextColor(getResources().getColor(R.color.btn_confirm_color));
             } else {
                 mTxtInfo.setText(R.string.alp_msg_redraw_pattern_to_confirm);
                 mBtnConfirm.setEnabled(false);
@@ -622,7 +633,23 @@ public class LockPatternActivity extends BaseActivity {
 
         @Override
         public void onClick(View v) {
-            finishWithNegativeResult(RESULT_CANCELED);
+        	mLockPatternView.clearPattern();
+        	if(ACTION_CREATE_PATTERN.equals(getIntent().getAction())){
+        		mTxtInfo.setText(getString(R.string.alp_msg_draw_an_unlock_pattern));
+        		mBtnConfirm.setBackgroundResource(R.drawable.btn_disable);
+                mBtnCancel.setBackgroundResource(R.drawable.btn_normal);
+                mBtnConfirm.setTextColor(getResources().getColor(R.color.btn_confirm_color));
+                mBtnCancel.setTextColor(getResources().getColor(R.color.white));
+                 if(mLastPattern!=null)
+                 {
+                	 mLastPattern.clear();
+                	 mLastPattern=null;
+                 }
+        	}
+        	else if(ACTION_COMPARE_PATTERN.equals(getIntent().getAction())){
+        		mTxtInfo.setText(getString(R.string.alp_msg_draw_pattern_to_unlock));
+        		finishWithNegativeResult(RESULT_CANCELED);
+        	}
         }// onClick()
     };// mBtnCancelOnClickListener
 

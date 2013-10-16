@@ -19,15 +19,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <TextView
+    <com.tavant.droid.security.widget.CustomizableTextView
         android:id="@+id/alp_info"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp"
         android:gravity="center_horizontal"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textIsSelectable="true" />
+        style="@style/pattern_status_text"
+        android:textIsSelectable="false" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -45,7 +41,6 @@
 
     <LinearLayout
         android:id="@+id/alp_footer"
-        style="?attr/alp_button_bar_style"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -58,25 +53,18 @@
             android:layout_height="@dimen/alp_separator_size" />
 
         <LinearLayout
-            style="?attr/alp_button_bar_style"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal" >
 
             <Button
                 android:id="@+id/alp_cancel"
-                style="?attr/alp_button_bar_button_style"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+                style="@style/lock_pattern_button_style_1"
                 android:text="@android:string/cancel" />
 
             <Button
                 android:id="@+id/alp_confirm"
-                style="?attr/alp_button_bar_button_style"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+                style="@style/lock_pattern_button_style_2"
                 android:enabled="false"
                 android:text="@string/alp_cmd_continue" />
         </LinearLayout>

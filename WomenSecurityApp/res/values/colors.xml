@@ -13,4 +13,5 @@
 	<color name="header_grey">#FFEDEDED</color>
 	<color name="light_grey">#B4B4B4</color>
 	<color name="actionbar_color">#FFFD4A4A</color>
+	<color name="btn_confirm_color">#FFABABAB</color>
 </resources>
