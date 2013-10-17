@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="fill_parent"
+android:layout_height="fill_parent"
+android:paddingTop="7dip"
+android:orientation="vertical" >
+       
+       <ViewFlipper
+            android:id="@+id/view_flipper"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_margin="6dip" >
+            
+     
+            <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:gravity="center"
+                    android:background="@drawable/home"
+                    android:orientation="vertical" >
+
+                   
+
+                    <ImageView
+                        android:layout_marginTop="15dp"
+                        android:id="@+id/imageView1"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"/>
+                    
+            </LinearLayout>
+            
+            
+            
+            <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:gravity="center"
+                    android:background="@drawable/settings"
+                    android:orientation="vertical">
+
+ 
+                    <ImageView
+                        android:layout_marginTop="15dp"
+                        android:id="@+id/imageView2"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"/>
+                    
+            </LinearLayout>
+
+
+        </ViewFlipper>
+        
+       <ImageButton android:id="@+id/close_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|right|top"
+                    android:src="@drawable/com_facebook_close"/>         
+
+</FrameLayout>
