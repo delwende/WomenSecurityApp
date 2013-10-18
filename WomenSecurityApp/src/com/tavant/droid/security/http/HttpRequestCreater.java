@@ -108,7 +108,7 @@ public class HttpRequestCreater {
 		object.put("userid", userId);
 		post.addHeader("Content-type", "application/json");
 		post.setEntity(new StringEntity(object.toString(), "utf-8"));
-		System.out.println("json object >> " + object.toString());
+		System.out.println("json object >> " + object.toString()+post.getURI().toString());
         return post;
 		}catch (Exception e) {
 			e.printStackTrace();

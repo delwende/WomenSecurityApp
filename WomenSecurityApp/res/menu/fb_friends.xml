@@ -1,8 +1,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" 
        xmlns:gladio="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_settings"
-        gladio:showAsAction="always|withText"
-        android:titleCondensed="@string/done"
+        android:id="@+id/action_done"
+        gladio:showAsAction="always"
+        android:icon="@drawable/ic_action_accept"
+        android:visible="false"
         android:title="@string/done"/>
 </menu>

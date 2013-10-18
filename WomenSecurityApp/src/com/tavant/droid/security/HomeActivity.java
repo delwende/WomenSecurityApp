@@ -32,6 +32,7 @@ import android.os.Handler;
 import android.telephony.PhoneStateListener;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
+import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -156,8 +157,6 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 				@Override
 				public void run() {
 					resetTriggeringStatus();
-					//cancel();
-					//timer.cancel();
 				}
 			}, 7*1000);
 			  }catch(Exception e){e.printStackTrace();}
@@ -376,13 +375,32 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-
-		switch (item.getItemId()) {
+		switch (item.getItemId()){ 
 		case R.id.action_settings:
 			loadSettings();
+			break;
+		case R.id.item_email:
+			sendEmail();
+			break;
+		case R.id.item_facebook:
+			break;
+		case R.id.item_twitter:
+			break;		
 		}
-
 		return true;
+	}
+	
+	
+	
+	private void sendEmail(){
+		
+		 Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+		 emailIntent.setType("text/html");
+		 emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Sub:"+getString(R.string.app_name));
+		// emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, Uri.parse("market://details?id="+getPackageName()+"").toString());
+		 emailIntent.putExtra(android.content.Intent.EXTRA_TEXT,  Html.fromHtml("<a>http://details?id="+getPackageName()+"</a>"));
+		 //startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+		 startActivity(emailIntent);
 	}
 
 	private void loadSettings() {
@@ -474,13 +492,6 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 			default:
 				return;
 			}
-
-			String msg = String.format("%s (%,d tries)", getString(msgId),
-					data.getIntExtra(LockPatternActivity.EXTRA_RETRY_COUNT, 0));
-
-			Toast toast = Toast.makeText(this, msg, Toast.LENGTH_LONG);
-			toast.show();
-
 			break;
 		}
 

@@ -18,6 +18,7 @@ import android.provider.ContactsContract.Contacts;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AlphabetIndexer;
@@ -67,6 +68,7 @@ public class PickerFriendListActivity extends ActionBarActivity
 	private Map<Integer, Integer> sectionToPosition;
 	private AsyncTask<Void, Void,Integer> mTask = null;
 	private ArrayList<String>mIDs=null;
+	private boolean showMenu=false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {	
@@ -240,7 +242,12 @@ public class PickerFriendListActivity extends ActionBarActivity
 					}
 					listview.setAdapter(adapter);
 					progress.setVisibility(View.INVISIBLE);
-					listview.setVisibility(View.VISIBLE);}
+					listview.setVisibility(View.VISIBLE);
+				    if(mCursor.getCount()>0){
+				    	showMenu=true;
+				    	invalidateOptionsMenu();
+				    }	
+				}
 				else{
 					adapter.refresh(indexer, usedSectionNumbers,
 							sectionToOffset, sectionToPosition);
@@ -257,7 +264,17 @@ public class PickerFriendListActivity extends ActionBarActivity
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.fb_friends, menu);
+		MenuItem item=menu.findItem(R.id.action_done);
+		if(showMenu){
+		 item.setVisible(showMenu);
+		}
 		return true;
+	}
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if(item.getItemId()==R.id.action_done)
+			finish();
+		return super.onOptionsItemSelected(item);
 	}
 
 	@Override

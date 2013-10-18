@@ -2,17 +2,18 @@ package com.tavant.droid.security.lock;
 
 
 import com.tavant.droid.security.BaseActivity;
+import com.tavant.droid.security.HomeActivity;
+import com.tavant.droid.security.activities.SettingsActivity;
 import com.tavant.droid.security.data.BaseData;
 
 import group.pals.android.lib.ui.lockpattern.LockPatternActivity;
 import group.pals.android.lib.ui.lockpattern.prefs.SecurityPrefs;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
+
 
 public class LockScreenActivity extends BaseActivity {
 	
@@ -67,10 +68,12 @@ public class LockScreenActivity extends BaseActivity {
         
         case REQ_ENTER_PATTERN: {
             int msgId = 0;
-
             switch (resultCode) {
             case RESULT_OK:
                 msgId = android.R.string.ok;
+                Intent intent=new Intent(LockScreenActivity.this, SettingsActivity.class);
+    			intent.putExtra("issetting", true);
+    			startActivity(intent);
                 break;
             case RESULT_CANCELED:
                 msgId = android.R.string.cancel;
@@ -81,15 +84,8 @@ public class LockScreenActivity extends BaseActivity {
             default:
                 return;
             }
-
-            String msg = String.format("%s (%,d tries)", getString(msgId),
-                    data.getIntExtra(LockPatternActivity.EXTRA_RETRY_COUNT, 0));
-
-            Toast toast = Toast.makeText(this, msg, Toast.LENGTH_LONG);
-            toast.show();
-
             break;
-        }// REQ_ENTER_PATTERN
+        }
         }
     }// onActivityResult()
 

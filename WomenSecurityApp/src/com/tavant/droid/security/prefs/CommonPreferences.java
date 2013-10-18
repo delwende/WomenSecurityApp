@@ -73,7 +73,7 @@ public class CommonPreferences {
 		fbAcessToken=pref.getString(WSConstants.PROPERTY_FB_ACCESSTOKEN, null);
 		isNeedbuzzer=pref.getBoolean(WSConstants.PROPERTY_BUZZER, false);
 		isInformFriends=pref.getBoolean(WSConstants.PROPERTY_FRIENDS,true);
-		isvolunteer=pref.getBoolean(WSConstants.PROPERTY_VOLUNTEER,true);
+		isvolunteer=pref.getBoolean(WSConstants.PROPERTY_VOLUNTEER,false);
 		volunteerNumber=pref.getString(WSConstants.PROPERTY_VOLUNTEER_NUMBER, null);
 		userlocation=pref.getString(WSConstants.PROPERTY_USERLOCATION, "");
 	}
@@ -171,154 +171,12 @@ public class CommonPreferences {
 	}
 
 	
-	
-	
-	
-	
-	/*
-	public String getUsername() {
-		return username;
-	}
-
-	
-
-	public void setUsername(String username) {
-		editor.putString(DListConstants.PREF_USER, username);
-		editor.commit();
-		this.username = username;
-	}
-	
-	
-	
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		editor.putString(DListConstants.PREF_PASS, password);
-		this.password = password;
-		editor.commit();
-	}
-	
-	
-
-	public String getSessionId() {
-		return sessionId;
-	}
-
-	public void setSessionId(String sessionId) {
-		editor.putString(DListConstants.PREF_SESSION, sessionId);
-		editor.commit();
-		this.sessionId = sessionId;
-	}
-	
-	
-	
-    public String getLatitude() {
-		return latitude;
-	}
-
-	public void setLatitude(String latitude) {
-		editor.putString(DListConstants.LATITUDE, latitude);
-		editor.commit();
-		this.latitude = latitude;
-	}
-	public String getLongitude() {
-		return longitude;
-	}
-	public void setLongitude(String longitude) {
-		editor.putString(DListConstants.LONGITUDE, longitude);
-		editor.commit();
-		this.longitude=longitude;
-	}
-	
-	
-	public String getDeviceId() {
-		return deviceId;
-	}
-
-	public void setDeviceId(String deviceId) {
-		editor.putString(DListConstants.DEVICEID, deviceId);
-		editor.commit();
-		this.deviceId = deviceId;
-	}
-
-	public String getDevicetype() {
-		return devicetype;
-	}
-
-	public void setDevicetype(String devicetype) {
-		editor.putString(DListConstants.DEVICETYPE, devicetype);
-		editor.commit();
-		this.devicetype = devicetype;
-	}
-
-	public String getApplicationid() {
-		return applicationid;
-	}
-
-	public void setApplicationid(String applicationid) {
-		editor.putString(DListConstants.APPLICATIONID, applicationid);
-		editor.commit();
-		this.applicationid = applicationid;
-	}
-
-	public String getApplicationversion() {
-		return applicationversion;
-	}
-
-	public void setApplicationversion(String applicationversion) {
-		editor.putString(DListConstants.APPLICATIONVERSION, applicationversion);
-		editor.commit();
-		this.applicationversion = applicationversion;
-	}
-
-	public String getOsVersion() {
-		return osVersion;
-	}
-
-	public void setOsVersion(String osVersion) {
-		editor.putString(DListConstants.OSVERSION, osVersion);
-		editor.commit();
-		this.osVersion = osVersion;
-	}
-
-	/**
-     * Make all the prefernces value to null and saving the prefrences
-     * setting state event to LAUNCHING Again
-     * 
-     */
-	/*
 	public void logout() {
 		if(editor!=null)
 		{
-			editor.putString(DListConstants.PREF_PASS, null);
-			editor.putString(DListConstants.PREF_USER, null);
-			editor.putString(DListConstants.PREF_SESSION, null);
-			editor.putString(DListConstants.LATITUDE,"0");
-			editor.putString(DListConstants.LONGITUDE,"0");
-			
-			editor.putString(DListConstants.DEVICEID, null);
-			editor.putString(DListConstants.DEVICETYPE, null);
-			editor.putString(DListConstants.APPLICATIONID, null);
-			editor.putString(DListConstants.APPLICATIONVERSION,null);
-			editor.putString(DListConstants.OSVERSION,null);
-		
-			this.sessionId = null;
-			this.latitude="0";
-			this.longitude="0";
-			this.deviceId=null;
-			this.devicetype=null;
-			this.applicationid=null;
-			this.applicationversion=null;
-			this.osVersion=null;
-			editor.commit();
-			Log.w("Logout","Logout Successfully");
 			
 		}
-		DListConstants.APP_STATE_EVENT = DListConstants.LAUNCHING;
 	}
-*/
+
 
 }

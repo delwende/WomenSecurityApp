@@ -4,7 +4,9 @@
     android:layout_height="fill_parent"
     android:background="@drawable/login_screen_bg"
     android:orientation="vertical" >
-
+    
+    
+        
     <com.tavant.droid.security.widget.CustomizableTextView
         android:id="@+id/terms"
         android:layout_centerHorizontal="true"
@@ -29,5 +31,5 @@
         android:layout_above="@id/version"
         android:layout_centerHorizontal="true"
         android:background="@drawable/fbloginbtn_selector" />
-
+  
 </RelativeLayout>

@@ -44,7 +44,7 @@ public class HttpManager {
 
 		HttpClientParams.setRedirecting(params, false);
 
-		HttpProtocolParams.setUserAgent(params, "Blueplate");
+		HttpProtocolParams.setUserAgent(params, "gladio");
 
 		SchemeRegistry schemeRegistry = new SchemeRegistry();
 		schemeRegistry.register(new Scheme("http", PlainSocketFactory

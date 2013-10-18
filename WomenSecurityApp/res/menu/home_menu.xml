@@ -1,8 +1,33 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" 
        xmlns:gladio="http://schemas.android.com/apk/res-auto">
+    
+     <item
+        android:id="@+id/action_share"
+        gladio:showAsAction="always"
+        android:icon="@drawable/ic_action_share"
+        android:title="@string/action_share">
+         
+         <menu>
+        <item
+            android:id="@+id/item_email"
+            android:icon="@drawable/ic_action_new_email"
+            android:title="@string/email"/>
+        <item
+            android:id="@+id/item_facebook"
+            android:title="@string/facebook"/>
+        <item
+            android:id="@+id/item_twitter"
+            android:title="@string/twitter"/>
+         </menu>
+         
+         
+     </item>     
+      
     <item
         android:id="@+id/action_settings"
         gladio:showAsAction="always"
         android:icon="@drawable/ic_action_settings"
-        android:title="@string/action_settings"/>
+        android:title="@string/action_settings">
+        
+    </item>
 </menu>

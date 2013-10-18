@@ -22,8 +22,8 @@ public class WSConstants {
 	public static final String URL_USER_DATA = String.format(BASEURL, "user");
     public static final String URL_USER_LOCATION = String.format(BASEURL, "location");
     public static final String URL_USER_ALERT =  String.format(BASEURL, "send");
-	
-
+    
+   
 	
 	public static final String PREF_NAME="common_pref";
 	public static final String FACEBOOK_ACCESS_TOKEN = "fb_access_token";

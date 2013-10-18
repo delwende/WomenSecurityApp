@@ -72,7 +72,7 @@
     </style>
 
     <style name="settings_normal.des">
-        <item name="android:textSize">24sp</item>
+        <item name="android:textSize">21sp</item>
         <item name="android:textColor">#FF585858</item>
     </style>
 
@@ -91,6 +91,17 @@
         <item name="customFont">Roboto-Regular</item>
     </style>
 
+    
+    
+    <style name="button_style_1">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@drawable/btn_normal</item>
+    </style>
+    
+    
      
     <style name="lock_pattern_button_style_1">
         <item name="android:layout_width">0dip</item>

@@ -93,11 +93,15 @@ public class LocationAlarmService extends Service implements LocationListener{
 		if(provider.equals(LocationManager.NETWORK_PROVIDER.toString())&&!locationManager.isProviderEnabled(provider)&&
 				locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
 			provider= LocationManager.GPS_PROVIDER;
+			Log.i("TAG","coming here1");
+			
 		}else if(provider.equals(LocationManager.GPS_PROVIDER)&&!locationManager.isProviderEnabled(provider)&&
 				locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
 			provider= LocationManager.NETWORK_PROVIDER;
+			Log.i("TAG","coming here2");
 		}else{
 			provider=LocationManager.NETWORK_PROVIDER;   // if both are
+			Log.i("TAG","coming here3");
 		}
 
 
@@ -166,6 +170,7 @@ public class LocationAlarmService extends Service implements LocationListener{
 
 	@Override
 	public void onProviderDisabled(String provider) {
+		Log.i("TAG","coming here4");
 		timertask.cancel();
 		Location location = locationManager.getLastKnownLocation(provider);
 		if(location!=null){
@@ -180,6 +185,7 @@ public class LocationAlarmService extends Service implements LocationListener{
 
 	@Override
 	public void onProviderEnabled(String provider) {
+		Log.i("TAG","coming here5");
 		// TODO Auto-generated method stub
 		//locationManager.removeUpdates(this);
 		//updateLocationtoserver();
@@ -187,6 +193,7 @@ public class LocationAlarmService extends Service implements LocationListener{
 
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
+		Log.i("TAG","coming here6");
 		timertask.cancel();
 		Location location = locationManager.getLastKnownLocation(provider);
 		if(location!=null){

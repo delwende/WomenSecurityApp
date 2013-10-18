@@ -11,7 +11,7 @@
 		android:layout_height="fill_parent" android:background="@color/header_grey"
 		android:gravity="center_horizontal" android:orientation="vertical">
 
-		<TextView android:id="@+id/TermsTitle"
+		<com.tavant.droid.security.widget.CustomizableTextView android:id="@+id/TermsTitle"
 		    style="@style/settings_bold"
 			android:text="@string/terms_use"
 			android:gravity="center"

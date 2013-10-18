@@ -644,6 +644,8 @@ public class LockPatternActivity extends BaseActivity {
                  {
                 	 mLastPattern.clear();
                 	 mLastPattern=null;
+                 }else{
+                	 finishWithNegativeResult(RESULT_CANCELED);
                  }
         	}
         	else if(ACTION_COMPARE_PATTERN.equals(getIntent().getAction())){

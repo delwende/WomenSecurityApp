@@ -8,11 +8,9 @@ import org.apache.http.client.methods.HttpRequestBase;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.AlarmManager;
-import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -23,11 +21,9 @@ import android.os.SystemClock;
 import android.provider.Settings.Secure;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,14 +35,13 @@ import com.facebook.UiLifecycleHelper;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.LoginButton;
 import com.google.android.gcm.GCMRegistrar;
-import com.google.android.vending.licensing.LicenseChecker;
-import com.google.android.vending.licensing.LicenseCheckerCallback;
 import com.tavant.droid.security.BaseActivity;
 import com.tavant.droid.security.R;
 import com.tavant.droid.security.data.BaseData;
 import com.tavant.droid.security.http.HttpRequestCreater;
 import com.tavant.droid.security.prefs.CommonPreferences;
 import com.tavant.droid.security.service.LocationAlarmService;
+import com.tavant.droid.security.utils.CustomDialog;
 import com.tavant.droid.security.utils.PhoneStatus;
 import com.tavant.droid.security.utils.WSConstants;
 
@@ -57,30 +52,26 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 	private static final int REQ_CODE=125;
 	private String mdeviceId =null;
 	private LoginButton loginbtn=null;
-	private AlertDialog.Builder alert = null;
+	private CustomDialog alert = null;
 	private CommonPreferences preferences;
 	private TelephonyManager phoneManager=null;
 	private UiLifecycleHelper uiHelper=null;
 	private String mgcmId="";
-	private LicenseCheckerCallback mLicenseCheckerCallback=null;
-	private LicenseChecker mChecker;
 	private static Handler handler=new Handler();
 	private ProgressDialog mdialog=null;
 	private boolean isResumed = false;
 	private EditText phoneText = null;
 	private EditText userNametext = null;
-	private String fbacesstoken="";
+	
 	private String phonenumber="";
 	private String userName="";
-	private String userId="";
 	private PhoneStatus mctx=null;
 	private Pattern emailPattern = null;
 	private static final String EMAIL_PATTERN = 
 			"^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
 			+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 	
-	private LinearLayout alertView=null;
-	private LayoutInflater inflater=null;
+	
 	
 	
 	
@@ -96,20 +87,16 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 	private void onSessionStateChange(Session session,SessionState state,Exception exception){   
 		if (isResumed) {
 			if (state.isOpened()) {
+				loginbtn.setVisibility(View.INVISIBLE);
 				Log.d("TAG", "my accesstoken"+session.getAccessToken());
-				fbacesstoken=session.getAccessToken();
-				preferences.setFbAcessToken(fbacesstoken);
+				preferences.setFbAcessToken(session.getAccessToken());
 				mdialog=ProgressDialog.show(this, "", "fetching user details...");
 				makeMeRequest(session);
 			} else if (state.isClosed()) {
-				handler.post(new DisplayToast("error in login",LoginActivity.this));
 			}
 		}
 	}
-	
-	
-
-	
+		
 	private void makeMeRequest(final Session session) {
 		Request request = Request.newMeRequest(session, 
 				new Request.GraphUserCallback() {
@@ -119,33 +106,14 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 				if (session == Session.getActiveSession()) {
 					if (user != null) {
 						Log.d("TAG","myfbid"+user.getId());
-						userId=user.getId();
-						preferences.setFbId(userId);
+						preferences.setFbId(user.getId());
 						mdialog.dismiss();
-						alert.setMessage(getString(R.string.app_name));
-						alertView=(LinearLayout)inflater.inflate(R.layout.custom_dialog, null);
-						userNametext=(EditText)alertView.findViewById(R.id.dialog_name);
-						phoneText=(EditText)alertView.findViewById(R.id.dialog_phone);
-						
-						alert.setView(alertView);
-						alert.setPositiveButton(getString(R.string.register), new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int whichButton) {
-								String phoneNo = phoneText.getText().toString().trim();
-								String userName = userNametext.getText().toString().trim();
-								if(phoneNo.length()==0||userName.length()==0){
-									Toast.makeText(getApplicationContext(), getString(R.string.enter_mob_number), Toast.LENGTH_LONG).show();
-									return;
-								}
-								else{
-									mctx.onEntered(phoneNo,userName);
-								}
-							}
-						});
+						alert.setTitle(getString(R.string.app_name));
 						alert.show();
 					}
 				}
 				if (response.getError() != null) {
-					// Handle errors, will do so later.
+					handler.post(new DisplayToast(getString(R.string.error_login),LoginActivity.this));
 				}
 			}
 		});
@@ -155,8 +123,7 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		inflater=LayoutInflater.from(this);
-		alert = new AlertDialog.Builder(this);
+		alert = new CustomDialog(LoginActivity.this);
 		emailPattern=Pattern.compile(EMAIL_PATTERN);
 		mctx=(PhoneStatus)this;
 		mdeviceId =Secure.getString(getContentResolver(), Secure.ANDROID_ID);
@@ -189,16 +156,6 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 		if (mgcmId.equals("")) {
 			GCMRegistrar.register(this, WSConstants.GCM_SENDER_ID1);
 		}
-		/*
-		mLicenseCheckerCallback = new GSLicenseCheckerCallback();
-		// Construct the LicenseChecker with a policy.
-		mChecker = new LicenseChecker(
-				this, new ServerManagedPolicy(this,
-						new AESObfuscator(WSConstants.SALT, getPackageName(), mdeviceId)),
-						WSConstants.BASE64_PUBLIC_KEY);
-		mdialog=ProgressDialog.show(this, "", getString(R.string.configure_app));
-		mChecker.checkAccess(mLicenseCheckerCallback);
-		*/
 	}
 	
 	private void LaunchSettingsScreen(boolean isexplict){
@@ -214,6 +171,7 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 		InputMethodManager imm = (InputMethodManager)getSystemService(
 			      Context.INPUT_METHOD_SERVICE);
 		imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+		alert.dismiss();
 		phonenumber=PhoneNo;
 		userName=uName;
 		preferences.setPhoneNumber(phonenumber);
@@ -233,8 +191,10 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 			}
 		}
 		String gcmid=GCMRegistrar.getRegistrationId(this);
+		String accessToken=preferences.getFbAcessToken();
+		String userId=preferences.getFbId();
 		Log.i("TAG",""+gcmid);
-		HttpRequestBase put=HttpRequestCreater.createUesr(userId, "facebook", phonenumber, possibleEmail, gcmid, 0,"android",fbacesstoken,userName);
+		HttpRequestBase put=HttpRequestCreater.createUesr(userId, "facebook", phonenumber, possibleEmail, gcmid, 0,"android",accessToken,userName);
 		onExecute(WSConstants.CODE_USER_API, put, false);
 	}
 	
@@ -251,13 +211,20 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 		
 	}
 
-
-	
 	@Override
 	public void onResume() {
 		super.onResume();
 		isResumed = true;
 		uiHelper.onResume();	
+	}
+	
+	@Override
+	protected void onStart() {
+		super.onStart();
+		if(preferences.getPhoneNumber()==null&&preferences.getFbAcessToken()!=null){
+			loginbtn.setVisibility(View.INVISIBLE);
+			alert.show();
+		}
 	}
 
 	@Override
@@ -313,50 +280,17 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 		//		calendar.add(Calendar.SECOND, 10);
 		long firstTime = SystemClock.elapsedRealtime();
 		alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
-				firstTime, 3*60* 1000, pendingIntent);
+				firstTime, 1*60* 1000, pendingIntent);
 	}
 	
-	
-	
-	
-	private class GSLicenseCheckerCallback implements LicenseCheckerCallback {
-		public void allow(int policyReason) {
-			mdialog.dismiss();
-			if (isFinishing()) {
-				return;
-			}
-			Log.d("TAG","LiencedApp");
-		}
-
-		public void dontAllow(int policyReason) {
-			mdialog.dismiss();
-			if (isFinishing()) {
-				return;
-			}else{
-				//Toast.makeText(FacebookLoginActivty.this, getString(R.string.unlicensed_dialog_body), Toast.LENGTH_LONG).show();	
-				handler.post(new DisplayToast(getString(R.string.unlicensed_dialog_body),LoginActivity.this));
-				finish();
-			}
-			Log.d("TAG","unlicenced");
-		}
-
-		public void applicationError(int errorCode) {
-			mdialog.dismiss();
-			if (isFinishing()) {
-				return;
-			}	
-		}
-	}
-
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		//mChecker.onDestroy();
 	}
 
 
 
-	private class DisplayToast implements Runnable{
+	private static class DisplayToast implements Runnable{
 		String mText;
 		Context mContext;
 

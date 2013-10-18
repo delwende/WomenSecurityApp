@@ -1,19 +1,39 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/customdialog"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical"
-    android:padding="10dp" >
+    android:background="@color/white"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <com.tavant.droid.security.widget.CustomizableTextView
+        android:layout_alignParentTop="true"
+        android:id="@+id/title"
+        style="@style/settings_normal"
+        android:text="@string/dialog_description" />
+
     <EditText
-        android:id="@+id/dialog_name"
-        android:hint="@string/full_name"
-         android:inputType="text"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
-    <EditText
+        android:layout_below="@+id/title"
         android:id="@+id/dialog_phone"
-        android:hint="@string/phon_number"
-        android:inputType="phone"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
-</LinearLayout>
+        android:layout_height="wrap_content"
+        android:hint="@string/phon_number"
+        android:editable="true"
+        android:inputType="phone" />
+
+    <EditText
+        android:layout_below="@+id/dialog_phone"
+        android:id="@+id/dialog_name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/full_name"
+        android:editable="true"
+        android:inputType="text"/>
+
+    <Button
+        android:id="@+id/register_btn"
+        android:layout_below="@+id/dialog_name"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="7dip"
+        style="@style/button_style_1"
+        android:text="@string/register"/>
+
+</RelativeLayout>

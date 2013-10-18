@@ -57,7 +57,8 @@ public class HttpHandler {
 				case WSConstants.CODE_LOCATION_API:
 					return parseLocationAPI(inputStream);	
 				case WSConstants.CODE_ALERT_API:
-					//return parseUserData(inputStream);		
+					//return parseUserData(inputStream);	
+					Log.i("TAG",read(inputStream));
 				default:
 					break;
 				}
