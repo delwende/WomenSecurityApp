@@ -103,6 +103,7 @@ public class LocationAlarmService extends Service implements LocationListener{
 
 		location=LocationData.getInstance();
 		if(provider != null && !provider.equals("")){
+			Log.i("TAG","final provider"+provider);
 			timer.schedule(timertask, 10*1000);
 			locationManager.requestLocationUpdates(provider, 20000, 1, this);
 		}else{
@@ -166,15 +167,19 @@ public class LocationAlarmService extends Service implements LocationListener{
 
 	@Override
 	public void onProviderDisabled(String provider) {
+		Log.i("TAG","provider disabled");
 		timertask.cancel();
 		Location location = locationManager.getLastKnownLocation(provider);
 		if(location!=null){
-			Log.i("TAG","got location on starting");
+			Log.i("TAG","provider disabled, then also got location");
 			LocationData.getInstance().setLatitude(location.getLatitude());
 			LocationData.getInstance().setLongitude(location.getLongitude());
 			updateLocationtoserver();
 			//LocationData.getInstance().setCurrentLocation(getLocationName(location.getLatitude(),location.getLongitude()));
 			getLocationinString(location.getLatitude(),location.getLongitude());
+		}else{
+			timer.cancel();
+			clear();
 		}
 	}
 
@@ -196,6 +201,9 @@ public class LocationAlarmService extends Service implements LocationListener{
 			updateLocationtoserver();
 			//LocationData.getInstance().setCurrentLocation(getLocationName(location.getLatitude(),location.getLongitude()));
 			getLocationinString(location.getLatitude(),location.getLongitude());
+		}else{
+			timer.cancel();
+			clear();
 		}
 	}
 
