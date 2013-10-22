@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
@@ -22,8 +23,8 @@ import android.provider.Settings.Secure;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +42,7 @@ import com.tavant.droid.security.data.BaseData;
 import com.tavant.droid.security.http.HttpRequestCreater;
 import com.tavant.droid.security.prefs.CommonPreferences;
 import com.tavant.droid.security.service.LocationAlarmService;
+import com.tavant.droid.security.utils.CustomAlert;
 import com.tavant.droid.security.utils.CustomDialog;
 import com.tavant.droid.security.utils.PhoneStatus;
 import com.tavant.droid.security.utils.WSConstants;
@@ -53,6 +55,7 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 	private String mdeviceId =null;
 	private LoginButton loginbtn=null;
 	private CustomDialog alert = null;
+	private CustomAlert locationAlert = null;
 	private CommonPreferences preferences;
 	private TelephonyManager phoneManager=null;
 	private UiLifecycleHelper uiHelper=null;
@@ -60,8 +63,7 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 	private static Handler handler=new Handler();
 	private ProgressDialog mdialog=null;
 	private boolean isResumed = false;
-	private EditText phoneText = null;
-	private EditText userNametext = null;
+	private LocationManager manager=null;
 	
 	private String phonenumber="";
 	private String userName="";
@@ -108,7 +110,6 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 						Log.d("TAG","myfbid"+user.getId());
 						preferences.setFbId(user.getId());
 						mdialog.dismiss();
-						alert.setTitle(getString(R.string.app_name));
 						alert.show();
 					}
 				}
@@ -156,6 +157,7 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 		if (mgcmId.equals("")) {
 			GCMRegistrar.register(this, WSConstants.GCM_SENDER_ID1);
 		}
+		manager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 	}
 	
 	private void LaunchSettingsScreen(boolean isexplict){
@@ -215,8 +217,37 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 	public void onResume() {
 		super.onResume();
 		isResumed = true;
-		uiHelper.onResume();	
+		uiHelper.onResume();
+		if(alert!=null&&!alert.isShowing()){
+		if(!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)&&
+				!manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
+			locationAlert=new CustomAlert(this, btnListener);
+			locationAlert.show();
+		  }
+		}         
 	}
+	
+
+	
+	private  View.OnClickListener btnListener=new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			switch (v.getId()) {
+			case R.id.okbtn:
+				Intent dialogIntent=new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+				dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				startActivityForResult(dialogIntent, 0);	
+				break;
+			case R.id.cancelbtn:
+				if(locationAlert!=null&&locationAlert.isShowing())
+					locationAlert.dismiss();
+				break;
+			default:
+				break;
+			}
+			
+		}
+	};
 	
 	@Override
 	protected void onStart() {
@@ -232,6 +263,8 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 		super.onPause();
 		uiHelper.onPause();
 		isResumed = false;
+		if(locationAlert!=null&&locationAlert.isShowing())
+		          locationAlert.dismiss();
 	}
 
 

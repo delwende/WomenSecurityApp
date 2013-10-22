@@ -26,6 +26,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -43,6 +44,7 @@ import android.widget.Toast;
 
 import com.facebook.chat.XMPPManager;
 import com.facebook.chat.XMPPManager.XMPPChatListener;
+import com.google.ads.AdView;
 import com.tavant.droid.security.activities.SettingsActivity;
 import com.tavant.droid.security.data.BaseData;
 import com.tavant.droid.security.database.ContentDescriptor;
@@ -51,7 +53,7 @@ import com.tavant.droid.security.lock.LockScreenActivity;
 import com.tavant.droid.security.prefs.CommonPreferences;
 import com.tavant.droid.security.service.LocationAlarmService;
 import com.tavant.droid.security.sound.ScreamPlayer;
-import com.tavant.droid.security.utils.LocationData;
+import com.tavant.droid.security.utils.CustomAlert;
 import com.tavant.droid.security.utils.WSConstants;
 
 
@@ -75,7 +77,11 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 	private int mNumberofClicks=0;
 	private CommonPreferences commonpref=null;
 	private boolean isTriggered=false;
-
+	private CustomAlert locationAlert = null;
+	private LocationManager manager=null;
+	
+		
+	private String locationImage="http://maps.googleapis.com/maps/api/staticmap?center=%s,%s&zoom=13&size=320x480&maptype=roadmap&markers=color:blue|label:S|%s,%s&sensor=false";
 	
 	@Override
 	protected void onCreate(Bundle instance3) {
@@ -85,10 +91,11 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 		commonpref=CommonPreferences.getInstance();
 		panicButton = (ImageButton) findViewById(R.id.panic_button);
 		panicButton.setOnClickListener(this);
-		initAdd();
 		alertText=getString(R.string.alert_text);
-		
+		manager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 	}
+	
+
 	
 	@Override
 	protected void onResume() {
@@ -150,7 +157,9 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 			  volunteerNumber =commonpref.getVolunteerNumber();
 			  numbers=retrieveFriendnumbers();  // getting friend numbers
 			  Toast.makeText(HomeActivity.this, getString(R.string.confirm_click_alert), Toast.LENGTH_SHORT).show();
+			  try{
 			  makeSmsAlert(numbers);
+			  }catch(Exception e){e.printStackTrace();}
 			  try{
 			  timer=new Timer();	 
 			  timer.schedule(new TimerTask() {
@@ -169,10 +178,12 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 						screamPlayer.setRepeatCount(3);
 						screamPlayer.startRinging();
 					}
+					try{
 					notifyFriendsByPushNotification();
+					}catch(Exception e){}
 					if(isSocialnetworkingenabled){
-					 //postToWall();   // posting in the wall
-					 //sendFBChatMessage();
+					  postToWall();   // posting in the wall
+					  sendFBChatMessage();
 					}
 					getCallStates();
 					makeEmergencyCallToNearestVolunteer();
@@ -214,9 +225,8 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 	}
 	
 	private void sendFBChatMessage(){
-		SharedPreferences prefs = getSharedPreferences(getPackageName(), 
-                Context.MODE_PRIVATE);
-		final String fbauthtoken=prefs.getString(WSConstants.PROPERTY_FB_ACCESSTOKEN, null);
+
+		final String fbauthtoken=commonpref.getFbAcessToken();
 		final List<String> fbids = new ArrayList<String>();
 		Cursor cursor = resolver.query(
 				ContentDescriptor.WSFacebook.CONTENT_URI, null,
@@ -288,8 +298,6 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 	}
 
 	private   void makeSmsAlert(final String[] phNumber) {
-	   //if(volunteerNumber!=null)
-		//phNumber[numbers.length]=volunteerNumber;  // adding volunteer number also
 		Handler handler = new Handler();
 		handler.postDelayed(new Runnable() {
 			@Override
@@ -297,8 +305,8 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 				
 				if ( commonpref.getUserlocation() != null) {
 					try {
-						sendSmsMessage(phNumber, alertText
-								+ commonpref.getUserlocation());
+						String msg=alertText+" "+commonpref.getUserlocation();
+						sendSmsMessage(phNumber, msg);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -475,7 +483,6 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 
 		case LockScreenActivity.REQ_ENTER_PATTERN: {
 			int msgId = 0;
-
 			switch (resultCode) {
 			case RESULT_OK:
 				msgId = android.R.string.ok;
@@ -498,14 +505,12 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 		}
 	}
 	
-	
 	private void setupXMPPLogin(String fbtocken, List<String>fbids) {
-		// TODO Auto-generated method stub
-		//String fbtocken = acceestoken;
 		if(fbtocken!=null){
 			String decodedTocken = null;
 			try {
-				String msg=alertText+ commonpref.getUserlocation();
+				String msg=alertText+ commonpref.getUserlocation()+" "+String.format(locationImage,commonpref.getLatitude(),commonpref.getLongtitude(),
+						commonpref.getLatitude(), commonpref.getLongtitude());
 				decodedTocken = URLDecoder.decode(fbtocken, "utf-8");
 				XMPPManager.getInstance().init(decodedTocken,fbids,msg);
 				XMPPManager.getInstance().setXMPPChatListener(this, mChatListener);
@@ -539,5 +544,4 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 
 	
 	};
-
 }

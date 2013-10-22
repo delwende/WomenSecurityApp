@@ -7,5 +7,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="lib" path="libs/GoogleAdMobAdsSdk-6.4.1.jar"/>
+	<classpathentry kind="lib" path="libs/twitter4j-core-3.0.4.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

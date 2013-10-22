@@ -61,7 +61,7 @@ public class LocationAlarmService extends Service implements LocationListener{
 	@Override
 	public void onCreate() {
 		timer=new Timer();
-		Log.i("TAG","onCreate");
+		Log.d("TAG","onCreate");
 	}
 
 	@Override
@@ -76,12 +76,12 @@ public class LocationAlarmService extends Service implements LocationListener{
 
 	public void onDestroy() {
 		super.onDestroy();
-		Log.i("TAG","onDestroy" );
+		Log.d("TAG","onDestroy" );
 	}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {			
-		Log.i("TAG","calling laram agin");
+		Log.d("TAG","calling laram agin");
 		locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 		prefrences=CommonPreferences.getInstance();
 		userid=prefrences.getFbId();
@@ -89,25 +89,25 @@ public class LocationAlarmService extends Service implements LocationListener{
 			return START_NOT_STICKY; // no registartion of alram
 		Criteria criteria = new Criteria();
 		provider = locationManager.getBestProvider(criteria, false);
-		Log.i("TAG","best provider is"+provider);
+		Log.d("TAG","best provider is"+provider);
 		if(provider.equals(LocationManager.NETWORK_PROVIDER.toString())&&!locationManager.isProviderEnabled(provider)&&
 				locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
 			provider= LocationManager.GPS_PROVIDER;
-			Log.i("TAG","coming here1");
+			Log.d("TAG","coming here1");
 			
 		}else if(provider.equals(LocationManager.GPS_PROVIDER)&&!locationManager.isProviderEnabled(provider)&&
 				locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
 			provider= LocationManager.NETWORK_PROVIDER;
-			Log.i("TAG","coming here2");
+			Log.d("TAG","coming here2");
 		}else{
 			provider=LocationManager.NETWORK_PROVIDER;   // if both are
-			Log.i("TAG","coming here3");
+			Log.d("TAG","coming here3");
 		}
 
 
 		location=LocationData.getInstance();
 		if(provider != null && !provider.equals("")){
-			Log.i("TAG","final provider"+provider);
+			Log.d("TAG","final provider"+provider);
 			timer.schedule(timertask, 10*1000);
 			locationManager.requestLocationUpdates(provider, 20000, 1, this);
 		}else{
@@ -125,7 +125,7 @@ public class LocationAlarmService extends Service implements LocationListener{
 			timer.cancel();
 			Location location = locationManager.getLastKnownLocation(provider);
 			if(location!=null){
-				Log.i("TAG","got last known location, after removing the timer");
+				Log.d("TAG","got last known location, after removing the timer");
 				LocationData.getInstance().setLatitude(location.getLatitude());
 				LocationData.getInstance().setLongitude(location.getLongitude());
 				//LocationData.getInstance().setCurrentLocation(getLocationName(location.getLatitude(),location.getLongitude()));
@@ -159,7 +159,7 @@ public class LocationAlarmService extends Service implements LocationListener{
 
 	@Override
 	public void onLocationChanged(Location location) {
-		Log.i("TAG","got location");
+		Log.d("TAG","got location");
 		timertask.cancel();
 		LocationData.getInstance().setLatitude(location.getLatitude());
 		LocationData.getInstance().setLongitude(location.getLongitude());
@@ -171,11 +171,11 @@ public class LocationAlarmService extends Service implements LocationListener{
 
 	@Override
 	public void onProviderDisabled(String provider) {
-		Log.i("TAG","provider disabled");
+		Log.d("TAG","provider disabled");
 		timertask.cancel();
 		Location location = locationManager.getLastKnownLocation(provider);
 		if(location!=null){
-			Log.i("TAG","provider disabled, then also got location");
+			Log.d("TAG","provider disabled, then also got location");
 			LocationData.getInstance().setLatitude(location.getLatitude());
 			LocationData.getInstance().setLongitude(location.getLongitude());
 			updateLocationtoserver();
@@ -189,19 +189,19 @@ public class LocationAlarmService extends Service implements LocationListener{
 
 	@Override
 	public void onProviderEnabled(String provider) {
-		Log.i("TAG","coming here5");
-		// TODO Auto-generated method stub
-		//locationManager.removeUpdates(this);
-		//updateLocationtoserver();
+		Log.d("TAG","coming here5, can fetch location in next attemp");
+		timertask.cancel();
+		timer.cancel();
+		clear();
 	}
 
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
-		Log.i("TAG","coming here6");
+		Log.d("TAG","coming here6");
 		timertask.cancel();
 		Location location = locationManager.getLastKnownLocation(provider);
 		if(location!=null){
-			Log.i("TAG","got location on starting");
+			Log.d("TAG","got location on starting");
 			LocationData.getInstance().setLatitude(location.getLatitude());
 			LocationData.getInstance().setLongitude(location.getLongitude());
 			updateLocationtoserver();
@@ -220,7 +220,9 @@ public class LocationAlarmService extends Service implements LocationListener{
 
 	private void updateLocationtoserver(){
 		// TODO Auto-generated method stub
-		Log.i("TAG","sending current location to server" + "latitude : " + location.getLatitude() + " longitude : " + location.getLongitude());
+		prefrences.setLatitude(""+location.getLatitude());
+		prefrences.setLongtitude(""+location.getLongitude());
+		Log.d("TAG","sending current location to server" + "latitude : " + location.getLatitude() + " longitude : " + location.getLongitude());
 		if(userid==null)
 			return;
 		new AsyncTask <Void,Void,BaseData>() {
@@ -239,7 +241,7 @@ public class LocationAlarmService extends Service implements LocationListener{
 			}
 			@Override 
 			protected void onPostExecute(BaseData base) {  
-				Log.i("TAG","clearing location listenre");
+				Log.d("TAG","clearing location listenre");
 				CopsData data=(CopsData)base;
 				if(data!=null&&data.phoneNumber!=null) {
 					prefrences.setVolunteerNumber(data.phoneNumber);
@@ -284,7 +286,7 @@ public class LocationAlarmService extends Service implements LocationListener{
 				System.out.println("Home Address :>> " + _homeAddress);
 			}
 		} catch (Exception e) {
-			Log.i("TAG","erroe in getting the locations.....for sms....");
+			Log.d("TAG","erroe in getting the locations.....for sms....");
 		}
 		return (_homeAddress==null ? "":_homeAddress.toString());
 	}
@@ -303,7 +305,7 @@ public class LocationAlarmService extends Service implements LocationListener{
 					JSONObject resJson=new JSONObject(read(entity.getContent()));
 					JSONArray jsonarray=  resJson.getJSONArray("results");
 					JSONObject firstobject=(JSONObject) jsonarray.get(0);	
-					Log.i("TAG","userlocationforsms"+firstobject.get("formatted_address").toString());
+					Log.d("TAG","userlocationforsms"+firstobject.get("formatted_address").toString());
 					prefrences.setUserlocation(firstobject.get("formatted_address").toString());
 				}catch(Exception e){
 					e.printStackTrace();

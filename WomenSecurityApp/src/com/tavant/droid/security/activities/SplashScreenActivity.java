@@ -71,9 +71,17 @@ public class SplashScreenActivity extends Activity implements View.OnClickListen
        image1.setBackgroundDrawable(h2);
        image2.setBackgroundDrawable(h1);
        help_view=(FrameLayout)findViewById(R.id.help_view);
+       
 	}
 	
-	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		/*
+		if(help_view.isClickable())
+			viewFlipper.showNext();
+			*/
+	}
 	
 	private void handleSplash(){
 		handler=new Handler();

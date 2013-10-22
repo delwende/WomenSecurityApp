@@ -4,6 +4,6 @@
         android:id="@+id/action_done"
         gladio:showAsAction="always"
         android:icon="@drawable/ic_action_accept"
-        android:visible="true"
+        android:visible="false"
         android:title="@string/done"/>
 </menu>

@@ -18,12 +18,5 @@
         android:src="@drawable/panic_selector"
         android:layout_centerInParent="true"
         android:background="@android:color/transparent"/>
-  
-    <com.google.ads.AdView xmlns:googleads="http://schemas.android.com/apk/lib/com.google.ads"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/ad"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        googleads:adSize="SMART_BANNER"
-        googleads:adUnitId="@string/admob_id"/>
+ 
 </RelativeLayout>

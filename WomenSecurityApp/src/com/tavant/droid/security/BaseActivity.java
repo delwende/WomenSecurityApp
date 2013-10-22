@@ -29,7 +29,7 @@ public abstract class BaseActivity extends ActionBarActivity {
 
 	protected AsyncTask<Object, Void, BaseData> task;
 	private final String TAG = "TAG";
-	private AdView mAdView=null;
+
 
 	protected abstract void onComplete(int reqCode, BaseData data);
 	protected abstract void onError(int reqCode, int errorCode, String errorMessage);
@@ -41,14 +41,7 @@ public abstract class BaseActivity extends ActionBarActivity {
 	}
 
 	
-	protected void initAdd() {
-		mAdView = (AdView)findViewById(R.id.ad);
-		AdRequest adRequest = new AdRequest();
-		adRequest.setGender(Gender.FEMALE);
-	    adRequest.addKeyword("beauty items");
-	    mAdView.loadAd(adRequest);
-	}
-
+	
 	
 
 
@@ -118,8 +111,6 @@ public abstract class BaseActivity extends ActionBarActivity {
     @Override
     protected void onDestroy() {
     	super.onDestroy();
-    	if(mAdView!=null)
-    		mAdView.destroy();
     }
 
 

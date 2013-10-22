@@ -40,6 +40,7 @@ import com.tavant.droid.security.adapters.FbFriendsAdapter;
 import com.tavant.droid.security.database.ContentDescriptor;
 import com.tavant.droid.security.database.ContentDescriptor.WSContact;
 import com.tavant.droid.security.prefs.CommonPreferences;
+import com.tavant.droid.security.utils.Utils;
 
 
 
@@ -245,6 +246,7 @@ public class PickerFriendListActivity extends ActionBarActivity
 					listview.setVisibility(View.VISIBLE);
 				    if(mCursor.getCount()>0){
 				    	showMenu=true;
+				    	if(Utils.hasHoneycomb())
 				    	invalidateOptionsMenu();
 				    }	
 				}

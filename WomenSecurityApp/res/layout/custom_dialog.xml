@@ -1,39 +1,42 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/customdialog"
-    android:background="@color/white"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:paddingLeft="5dip"
+    android:paddingRight="5dip"
+    android:paddingTop="5dip" >
 
     <com.tavant.droid.security.widget.CustomizableTextView
-        android:layout_alignParentTop="true"
         android:id="@+id/title"
         style="@style/settings_normal"
+        android:layout_alignParentTop="true"
         android:text="@string/dialog_description" />
 
     <EditText
-        android:layout_below="@+id/title"
         android:id="@+id/dialog_phone"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/phon_number"
+        android:layout_below="@+id/title"
         android:editable="true"
+        android:hint="@string/phon_number"
         android:inputType="phone" />
 
     <EditText
-        android:layout_below="@+id/dialog_phone"
         android:id="@+id/dialog_name"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/full_name"
+        android:layout_below="@+id/dialog_phone"
         android:editable="true"
-        android:inputType="text"/>
+        android:hint="@string/full_name"
+        android:inputType="text" />
 
     <Button
         android:id="@+id/register_btn"
+        style="@style/button_style_1"
         android:layout_below="@+id/dialog_name"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="7dip"
-        style="@style/button_style_1"
-        android:text="@string/register"/>
+        android:text="@string/register" />
 
 </RelativeLayout>

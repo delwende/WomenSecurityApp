@@ -9,6 +9,7 @@ import android.content.res.Resources;
 import android.util.Log;
 
 import com.google.android.gcm.GCMBaseIntentService;
+import com.tavant.droid.security.R;
 import com.tavant.droid.security.activities.DummyActivity;
 import com.tavant.droid.security.utils.WSConstants;
 
@@ -23,7 +24,7 @@ public class WSGCMIntentService extends GCMBaseIntentService {
 	@Override
 	protected void onMessage(Context context, Intent intent) {
 		
-		String message=" I am in Danger. Please help me";
+		String message=getString(R.string.alert_text);
 		String telephonenumber="";
 		for (String key : intent.getExtras().keySet()) {
 			Log.d("TAG", "Message key: " + key + " value: "
@@ -35,9 +36,9 @@ public class WSGCMIntentService extends GCMBaseIntentService {
 		}
 		Resources res=  context.getResources();
 		int icon= res.getIdentifier("ic_launcher", "drawable", context.getPackageName());
-		CharSequence tickerText = " An Alert received from your friend. He need your Help";
+		CharSequence tickerText = "An Alert received from your friend. He need your Help";
 		long when = System.currentTimeMillis();
-		CharSequence contentTitle = "Alert"; // expanded message title
+		CharSequence contentTitle = "An Alert received from your friend. He need your Help"; // expanded message title
 		CharSequence contentText = message; // expanded
 		Intent myintent=new Intent(this, DummyActivity.class);
 		myintent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

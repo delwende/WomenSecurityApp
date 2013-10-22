@@ -41,6 +41,8 @@ public class CommonPreferences {
 	private boolean isNeedbuzzer=false;
 	private boolean isInformFriends=false;
 	private boolean isvolunteer=false;
+	private String latitude=null;
+	private String longtitude=null;
 	
 	
 	private static CommonPreferences instance;
@@ -76,9 +78,31 @@ public class CommonPreferences {
 		isvolunteer=pref.getBoolean(WSConstants.PROPERTY_VOLUNTEER,false);
 		volunteerNumber=pref.getString(WSConstants.PROPERTY_VOLUNTEER_NUMBER, null);
 		userlocation=pref.getString(WSConstants.PROPERTY_USERLOCATION, "");
+		latitude=pref.getString(WSConstants.PROPERTY_USERLAT, "");
+		longtitude=pref.getString(WSConstants.PROPERTY_USERLONG, "");
 	}
 	
 	
+
+	public String getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(String latitude) {
+		editor.putString(WSConstants.PROPERTY_USERLAT, latitude);
+		editor.commit();
+		this.latitude = latitude;
+	}
+
+	public String getLongtitude() {
+		return longtitude;
+	}
+
+	public void setLongtitude(String longtitude) {
+		editor.putString(WSConstants.PROPERTY_USERLONG, longtitude);
+		editor.commit();
+		this.longtitude = longtitude;
+	}
 
 	public String getUserlocation() {
 		return userlocation;

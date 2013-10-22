@@ -46,6 +46,7 @@ public class HttpRequestCreater {
 		Log.i("TAG",""+object.toString());
 		
 		put.addHeader("Content-type", "application/json");
+		put.addHeader("api-key", "R2xhZGlvQDEyMy10YXZhbnQuY29t");
 		put.setEntity(new StringEntity(object.toString(), "utf-8"));
         return  put;
 		}catch (Exception e) {
@@ -74,6 +75,7 @@ public class HttpRequestCreater {
 		object.put("username", userName);
 		Log.i("TAG",""+object.toString());
 		post.addHeader("Content-type", "application/json");
+		post.addHeader("api-key", "R2xhZGlvQDEyMy10YXZhbnQuY29t");
 		post.setEntity(new StringEntity(object.toString(), "utf-8"));
         return post;
 		}catch (Exception e) {
@@ -92,6 +94,7 @@ public class HttpRequestCreater {
 		object.put("longitude", longitude);
 		object.put("apptype", app_type);
 		post.addHeader("Content-type", "application/json");
+		post.addHeader("api-key", "R2xhZGlvQDEyMy10YXZhbnQuY29t");
 		post.setEntity(new StringEntity(object.toString(), "utf-8"));
         return post;
 		}catch (Exception e) {
@@ -107,6 +110,7 @@ public class HttpRequestCreater {
 		object.put("phonenumber", phoneNumber);
 		object.put("userid", userId);
 		post.addHeader("Content-type", "application/json");
+		post.addHeader("api-key", "R2xhZGlvQDEyMy10YXZhbnQuY29t");
 		post.setEntity(new StringEntity(object.toString(), "utf-8"));
 		System.out.println("json object >> " + object.toString()+post.getURI().toString());
         return post;

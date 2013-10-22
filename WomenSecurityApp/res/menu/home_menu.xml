@@ -14,9 +14,11 @@
             android:title="@string/email"/>
         <item
             android:id="@+id/item_facebook"
+             android:icon="@drawable/ic_action_facebook"
             android:title="@string/facebook"/>
         <item
             android:id="@+id/item_twitter"
+             android:icon="@drawable/ic_action_twitter"
             android:title="@string/twitter"/>
          </menu>
          

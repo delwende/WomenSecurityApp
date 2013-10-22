@@ -1,26 +1,131 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
-  Copyright (C) 2013 The Android Open Source Project
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
+    <!-- the theme applied to the application or activity -->
+    <style name="CustomActionBarTheme" parent="@style/Theme.AppCompat.Light">
+        <item name="android:actionBarStyle">@style/ActionBar</item>
+        <!-- Support library compatibility -->
+        <item name="actionBarStyle">@style/ActionBar</item>
+    </style>
 
-       http://www.apache.org/licenses/LICENSE-2.0
+    <!-- ActionBar styles -->
+    <style name="ActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid">
+        <item name="android:background">@color/actionbar_color</item>
+        <!-- Support library compatibility -->
+        <item name="background">@color/actionbar_color</item>
+        <item name="android:titleTextStyle">@style/ActionBarTitleText</item>
+        <!-- Support library compatibility -->
+        <item name="titleTextStyle">@style/ActionBarTitleText</item>
+        <!-- -action menu text apperance -->
+        <item name="android:actionMenuTextAppearance">@style/MyActionBar.MenuTextStyle</item>
+        <!-- -action menu text apperance suport -->
+        <item name="actionMenuTextAppearance">@style/MyActionBar.MenuTextStyle</item>
+    </style>
 
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
--->
-<resources>
+    <!-- ActionBar title text -->
+    <style name="ActionBarTitleText" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
 
-    <!-- This style bumps up the address details font size to large on devices that have a smallest
-         width of 360dp (larger phones). -->
-    <style name="addressDetail" parent="@android:style/TextAppearance.Large">
-        <item name="android:fontFamily">sans-serif-light</item>
-        <item name="android:textIsSelectable">true</item>
+        <!-- The textColor property is backward compatible with the Support Library -->
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="MyActionBar.MenuTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Menu">
+        <item name="android:textColor">#F0F</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="Alp.Theme.Light" parent="@style/CustomActionBarTheme">
+
+        <!-- AOSP -->
+
+        <item name="android:windowBackground">@drawable/aosp_background_holo_light</item>
+
+        <!-- android-lockpattern -->
+
+        <item name="alp_drawable_btn_code_lock_default_holo">@drawable/circle_default</item>
+        <item name="alp_drawable_btn_code_lock_touched_holo">@drawable/circle_default</item>
+        <item name="alp_drawable_indicator_code_lock_point_area_default_holo">@drawable/circle_default</item>
+        <item name="alp_color_pattern_path">@color/alp_pattern_path_dark</item>
+        <item name="aosp_drawable_indicator_code_lock_point_area_normal">@drawable/circle_green</item>
+    </style>
+
+    <style name="settings_bold">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">#FF636363</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="customFont">Roboto-Bold</item>
+    </style>
+
+    <style name="settings_bold.des">
+        <item name="android:textSize">30sp</item>
+    </style>
+
+    <style name="settings_normal">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">#FF606060</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="customFont">Roboto-Regular</item>
+    </style>
+
+    <style name="settings_normal.des">
+        <item name="android:textSize">26sp</item>
+        <item name="android:textColor">#FF585858</item>
+    </style>
+
+    <style name="login_bold">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">#FFB43535</item>
+        <item name="android:textStyle">bold</item>
+        <item name="customFont">Roboto-Bold</item>
+    </style>
+
+    <style name="login_bold.normal">
+        <item name="android:textColor">#FF878787</item>
+        <item name="android:textStyle">normal</item>
+        <item name="customFont">Roboto-Regular</item>
+    </style>
+
+    
+    
+    <style name="button_style_1">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">26sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@drawable/btn_normal</item>
+    </style>
+    
+    
+     
+    <style name="lock_pattern_button_style_1">
+        <item name="android:layout_width">0dip</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">5dip</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textSize">26sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@drawable/btn_normal</item>
+    </style>
+     <style name="lock_pattern_button_style_2" parent="@style/lock_pattern_button_style_1">
+        <item name="android:textColor">@color/btn_confirm_color</item>
+        <item name="android:background">@drawable/btn_disable</item>
+    </style>
+    
+     <style name="pattern_status_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">26sp</item>
+        <item name="customFont">Roboto-Regular</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_marginBottom">10dip</item>
+     
     </style>
 
 </resources>
