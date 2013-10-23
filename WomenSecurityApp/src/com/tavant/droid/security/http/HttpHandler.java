@@ -72,7 +72,6 @@ public class HttpHandler {
 				responseError.reqCode = reqCode;
 				return responseError;			
 			}
-			response.consumeContent();
 		}// for response from server.
 		else
 		{

@@ -112,6 +112,8 @@ public abstract class BaseActivity extends ActionBarActivity {
 				onComplete(code, data);
 			else
 				onError(code, data.error, data.serverMessages);
+		}else{
+			onError(code, 0, "Unknown error from the server");
 		}
 	}
 
