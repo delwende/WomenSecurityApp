@@ -44,7 +44,8 @@ import android.widget.Toast;
 
 import com.facebook.chat.XMPPManager;
 import com.facebook.chat.XMPPManager.XMPPChatListener;
-import com.google.ads.AdView;
+import com.tavant.droid.security.BaseActivity;
+import com.tavant.droid.security.R;
 import com.tavant.droid.security.activities.SettingsActivity;
 import com.tavant.droid.security.data.BaseData;
 import com.tavant.droid.security.database.ContentDescriptor;
@@ -54,6 +55,7 @@ import com.tavant.droid.security.prefs.CommonPreferences;
 import com.tavant.droid.security.service.LocationAlarmService;
 import com.tavant.droid.security.sound.ScreamPlayer;
 import com.tavant.droid.security.utils.CustomAlert;
+import com.tavant.droid.security.utils.NetWorkUtil;
 import com.tavant.droid.security.utils.WSConstants;
 
 
@@ -213,6 +215,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 		            nameValuePairs.add(new BasicNameValuePair("access_token", fbauthtoken));
 		            nameValuePairs.add(new BasicNameValuePair("message", alertText
 							+  commonpref.getUserlocation()));
+		            nameValuePairs.add(new BasicNameValuePair("picture","http://121.240.130.119/twsa/web/images/gladio_icon.png"));
 		            post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 		            HttpResponse res=client.execute(post);
 		            Log.d("TAG","htpp status code"+res.getStatusLine().getStatusCode());
@@ -245,6 +248,10 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 	
 
 	private void notifyFriendsByPushNotification() {
+		if(!NetWorkUtil.getInstance(this).isNetWorkAvail()){
+			//Toast.makeText(this,getString(R.string.no_internet), Toast.LENGTH_LONG).show();
+			return;
+		}
 		List<String> phNumbers = Arrays.asList(numbers);
 		JSONArray jsonNumbers = new JSONArray(phNumbers);
 		if(volunteerNumber!=null&&volunteerNumber.length()!=0){

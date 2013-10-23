@@ -16,7 +16,7 @@ public class DummyActivity extends Activity {
 		telephonenumber=getIntent().getStringExtra("telno");
 		if(telephonenumber.length()>0){
 			String number = "tel:" + telephonenumber;
-            Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse(number)); 
+            Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse(number));
             startActivity(callIntent);
 		}
 		finish();

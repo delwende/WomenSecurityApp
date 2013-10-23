@@ -44,6 +44,7 @@ import com.tavant.droid.security.prefs.CommonPreferences;
 import com.tavant.droid.security.service.LocationAlarmService;
 import com.tavant.droid.security.utils.CustomAlert;
 import com.tavant.droid.security.utils.CustomDialog;
+import com.tavant.droid.security.utils.NetWorkUtil;
 import com.tavant.droid.security.utils.PhoneStatus;
 import com.tavant.droid.security.utils.WSConstants;
 
@@ -92,7 +93,7 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 				loginbtn.setVisibility(View.INVISIBLE);
 				Log.d("TAG", "my accesstoken"+session.getAccessToken());
 				preferences.setFbAcessToken(session.getAccessToken());
-				mdialog=ProgressDialog.show(this, "", "fetching user details...");
+				mdialog=ProgressDialog.show(this, "",getString(R.string.fetch_details));
 				makeMeRequest(session);
 			} else if (state.isClosed()) {
 			}
@@ -176,13 +177,16 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 		alert.dismiss();
 		phonenumber=PhoneNo;
 		userName=uName;
-		preferences.setPhoneNumber(phonenumber);
 		createUser();
 	}
 	
 	
 	private void createUser(){
-		mdialog=ProgressDialog.show(this, "", getString(R.string.fetch_details));
+		if(!NetWorkUtil.getInstance(this).isNetWorkAvail()){
+			Toast.makeText(this,getString(R.string.no_internet), Toast.LENGTH_LONG).show();
+			return;
+		}
+		mdialog=ProgressDialog.show(this, "", getString(R.string.registering));
 		String possibleEmail="";
 		Account[] accounts = AccountManager.get(this).getAccounts();
 		for (Account account : accounts) {
@@ -284,6 +288,7 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 	@Override
 	protected void onComplete(int reqCode, BaseData data) {
 		// TODO Auto-generated method stub
+		preferences.setPhoneNumber(phonenumber);
 		if(data.isSuccess){
 			mdialog.dismiss();
 			raiseLocationUpdateAlarm();
@@ -295,7 +300,6 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 	protected void onError(int reqCode, int errorCode, String errorMessage) {
 		mdialog.dismiss();
 		Toast.makeText(this,errorMessage, Toast.LENGTH_SHORT).show();
-		LaunchSettingsScreen(false);
 	}
 	
 	

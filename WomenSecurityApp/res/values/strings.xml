@@ -9,9 +9,12 @@
     <string name="unlicensed_dialog_body">This application is not licensed for this user. Please purchase it from Android Market.</string>
     <string name="configure_app">Configuring application...</string>
     <string name="fetch_details">Fetching user details...</string>
+    <string name="registering">Registering user....</string>
     <string name="press_button">Please press the alert button in case of Emergency only!</string>
     <string name="alert_text">PLEASE HELP ME !. I am in danger and need your help. I am at </string>
     <string name="confirm_click_alert">Please click two or more times to confirm the alert within 5 Seconds.</string>
+    <string name="alert_received">An alart received From </string>
+    <string name="no_internet">An alart received From </string>
      
      
     <!-- Setting Screen Strings -->

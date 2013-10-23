@@ -26,6 +26,7 @@ public class WSGCMIntentService extends GCMBaseIntentService {
 		
 		String message=getString(R.string.alert_text);
 		String telephonenumber="";
+		String from="";
 		for (String key : intent.getExtras().keySet()) {
 			Log.d("TAG", "Message key: " + key + " value: "
 					+ intent.getExtras().getString(key));
@@ -33,12 +34,14 @@ public class WSGCMIntentService extends GCMBaseIntentService {
 				message=intent.getExtras().getString(key);
 			else if(key.equals("telno"))
 				telephonenumber=intent.getExtras().getString(key);
+			else if(key.equals("from"))
+				from=intent.getExtras().getString(from);
 		}
 		Resources res=  context.getResources();
 		int icon= res.getIdentifier("ic_launcher", "drawable", context.getPackageName());
 		CharSequence tickerText = "An Alert received from your friend. He need your Help";
 		long when = System.currentTimeMillis();
-		CharSequence contentTitle = "An Alert received from your friend. He need your Help"; // expanded message title
+		CharSequence contentTitle =getString(R.string.alert_received)+" "+from;  // expanded message title
 		CharSequence contentText = message; // expanded
 		Intent myintent=new Intent(this, DummyActivity.class);
 		myintent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
