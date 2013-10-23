@@ -42,10 +42,15 @@ import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.facebook.FacebookException;
+import com.facebook.FacebookOperationCanceledException;
+import com.facebook.Session;
+import com.facebook.SessionDefaultAudience;
+import com.facebook.SessionState;
 import com.facebook.chat.XMPPManager;
 import com.facebook.chat.XMPPManager.XMPPChatListener;
-import com.tavant.droid.security.BaseActivity;
-import com.tavant.droid.security.R;
+import com.facebook.widget.WebDialog;
+import com.facebook.widget.WebDialog.OnCompleteListener;
 import com.tavant.droid.security.activities.SettingsActivity;
 import com.tavant.droid.security.data.BaseData;
 import com.tavant.droid.security.database.ContentDescriptor;
@@ -185,7 +190,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 					}catch(Exception e){}
 					if(isSocialnetworkingenabled){
 					  postToWall();   // posting in the wall
-					  sendFBChatMessage();
+					 
 					}
 					getCallStates();
 					makeEmergencyCallToNearestVolunteer();
@@ -200,7 +205,6 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 		isTriggered=false;
 		mNumberofClicks=0;
 	}
-	
 	private void postToWall(){
 		final String fbID=commonpref.getFbId();
 		final String fbauthtoken=commonpref.getFbAcessToken();
@@ -213,15 +217,16 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 					post.addHeader("Content-Type", "multipart/form-data");
 					List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
 		            nameValuePairs.add(new BasicNameValuePair("access_token", fbauthtoken));
-		            nameValuePairs.add(new BasicNameValuePair("message", alertText
+		            nameValuePairs.add(new BasicNameValuePair("message", alertText+" "
 							+  commonpref.getUserlocation()));
-		            nameValuePairs.add(new BasicNameValuePair("picture","http://121.240.130.119/twsa/web/images/gladio_icon.png"));
+		            nameValuePairs.add(new BasicNameValuePair("privacy","{'value':'ALL_FRIENDS'}"));
 		            post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 		            HttpResponse res=client.execute(post);
-		            Log.d("TAG","htpp status code"+res.getStatusLine().getStatusCode());
+		            Log.d("TAG","htpp status codefb"+res.getStatusLine().getStatusCode());
+		            sendFBChatMessage();
 					}catch(Exception e){
 						e.printStackTrace();
-						
+						 sendFBChatMessage();
 					}
 				}
 			}).start();
@@ -398,12 +403,144 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 			sendEmail();
 			break;
 		case R.id.item_facebook:
+			shareFacebook();
 			break;
 		case R.id.item_twitter:
 			break;		
 		}
 		return true;
 	}
+	
+	
+	 private void requestPublishPermissions(Session session) {
+	        if (session != null) {
+	            Session.NewPermissionsRequest newPermissionsRequest = new Session.NewPermissionsRequest(this, Arrays.asList("publish_actions"))
+	                    // demonstrate how to set an audience for the publish permissions,
+	                    // if none are set, this defaults to FRIENDS
+	                    .setDefaultAudience(SessionDefaultAudience.FRIENDS)
+	                    .setRequestCode(0);
+	            session.requestNewPublishPermissions(newPermissionsRequest);
+	        }
+	    }
+	
+	private void shareFacebook(){
+		
+	    Session session=Session.openActiveSessionFromCache(this);
+	    		/*
+	    requestPublishPermissions(session);
+	    Session.OpenRequest request=new Session.OpenRequest(this);
+	    request.setCallback(callback);
+	    session.openForPublish(request);
+	    */
+	    
+		
+		    Bundle params = new Bundle();
+		    params.putString("name", getString(R.string.fb_share_name));
+		    params.putString("caption", getString(R.string.fb_share_caption));
+		    params.putString("description", getString(R.string.fb_share_desciption));
+		    String url=String.format(getString(R.string.fb_share_link, getPackageName()));
+		    params.putString("link", url);
+		    String image=String.format(getString(R.string.fb_share_picture,WSConstants.HOST));
+		    params.putString("picture", "https://raw.github.com/fbsamples/ios-3.x-howtos/master/Images/iossdk_logo.png");
+		  // Session session= Session.getActiveSession();
+		    WebDialog feedDialog = (
+		        new WebDialog.FeedDialogBuilder(this,
+		        		session,
+		            params))
+		        .setOnCompleteListener(new OnCompleteListener() {
+
+		            @Override
+		            public void onComplete(Bundle values,
+		                FacebookException error) {
+		                if (error == null) {
+		                    // When the story is posted, echo the success
+		                    // and the post Id.
+		                    final String postId = values.getString("post_id");
+		                    if (postId != null) {
+		                        Toast.makeText(HomeActivity.this,
+		                            "Posted story, id: "+postId,
+		                            Toast.LENGTH_SHORT).show();
+		                    } else {
+		                        // User clicked the Cancel button
+		                        Toast.makeText(HomeActivity.this.getApplicationContext(), 
+		                            "Publish cancelled", 
+		                            Toast.LENGTH_SHORT).show();
+		                    }
+		                } else if (error instanceof FacebookOperationCanceledException) {
+		                    // User clicked the "x" button
+		                    Toast.makeText(HomeActivity.this.getApplicationContext(), 
+		                        "Publish cancelled", 
+		                        Toast.LENGTH_SHORT).show();
+		                } else {
+		                    // Generic, ex: network error
+		                    Toast.makeText(HomeActivity.this.getApplicationContext(), 
+		                        "Error posting story", 
+		                        Toast.LENGTH_SHORT).show();
+		                }
+		            }
+
+		        })
+		        .build();
+		    feedDialog.show();
+		    
+	}
+	
+	
+	private Session.StatusCallback callback = 
+			new Session.StatusCallback() {
+		@Override
+		public void call(Session session, 
+				SessionState state, Exception exception) {
+			Bundle params = new Bundle();
+		    params.putString("name", "Facebook SDK for Android");
+		    params.putString("caption", "Build great social apps and get more installs.");
+		    params.putString("description", "The Facebook SDK for Android makes it easier and faster to develop Facebook integrated Android apps.");
+		    params.putString("link", "https://developers.facebook.com/android");
+		    params.putString("picture", "https://raw.github.com/fbsamples/ios-3.x-howtos/master/Images/iossdk_logo.png");
+			
+			WebDialog feedDialog = (
+			        new WebDialog.FeedDialogBuilder(HomeActivity.this,session,
+			            params))
+			        .setOnCompleteListener(new OnCompleteListener() {
+
+			            @Override
+			            public void onComplete(Bundle values,
+			                FacebookException error) {
+			                if (error == null) {
+			                    // When the story is posted, echo the success
+			                    // and the post Id.
+			                    final String postId = values.getString("post_id");
+			                    if (postId != null) {
+			                        Toast.makeText(HomeActivity.this,
+			                            "Posted story, id: "+postId,
+			                            Toast.LENGTH_SHORT).show();
+			                    } else {
+			                        // User clicked the Cancel button
+			                        Toast.makeText(HomeActivity.this, 
+			                            "Publish cancelled", 
+			                            Toast.LENGTH_SHORT).show();
+			                    }
+			                } else if (error instanceof FacebookOperationCanceledException) {
+			                    // User clicked the "x" button
+			                    Toast.makeText(HomeActivity.this, 
+			                        "Publish cancelled", 
+			                        Toast.LENGTH_SHORT).show();
+			                } else {
+			                    // Generic, ex: network error
+			                    Toast.makeText(HomeActivity.this, 
+			                        "Error posting story", 
+			                        Toast.LENGTH_SHORT).show();
+			                }
+			            }
+
+			        })
+			        .build();
+			    feedDialog.show();
+			
+		}
+	};
+	
+	
 	
 	
 	

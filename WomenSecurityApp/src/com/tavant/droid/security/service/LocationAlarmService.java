@@ -132,6 +132,7 @@ public class LocationAlarmService extends Service implements LocationListener{
 				getLocationinString(location.getLatitude(),location.getLongitude());
 				handler.sendEmptyMessage(0);
 			}else{
+				Log.d("TAG","no location at all");
 				clear();
 			}
 		}

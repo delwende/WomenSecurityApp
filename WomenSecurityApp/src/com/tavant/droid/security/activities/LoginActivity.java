@@ -1,6 +1,7 @@
 package com.tavant.droid.security.activities;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.http.client.methods.HttpRequestBase;
@@ -31,6 +32,7 @@ import android.widget.Toast;
 import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.Session;
+import com.facebook.SessionDefaultAudience;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
 import com.facebook.model.GraphUser;
@@ -49,7 +51,7 @@ import com.tavant.droid.security.utils.PhoneStatus;
 import com.tavant.droid.security.utils.WSConstants;
 
 public class LoginActivity extends BaseActivity implements PhoneStatus{
-	
+
 	private TextView versionText=null;
 	private TextView termsText=null;
 	private static final int REQ_CODE=125;
@@ -65,28 +67,48 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 	private ProgressDialog mdialog=null;
 	private boolean isResumed = false;
 	private LocationManager manager=null;
-	
+
 	private String phonenumber="";
 	private String userName="";
 	private PhoneStatus mctx=null;
 	private Pattern emailPattern = null;
 	private static final String EMAIL_PATTERN = 
 			"^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
-			+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-	
-	
-	
-	
-	
+					+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+
+
+
+	private static final List<String> PERMISSIONS = Arrays.asList("publish_actions","publish_stream");
+	private static final int REAUTH_ACTIVITY_CODE = 100;
+
 	private Session.StatusCallback callback = 
 			new Session.StatusCallback() {
 		@Override
 		public void call(Session session, 
 				SessionState state, Exception exception) {
-			onSessionStateChange(session, state, exception);
+			if(session!=null&&session.isOpened()){
+				List<String> permissions = session.getPermissions();
+				if (!permissions.containsAll(PERMISSIONS)) {
+					requestPublishPermissions(session);
+					return;
+				}else{
+					onSessionStateChange(session, state, exception);
+				}
+			}
 		}
 	};
 	
+	 private void requestPublishPermissions(Session session) {
+	        if (session != null) {
+	            Session.NewPermissionsRequest newPermissionsRequest = new Session.NewPermissionsRequest(this, PERMISSIONS)
+	                    // demonstrate how to set an audience for the publish permissions,
+	                    // if none are set, this defaults to FRIENDS
+	                    .setDefaultAudience(SessionDefaultAudience.FRIENDS)
+	                    .setRequestCode(REAUTH_ACTIVITY_CODE);
+	            session.requestNewPublishPermissions(newPermissionsRequest);
+	        }
+	}
+
 	private void onSessionStateChange(Session session,SessionState state,Exception exception){   
 		if (isResumed) {
 			if (state.isOpened()) {
@@ -99,7 +121,7 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 			}
 		}
 	}
-		
+
 	private void makeMeRequest(final Session session) {
 		Request request = Request.newMeRequest(session, 
 				new Request.GraphUserCallback() {
@@ -121,7 +143,7 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 		});
 		request.executeAsync();
 	}
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -139,8 +161,10 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 			uiHelper= new UiLifecycleHelper(this, callback); 	
 			setContentView(R.layout.login);
 			loginbtn=(LoginButton)findViewById(R.id.fb_btn);
+			//loginbtn.setPublishPermissions(Arrays.asList("publish_stream","publish_actions"));
 			loginbtn.setReadPermissions(Arrays.asList("xmpp_login", "user_online_presence","friends_online_presence","read_friendlists","read_stream","read_requests",
 					"read_friendlists")); 
+
 			versionText=(TextView)findViewById(R.id.version);
 			versionText.setText(versionText.getText()+getApplicationversionName());
 			termsText=(TextView)findViewById(R.id.terms);
@@ -151,7 +175,7 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 				}
 			});
 		}
-		
+
 		GCMRegistrar.checkDevice(this);
 		GCMRegistrar.checkManifest(this);
 		mgcmId = GCMRegistrar.getRegistrationId(this);
@@ -160,27 +184,27 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 		}
 		manager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 	}
-	
+
 	private void LaunchSettingsScreen(boolean isexplict){
 		Intent intent=new Intent(this, SettingsActivity.class);
 		intent.putExtra("issetting", isexplict);
 		startActivity(intent);
 		finish();
 	}
-	
-	
+
+
 	@Override
 	public void onEntered(String PhoneNo, String uName) {
 		InputMethodManager imm = (InputMethodManager)getSystemService(
-			      Context.INPUT_METHOD_SERVICE);
+				Context.INPUT_METHOD_SERVICE);
 		imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
 		alert.dismiss();
 		phonenumber=PhoneNo;
 		userName=uName;
 		createUser();
 	}
-	
-	
+
+
 	private void createUser(){
 		if(!NetWorkUtil.getInstance(this).isNetWorkAvail()){
 			Toast.makeText(this,getString(R.string.no_internet), Toast.LENGTH_LONG).show();
@@ -203,18 +227,18 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 		HttpRequestBase put=HttpRequestCreater.createUesr(userId, "facebook", phonenumber, possibleEmail, gcmid, 0,"android",accessToken,userName);
 		onExecute(WSConstants.CODE_USER_API, put, false);
 	}
-	
+
 	private String getApplicationversionName(){
 		PackageManager manager = getPackageManager();
 		PackageInfo info=null;
 		try {
-			   info = manager.getPackageInfo(this.getPackageName(), 0);
-			   String versionName = info.versionName;
-			   return versionName;
-			   } catch (NameNotFoundException e) {
-			     return "";
-			   }
-		
+			info = manager.getPackageInfo(this.getPackageName(), 0);
+			String versionName = info.versionName;
+			return versionName;
+		} catch (NameNotFoundException e) {
+			return "";
+		}
+
 	}
 
 	@Override
@@ -223,16 +247,16 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 		isResumed = true;
 		uiHelper.onResume();
 		if(alert!=null&&!alert.isShowing()){
-		if(!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)&&
-				!manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
-			locationAlert=new CustomAlert(this, btnListener);
-			locationAlert.show();
-		  }
+			if(!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)&&
+					!manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
+				locationAlert=new CustomAlert(this, btnListener);
+				locationAlert.show();
+			}
 		}         
 	}
-	
 
-	
+
+
 	private  View.OnClickListener btnListener=new OnClickListener() {
 		@Override
 		public void onClick(View v) {
@@ -249,10 +273,10 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 			default:
 				break;
 			}
-			
+
 		}
 	};
-	
+
 	@Override
 	protected void onStart() {
 		super.onStart();
@@ -268,7 +292,7 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 		uiHelper.onPause();
 		isResumed = false;
 		if(locationAlert!=null&&locationAlert.isShowing())
-		          locationAlert.dismiss();
+			locationAlert.dismiss();
 	}
 
 
@@ -301,10 +325,10 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 		mdialog.dismiss();
 		Toast.makeText(this,errorMessage, Toast.LENGTH_SHORT).show();
 	}
-	
-	
-	
-	
+
+
+
+
 	private void raiseLocationUpdateAlarm() {
 		Intent myIntent = new Intent(this,
 				LocationAlarmService.class);
@@ -319,7 +343,7 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 		alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
 				firstTime, 1*60* 1000, pendingIntent);
 	}
-	
+
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
@@ -340,7 +364,7 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 			Toast.makeText(mContext, mText, Toast.LENGTH_LONG).show();
 		}
 	}
-	
-	
+
+
 
 }

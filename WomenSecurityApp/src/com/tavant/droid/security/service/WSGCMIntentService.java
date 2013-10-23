@@ -34,7 +34,7 @@ public class WSGCMIntentService extends GCMBaseIntentService {
 				message=intent.getExtras().getString(key);
 			else if(key.equals("telno"))
 				telephonenumber=intent.getExtras().getString(key);
-			else if(key.equals("from"))
+			else if(key.equals("friend"))
 				from=intent.getExtras().getString(from);
 		}
 		Resources res=  context.getResources();

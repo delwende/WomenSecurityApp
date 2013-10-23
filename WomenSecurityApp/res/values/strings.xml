@@ -14,7 +14,7 @@
     <string name="alert_text">PLEASE HELP ME !. I am in danger and need your help. I am at </string>
     <string name="confirm_click_alert">Please click two or more times to confirm the alert within 5 Seconds.</string>
     <string name="alert_received">An alart received From </string>
-    <string name="no_internet">An alart received From </string>
+    <string name="no_internet">No Internet Connection.Please check your network settings.</string>
      
      
     <!-- Setting Screen Strings -->
@@ -35,7 +35,7 @@
 	<string name="str_buzzer_desc_long">Enable Siren Buzzer.</string> 
 	
 	<string name="str_friends">Friends</string>
-	<string name="str_friends_desc">Inform Friends through Facebook</string>
+	<string name="str_friends_desc">Inform Friends via Facebook</string>
 	<string name="str_friends_desc_long">This will enable alerting your friends through facebook chat message and timeline post</string>
 	
 	<string name="str_volunteer">Volunteer</string>
@@ -102,4 +102,12 @@
     <string name="twitter">Twitter</string>
     <string name="facebook">Facebook</string>
     <string name="location_warn">Requires either GPS or GPRS for tracking the location.Please enable it from the phone settings.</string>
+    
+    <!-- Share -->
+    <string name="fb_share_name">Gladio mobile application for Android</string>
+    <string name="fb_share_caption">Install and be safe.</string>
+    <string name="fb_share_desciption">Describing the app.</string>
+    <string name="fb_share_link">https://play.google.com/store/apps/details?id=%s</string>
+    <string name="fb_share_picture">http://%s/twsa/web/images/gladio_icon.png</string>
+
 </resources>
