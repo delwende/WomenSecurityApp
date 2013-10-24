@@ -37,12 +37,22 @@ public class TwitterActivity extends BaseActivity{
 				@Override
 				public void onPageFinished(WebView view, String url) {
 					super.onPageFinished(view, url);
-					try{
+					try{/*
 						web.loadUrl("javascript:(function(){ var str; " +
 								"str = document.getElementById('oauth_pin').firstChild.nodeValue;" +
 								//"if(str != null)" +
 								"alert(str);" +
 						"})()");
+						*/
+						/*
+						web.loadUrl("javascript:(function(){ var str; " +
+								"str = document.getElementById('oauth_pin')" +
+								//"if(str != null)" +
+								"alert(str);" +
+						"})()");
+						*/
+						web.loadUrl("javascript:alert('Hello World!')");
+						
 					}catch (Exception e) {
 						e.printStackTrace();
 					}

@@ -144,6 +144,26 @@
             android:screenOrientation="portrait"
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        
+        <activity
+            android:name=".twitter.TwitterActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
+            android:screenOrientation="portrait"
+            android:label="@string/app_name"/>
+        
+        <activity
+			android:name=".twitter.TwitterAuthenticationActivity"
+			android:launchMode="singleInstance"
+			android:screenOrientation="portrait">
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+				<category android:name="android.intent.category.DEFAULT" />
+			
+				<data
+                    android:host="t4jgladio"
+                    android:scheme="oauth"/>
+			</intent-filter>
+		</activity>
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"

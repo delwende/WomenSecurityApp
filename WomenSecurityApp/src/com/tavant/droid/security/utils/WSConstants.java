@@ -61,6 +61,11 @@ public class WSConstants {
 	public static final String PROPERTY_USERLAT = "lat";
 	public static final String PROPERTY_USERLONG = "lat";
 	
+	public static final String PROPERTY_TWITTER = "isTwitterLogin";
+	public static final String PROPERTY_TWITTER_ACCESS_TOKEN = "acess_token";
+	public static final String PROPERTY_TWITTER_ACCESS_TOKEN_SECRET = "acees_token_secret";
+	
+	
 	
 	
 	

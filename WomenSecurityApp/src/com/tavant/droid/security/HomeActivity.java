@@ -19,8 +19,10 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -33,7 +35,6 @@ import android.os.Handler;
 import android.telephony.PhoneStateListener;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
-import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -45,7 +46,6 @@ import android.widget.Toast;
 import com.facebook.FacebookException;
 import com.facebook.FacebookOperationCanceledException;
 import com.facebook.Session;
-import com.facebook.SessionDefaultAudience;
 import com.facebook.SessionState;
 import com.facebook.chat.XMPPManager;
 import com.facebook.chat.XMPPManager.XMPPChatListener;
@@ -59,6 +59,9 @@ import com.tavant.droid.security.lock.LockScreenActivity;
 import com.tavant.droid.security.prefs.CommonPreferences;
 import com.tavant.droid.security.service.LocationAlarmService;
 import com.tavant.droid.security.sound.ScreamPlayer;
+import com.tavant.droid.security.twitter.TwitterAuthenticationActivity;
+import com.tavant.droid.security.twitter.TwitterHelper;
+import com.tavant.droid.security.twitter.UpdateTwitterStatus;
 import com.tavant.droid.security.utils.CustomAlert;
 import com.tavant.droid.security.utils.NetWorkUtil;
 import com.tavant.droid.security.utils.WSConstants;
@@ -86,24 +89,28 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 	private boolean isTriggered=false;
 	private CustomAlert locationAlert = null;
 	private LocationManager manager=null;
+	private TwitterHelper twitterHelp=null;
+	private ProgressDialog pDialog=null;
 	
-		
+	private static final int REQ_CODE=4500;
+
+
 	private String locationImage="http://maps.googleapis.com/maps/api/staticmap?center=%s,%s&zoom=13&size=320x480&maptype=roadmap&markers=color:blue|label:S|%s,%s&sensor=false";
-	
+
 	@Override
 	protected void onCreate(Bundle instance3) {
 		super.onCreate(instance3);
 		setContentView(R.layout.activity_main);
 		resolver = getContentResolver();
 		commonpref=CommonPreferences.getInstance();
-		panicButton = (ImageButton) findViewById(R.id.panic_button);
+		panicButton = (ImageButton)findViewById(R.id.panic_button);
 		panicButton.setOnClickListener(this);
 		alertText=getString(R.string.alert_text);
 		manager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 	}
-	
 
-	
+
+
 	@Override
 	protected void onResume() {
 		buzzer = commonpref.isNeedbuzzer();
@@ -121,19 +128,19 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 			resetTriggeringStatus();
 		}
 	}
-	
+
 	@Override
 	protected void onPause() {
 		super.onPause();
 	}
-       /*
+	/*
 	@Override
 	public void onClick(View v) {
 		if (v.getId() == R.id.panic_button) {
 			volunteerNumber =commonpref.getVolunteerNumber();
 			Log.d("TAG","cop number"+volunteerNumber);
 			numbers = retrievePhoneNumbers();
-			
+
 			if (buzzer == true) {
 				ScreamPlayer screamPlayer = new ScreamPlayer(this);
 				screamPlayer.setRepeatCount(3);
@@ -153,29 +160,29 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 			makeEmergencyCallToNearestCop();
 		}
 	}
-	*/
-	
+	 */
+
 	@Override
 	public void onClick(View v) {
 		if (v.getId() == R.id.panic_button) {
 			if(!isTriggered){
-			  isTriggered=true; 
-			  mNumberofClicks++;
-			  volunteerNumber =commonpref.getVolunteerNumber();
-			  numbers=retrieveFriendnumbers();  // getting friend numbers
-			  Toast.makeText(HomeActivity.this, getString(R.string.confirm_click_alert), Toast.LENGTH_SHORT).show();
-			  try{
-			  makeSmsAlert(numbers);
-			  }catch(Exception e){e.printStackTrace();}
-			  try{
-			  timer=new Timer();	 
-			  timer.schedule(new TimerTask() {
-				@Override
-				public void run() {
-					resetTriggeringStatus();
-				}
-			}, 7*1000);
-			  }catch(Exception e){e.printStackTrace();}
+				isTriggered=true; 
+				mNumberofClicks++;
+				volunteerNumber =commonpref.getVolunteerNumber();
+				numbers=retrieveFriendnumbers();  // getting friend numbers
+				Toast.makeText(HomeActivity.this, getString(R.string.confirm_click_alert), Toast.LENGTH_SHORT).show();
+				try{
+					makeSmsAlert(numbers);
+				}catch(Exception e){e.printStackTrace();}
+				try{
+					timer=new Timer();	 
+					timer.schedule(new TimerTask() {
+						@Override
+						public void run() {
+							resetTriggeringStatus();
+						}
+					}, 7*1000);
+				}catch(Exception e){e.printStackTrace();}
 			}else{
 				mNumberofClicks++;
 				if(mNumberofClicks==3)
@@ -186,11 +193,11 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 						screamPlayer.startRinging();
 					}
 					try{
-					notifyFriendsByPushNotification();
+						notifyFriendsByPushNotification();
 					}catch(Exception e){}
 					if(isSocialnetworkingenabled){
-					  postToWall();   // posting in the wall
-					 
+						postToWall();   // posting in the wall
+
 					}
 					getCallStates();
 					makeEmergencyCallToNearestVolunteer();
@@ -198,9 +205,9 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 			}
 		}
 	}
-	
-	
-	
+
+
+
 	private void resetTriggeringStatus(){
 		isTriggered=false;
 		mNumberofClicks=0;
@@ -208,30 +215,30 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 	private void postToWall(){
 		final String fbID=commonpref.getFbId();
 		final String fbauthtoken=commonpref.getFbAcessToken();
-			new Thread(new Runnable() {
-				@Override
-				public void run() {
-					try{
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try{
 					DefaultHttpClient client=new DefaultHttpClient();
 					HttpPost post=new HttpPost("https://graph.facebook.com/"+fbID+"/feed");
 					post.addHeader("Content-Type", "multipart/form-data");
 					List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-		            nameValuePairs.add(new BasicNameValuePair("access_token", fbauthtoken));
-		            nameValuePairs.add(new BasicNameValuePair("message", alertText+" "
+					nameValuePairs.add(new BasicNameValuePair("access_token", fbauthtoken));
+					nameValuePairs.add(new BasicNameValuePair("message", alertText+" "
 							+  commonpref.getUserlocation()));
-		            nameValuePairs.add(new BasicNameValuePair("privacy","{'value':'ALL_FRIENDS'}"));
-		            post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-		            HttpResponse res=client.execute(post);
-		            Log.d("TAG","htpp status codefb"+res.getStatusLine().getStatusCode());
-		            sendFBChatMessage();
-					}catch(Exception e){
-						e.printStackTrace();
-						 sendFBChatMessage();
-					}
+					nameValuePairs.add(new BasicNameValuePair("privacy","{'value':'ALL_FRIENDS'}"));
+					post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+					HttpResponse res=client.execute(post);
+					Log.d("TAG","htpp status codefb"+res.getStatusLine().getStatusCode());
+					sendFBChatMessage();
+				}catch(Exception e){
+					e.printStackTrace();
+					sendFBChatMessage();
 				}
-			}).start();
+			}
+		}).start();
 	}
-	
+
 	private void sendFBChatMessage(){
 
 		final String fbauthtoken=commonpref.getFbAcessToken();
@@ -249,8 +256,8 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 			setupXMPPLogin(fbauthtoken,fbids);
 		}	
 	}
-	
-	
+
+
 
 	private void notifyFriendsByPushNotification() {
 		if(!NetWorkUtil.getInstance(this).isNetWorkAvail()){
@@ -314,7 +321,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 		handler.postDelayed(new Runnable() {
 			@Override
 			public void run() {
-				
+
 				if ( commonpref.getUserlocation() != null) {
 					try {
 						String msg=alertText+" "+commonpref.getUserlocation();
@@ -371,7 +378,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 			while (cur.isAfterLast() == false) {
 				phoneList.add(cur.getString(cur.getColumnIndex(ContentDescriptor.WSContact.Cols.PHONE)));
 				System.out
-						.println("String phone number >> " + cur.getString(cur.getColumnIndex(ContentDescriptor.WSContact.Cols.PHONE)));
+				.println("String phone number >> " + cur.getString(cur.getColumnIndex(ContentDescriptor.WSContact.Cols.PHONE)));
 				cur.moveToNext();
 			}
 			cur.close();
@@ -406,153 +413,145 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 			shareFacebook();
 			break;
 		case R.id.item_twitter:
+			shareTwitter();
 			break;		
 		}
 		return true;
 	}
-	
-	
-	 private void requestPublishPermissions(Session session) {
-	        if (session != null) {
-	            Session.NewPermissionsRequest newPermissionsRequest = new Session.NewPermissionsRequest(this, Arrays.asList("publish_actions"))
-	                    // demonstrate how to set an audience for the publish permissions,
-	                    // if none are set, this defaults to FRIENDS
-	                    .setDefaultAudience(SessionDefaultAudience.FRIENDS)
-	                    .setRequestCode(0);
-	            session.requestNewPublishPermissions(newPermissionsRequest);
-	        }
-	    }
-	
-	private void shareFacebook(){
-		
-	    Session session=Session.openActiveSessionFromCache(this);
-	    		/*
-	    requestPublishPermissions(session);
-	    Session.OpenRequest request=new Session.OpenRequest(this);
-	    request.setCallback(callback);
-	    session.openForPublish(request);
-	    */
-	    
-		
-		    Bundle params = new Bundle();
-		    params.putString("name", getString(R.string.fb_share_name));
-		    params.putString("caption", getString(R.string.fb_share_caption));
-		    params.putString("description", getString(R.string.fb_share_desciption));
-		    String url=String.format(getString(R.string.fb_share_link, getPackageName()));
-		    params.putString("link", url);
-		    String image=String.format(getString(R.string.fb_share_picture,WSConstants.HOST));
-		    params.putString("picture", "https://raw.github.com/fbsamples/ios-3.x-howtos/master/Images/iossdk_logo.png");
-		  // Session session= Session.getActiveSession();
-		    WebDialog feedDialog = (
-		        new WebDialog.FeedDialogBuilder(this,
-		        		session,
-		            params))
-		        .setOnCompleteListener(new OnCompleteListener() {
 
-		            @Override
-		            public void onComplete(Bundle values,
-		                FacebookException error) {
-		                if (error == null) {
-		                    // When the story is posted, echo the success
-		                    // and the post Id.
-		                    final String postId = values.getString("post_id");
-		                    if (postId != null) {
-		                        Toast.makeText(HomeActivity.this,
-		                            "Posted story, id: "+postId,
-		                            Toast.LENGTH_SHORT).show();
-		                    } else {
-		                        // User clicked the Cancel button
-		                        Toast.makeText(HomeActivity.this.getApplicationContext(), 
-		                            "Publish cancelled", 
-		                            Toast.LENGTH_SHORT).show();
-		                    }
-		                } else if (error instanceof FacebookOperationCanceledException) {
-		                    // User clicked the "x" button
-		                    Toast.makeText(HomeActivity.this.getApplicationContext(), 
-		                        "Publish cancelled", 
-		                        Toast.LENGTH_SHORT).show();
-		                } else {
-		                    // Generic, ex: network error
-		                    Toast.makeText(HomeActivity.this.getApplicationContext(), 
-		                        "Error posting story", 
-		                        Toast.LENGTH_SHORT).show();
-		                }
-		            }
 
-		        })
-		        .build();
-		    feedDialog.show();
-		    
+	private void shareTwitter(){
+		if(commonpref.getAcessToken()!=null&&commonpref.getAccessTokenSecret()!=null){
+			new UpdateTwitterStatus(HomeActivity.this).execute(String.format(getString(R.string.share_link), getPackageName()));
+		}else{
+			startActivityForResult(new Intent(HomeActivity.this,TwitterAuthenticationActivity.class),REQ_CODE);
+		}	
 	}
 	
 	
+	
+
+	private void shareFacebook(){
+		Session session=Session.openActiveSessionFromCache(this);
+		Bundle params = new Bundle();
+		params.putString("name", getString(R.string.fb_share_name));
+		params.putString("caption", getString(R.string.fb_share_caption));
+		params.putString("description", getString(R.string.fb_share_desciption));
+		String url=String.format(getString(R.string.share_link, getPackageName()));
+		params.putString("link", url);
+		String image=String.format(getString(R.string.fb_share_picture,WSConstants.HOST));
+		params.putString("picture", image);
+		// Session session= Session.getActiveSession();
+		WebDialog feedDialog = (
+				new WebDialog.FeedDialogBuilder(this,
+						session,
+						params))
+						.setOnCompleteListener(new OnCompleteListener() {
+
+							@Override
+							public void onComplete(Bundle values,
+									FacebookException error) {
+								if (error == null) {
+									// When the story is posted, echo the success
+									// and the post Id.
+									final String postId = values.getString("post_id");
+									if (postId != null) {
+										Toast.makeText(HomeActivity.this,
+												"Shared in Facebook",
+												Toast.LENGTH_SHORT).show();
+									} else {
+										// User clicked the Cancel button
+										Toast.makeText(HomeActivity.this.getApplicationContext(), 
+												"Sharing cancelled", 
+												Toast.LENGTH_SHORT).show();
+									}
+								} else if (error instanceof FacebookOperationCanceledException) {
+									// User clicked the "x" button
+									Toast.makeText(HomeActivity.this.getApplicationContext(), 
+											"Sharing cancelled", 
+											Toast.LENGTH_SHORT).show();
+								} else {
+									// Generic, ex: network error
+									Toast.makeText(HomeActivity.this.getApplicationContext(), 
+											"Error in posting. Please check your networkconnection", 
+											Toast.LENGTH_SHORT).show();
+								}
+							}
+
+						})
+						.build();
+		feedDialog.show();
+	}
+
+
 	private Session.StatusCallback callback = 
 			new Session.StatusCallback() {
 		@Override
 		public void call(Session session, 
 				SessionState state, Exception exception) {
 			Bundle params = new Bundle();
-		    params.putString("name", "Facebook SDK for Android");
-		    params.putString("caption", "Build great social apps and get more installs.");
-		    params.putString("description", "The Facebook SDK for Android makes it easier and faster to develop Facebook integrated Android apps.");
-		    params.putString("link", "https://developers.facebook.com/android");
-		    params.putString("picture", "https://raw.github.com/fbsamples/ios-3.x-howtos/master/Images/iossdk_logo.png");
-			
+			params.putString("name", "Facebook SDK for Android");
+			params.putString("caption", "Build great social apps and get more installs.");
+			params.putString("description", "The Facebook SDK for Android makes it easier and faster to develop Facebook integrated Android apps.");
+			params.putString("link", "https://developers.facebook.com/android");
+			params.putString("picture", "https://raw.github.com/fbsamples/ios-3.x-howtos/master/Images/iossdk_logo.png");
+
 			WebDialog feedDialog = (
-			        new WebDialog.FeedDialogBuilder(HomeActivity.this,session,
-			            params))
-			        .setOnCompleteListener(new OnCompleteListener() {
+					new WebDialog.FeedDialogBuilder(HomeActivity.this,session,
+							params))
+							.setOnCompleteListener(new OnCompleteListener() {
 
-			            @Override
-			            public void onComplete(Bundle values,
-			                FacebookException error) {
-			                if (error == null) {
-			                    // When the story is posted, echo the success
-			                    // and the post Id.
-			                    final String postId = values.getString("post_id");
-			                    if (postId != null) {
-			                        Toast.makeText(HomeActivity.this,
-			                            "Posted story, id: "+postId,
-			                            Toast.LENGTH_SHORT).show();
-			                    } else {
-			                        // User clicked the Cancel button
-			                        Toast.makeText(HomeActivity.this, 
-			                            "Publish cancelled", 
-			                            Toast.LENGTH_SHORT).show();
-			                    }
-			                } else if (error instanceof FacebookOperationCanceledException) {
-			                    // User clicked the "x" button
-			                    Toast.makeText(HomeActivity.this, 
-			                        "Publish cancelled", 
-			                        Toast.LENGTH_SHORT).show();
-			                } else {
-			                    // Generic, ex: network error
-			                    Toast.makeText(HomeActivity.this, 
-			                        "Error posting story", 
-			                        Toast.LENGTH_SHORT).show();
-			                }
-			            }
+								@Override
+								public void onComplete(Bundle values,
+										FacebookException error) {
+									if (error == null) {
+										// When the story is posted, echo the success
+										// and the post Id.
+										final String postId = values.getString("post_id");
+										if (postId != null) {
+											Toast.makeText(HomeActivity.this,
+													"Posted",
+													Toast.LENGTH_SHORT).show();
+										} else {
+											// User clicked the Cancel button
+											Toast.makeText(HomeActivity.this, 
+													"Sharing  cancelled", 
+													Toast.LENGTH_SHORT).show();
+										}
+									} else if (error instanceof FacebookOperationCanceledException) {
+										// User clicked the "x" button
+										Toast.makeText(HomeActivity.this, 
+												"Sharing  cancelled", 
+												Toast.LENGTH_SHORT).show();
+									} else {
+										// Generic, ex: network error
+										Toast.makeText(HomeActivity.this, 
+												"Error in Sharing", 
+												Toast.LENGTH_SHORT).show();
+									}
+								}
 
-			        })
-			        .build();
-			    feedDialog.show();
-			
+							})
+							.build();
+			feedDialog.show();
+
 		}
 	};
-	
-	
-	
-	
-	
+
+
+
+
+
 	private void sendEmail(){
-		
-		 Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
-		 emailIntent.setType("text/html");
-		 emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Sub:"+getString(R.string.app_name));
+
+		Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+		emailIntent.setType("message/rfc822");
+		//emailIntent.setType("text/html");
+		emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Sub:"+getString(R.string.share_msg));
 		// emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, Uri.parse("market://details?id="+getPackageName()+"").toString());
-		 emailIntent.putExtra(android.content.Intent.EXTRA_TEXT,  Html.fromHtml("<a>http://details?id="+getPackageName()+"</a>"));
-		 //startActivity(Intent.createChooser(emailIntent, "Send mail..."));
-		 startActivity(emailIntent);
+		emailIntent.putExtra(android.content.Intent.EXTRA_TEXT,  String.format(getString(R.string.share_link, getPackageName())));
+		//startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+		startActivity(emailIntent);
 	}
 
 	private void loadSettings() {
@@ -589,33 +588,6 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 
 	}
 
-	/**
-	 * This is the callback from the TTS engine check, if a TTS is installed we
-	 * create a new TTS instance (which in turn calls onInit), if not then we
-	 * will create an intent to go off and install a TTS engine
-	 * 
-	 * @param requestCode
-	 *            int Request code returned from the check for TTS engine.
-	 * @param resultCode
-	 *            int Result code returned from the check for TTS engine.
-	 * @param data
-	 *            Intent Intent returned from the TTS check.
-	 */
-	/*
-	 * public void onActivityResult(int requestCode, int resultCode, Intent
-	 * data) { if (requestCode == MY_DATA_CHECK_CODE) { if (resultCode ==
-	 * TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) { // success, create the TTS
-	 * instance mTts = new TextToSpeech(this, this);
-	 * mTts.setLanguage(Locale.US); } else { // missing data, install it Intent
-	 * installIntent = new Intent(); installIntent
-	 * .setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
-	 * startActivity(installIntent); } } }
-	 */
-
-	/**
-	 * Be kind, once you've finished with the TTS engine, shut it down so other
-	 * applications can use it without us interfering with it :)
-	 */
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
@@ -624,7 +596,6 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (requestCode) {
-
 		case LockScreenActivity.REQ_ENTER_PATTERN: {
 			int msgId = 0;
 			switch (resultCode) {
@@ -645,10 +616,16 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 			}
 			break;
 		}
-
+		case REQ_CODE:
+			if(resultCode==Activity.RESULT_OK){
+				new UpdateTwitterStatus(HomeActivity.this).execute(String.format(getString(R.string.share_link), getApplicationContext()));
+			}
+        break;
+        default:
+        break;	
 		}
 	}
-	
+
 	private void setupXMPPLogin(String fbtocken, List<String>fbids) {
 		if(fbtocken!=null){
 			String decodedTocken = null;
@@ -663,29 +640,20 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 			}
 		}
 	}
-	
-	
-	XMPPChatListener mChatListener = new XMPPChatListener() {
 
+
+	XMPPChatListener mChatListener = new XMPPChatListener() {
 		@Override
 		public void receivedChatMessage(String receiverid, String message,
 				boolean isNew) {
-			// TODO Auto-generated method stub
-			
-		}
+			}
 
 		@Override
 		public void sendChatMessage(String senderId, String message) {
-			// TODO Auto-generated method stub
-			
 		}
 
 		@Override
 		public void showChatNotification(String receiverid, String mess) {
-			
-			
 		}
-
-	
 	};
 }

@@ -10,7 +10,7 @@
     <string name="configure_app">Configuring application...</string>
     <string name="fetch_details">Fetching user details...</string>
     <string name="registering">Registering user....</string>
-    <string name="press_button">Please press the alert button in case of Emergency only!</string>
+    <string name="press_button">Please press only when in an emergency!</string>
     <string name="alert_text">PLEASE HELP ME !. I am in danger and need your help. I am at </string>
     <string name="confirm_click_alert">Please click two or more times to confirm the alert within 5 Seconds.</string>
     <string name="alert_received">An alart received From </string>
@@ -102,12 +102,21 @@
     <string name="twitter">Twitter</string>
     <string name="facebook">Facebook</string>
     <string name="location_warn">Requires either GPS or GPRS for tracking the location.Please enable it from the phone settings.</string>
+    <string name="share_msg">Download Gladio Security Mobile application and be safe</string>
+    <string name="share_link">https://play.google.com/store/apps/details?id=%s</string>
+    
     
     <!-- Share -->
     <string name="fb_share_name">Gladio mobile application for Android</string>
     <string name="fb_share_caption">Install and be safe.</string>
     <string name="fb_share_desciption">Describing the app.</string>
-    <string name="fb_share_link">https://play.google.com/store/apps/details?id=%s</string>
+   
     <string name="fb_share_picture">http://%s/twsa/web/images/gladio_icon.png</string>
-
+    
+     <!-- Share -->
+    <string name="twitter_api_key">y8bPTLU3rmiIG96gLQJ9w</string>
+    <string name="twitter_api_secret">GRVTONBioqyDO9SjpBJGcLh6SvdHGBc567qOO3uWqE</string>
+    <string name="sharing">Sharing into Twitter..</string>
+    
+    
 </resources>

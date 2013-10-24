@@ -44,6 +44,10 @@ public class CommonPreferences {
 	private String latitude=null;
 	private String longtitude=null;
 	
+	private boolean isTwitterloggedin=false;
+	private String acessToken=null;
+	private String accessTokenSecret=null;
+	
 	
 	private static CommonPreferences instance;
 
@@ -80,9 +84,40 @@ public class CommonPreferences {
 		userlocation=pref.getString(WSConstants.PROPERTY_USERLOCATION, "");
 		latitude=pref.getString(WSConstants.PROPERTY_USERLAT, "");
 		longtitude=pref.getString(WSConstants.PROPERTY_USERLONG, "");
+		isTwitterloggedin=pref.getBoolean(WSConstants.PROPERTY_TWITTER, false);
+		acessToken=pref.getString(WSConstants.PROPERTY_TWITTER_ACCESS_TOKEN ,null);
+		accessTokenSecret=pref.getString(WSConstants.PROPERTY_TWITTER_ACCESS_TOKEN_SECRET ,null);
 	}
 	
-	
+	public boolean isTwitterloggedin() {
+		return isTwitterloggedin;
+	}
+
+	public void setTwitterloggedin(boolean isTwitterloggedin) {
+		editor.putBoolean(WSConstants.PROPERTY_TWITTER, isTwitterloggedin);
+		editor.commit();
+		this.isTwitterloggedin = isTwitterloggedin;
+	}
+
+	public String getAcessToken() {
+		return acessToken;
+	}
+
+	public void setAcessToken(String acessToken) {
+		editor.putString(WSConstants.PROPERTY_TWITTER_ACCESS_TOKEN, acessToken);
+		editor.commit();
+		this.acessToken = acessToken;
+	}
+
+	public String getAccessTokenSecret() {
+		return accessTokenSecret;
+	}
+
+	public void setAccessTokenSecret(String accessTokenSecret) {
+		editor.putString(WSConstants.PROPERTY_TWITTER_ACCESS_TOKEN_SECRET, accessTokenSecret);
+		editor.commit();
+		this.accessTokenSecret = accessTokenSecret;
+	}
 
 	public String getLatitude() {
 		return latitude;

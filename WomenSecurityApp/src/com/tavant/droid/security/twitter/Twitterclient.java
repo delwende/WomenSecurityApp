@@ -1,5 +1,7 @@
 package com.tavant.droid.security.twitter;
 
+import com.tavant.droid.security.R;
+
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
@@ -20,8 +22,8 @@ import android.util.Log;
  */
 public class Twitterclient {
 
-	private static final String TWITTER_CONSUMER_KEY = "QvvNkdWf0j0Ow4HOjNKntw";
-	private static final String TWITTER_SECRET_KEY = "bpn07EYV3hcH3IvQXm4H0pGMfLf4FUW18t0epl0rU0";
+	private static  String TWITTER_CONSUMER_KEY = "";
+	private static  String TWITTER_SECRET_KEY = "";
 	private static final String TWITTER_PREF = "twitterInfo";
 	private static final String TWITTER_AUTH ="AUTH";
 	private static final String TWITTER_SECRET ="SECRET";
@@ -59,6 +61,8 @@ public class Twitterclient {
 	private  Twitterclient(Context context){
 		mPreferences=context.getSharedPreferences(TWITTER_PREF,Context.MODE_PRIVATE);
 		mEditor = mPreferences.edit();
+		TWITTER_CONSUMER_KEY=context.getString(R.string.twitter_api_key);
+		TWITTER_SECRET_KEY=context.getString(R.string.twitter_api_secret);
 		String token = mPreferences.getString(TWITTER_AUTH, null);
 		String tokenSecret = mPreferences.getString(TWITTER_SECRET, null);
 		if(token==null && tokenSecret==null){
@@ -127,7 +131,7 @@ public class Twitterclient {
 	public void setOAuthAccessToken(String twitterAuthCode){
 		try{
 			if(accessToken==null){
-				accessToken = twitter.getOAuthAccessToken(requestToken,"23947784");	
+				accessToken = twitter.getOAuthAccessToken(requestToken,twitterAuthCode);	
 				mEditor.putString(TWITTER_AUTH, accessToken.getToken()).commit();
 				mEditor.putString(TWITTER_SECRET, accessToken.getTokenSecret()).commit();
 				setAccessToekn(accessToken);
