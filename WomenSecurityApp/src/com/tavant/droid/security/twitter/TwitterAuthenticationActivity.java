@@ -1,8 +1,5 @@
 package com.tavant.droid.security.twitter;
 
-import com.tavant.droid.security.R;
-import com.tavant.droid.security.prefs.CommonPreferences;
-
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
@@ -19,6 +16,9 @@ import android.os.Bundle;
 import android.webkit.WebView;
 import android.widget.Toast;
 
+import com.tavant.droid.security.R;
+import com.tavant.droid.security.prefs.CommonPreferences;
+
 /*
  * Steps:
  * 1. Get OAuth Request Token, store the oauth_verifier
@@ -30,7 +30,7 @@ public class TwitterAuthenticationActivity extends Activity{
 	public static final String INTENT_EXTRA_ACTIVITY = "intent_activity";
 	public static final String OAUTH_VERIFIER = "oauth_verifier";
 	public static final String DENIED = "?denied=";
-	public static final String TWITTER_CALLBACK_URL = "oauth://t4jgladio";
+	public static final String TWITTER_CALLBACK_URL = "oauth://t4gladio";
 
 	private Twitter mTwitter;
 	private RequestToken mReqToken;
@@ -39,7 +39,6 @@ public class TwitterAuthenticationActivity extends Activity{
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-        setContentView(R.layout.twitterwebview);
 		ConfigurationBuilder builder = new ConfigurationBuilder();
 		builder.setOAuthConsumerKey(getString(R.string.twitter_api_key));
 		builder.setOAuthConsumerSecret(getString(R.string.twitter_api_secret));
@@ -50,11 +49,6 @@ public class TwitterAuthenticationActivity extends Activity{
 		task.execute();
 	}
 
-	void showTwitterLoginPage(){
-		webview=(WebView)findViewById(R.id.webView);
-		String url=mReqToken.getAuthenticationURL();
-		webview.loadUrl(url);
-	}
 
 	void showFailureToast(){
 		Toast.makeText(this, "Twitter Login error, please try again later", Toast.LENGTH_SHORT).show();
@@ -112,10 +106,10 @@ public class TwitterAuthenticationActivity extends Activity{
 			if(result.equals("ERROR")){
 				showFailureToast();
 			}else{
-				showTwitterLoginPage();
+				startActivity(new Intent(Intent.ACTION_VIEW, Uri
+						.parse(mReqToken.getAuthenticationURL())));
+				
 			}
-
-
 		};
 	}
 

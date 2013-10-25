@@ -73,7 +73,7 @@ public class SettingsActivity extends BaseActivity implements OnItemClickListene
 	protected void onCreate(Bundle savedInstanceState) {		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.settingslist);
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 		listview=(ListView) findViewById(R.id.friendslist);
 		prefs=CommonPreferences.getInstance();
 		adapter=new SettingsAdapter(this,title,desc,desc_long);

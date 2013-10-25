@@ -15,7 +15,7 @@ public class WSConstants {
 	
 	
 	public static final String PROTOCOL="http://";	
-	public static final String HOST = "10.129.146.78";    //10.129.146.78  //121.240.130.119
+	public static final String HOST = "121.240.130.119";    //10.129.146.78  //121.240.130.119
 	public static final String BASEURL =PROTOCOL+HOST+"/twsa/frontend_dev.php/API/%s";	//	"http://192.168.2.2:8080/WomenSecurityBackEnd";
 
 	

@@ -93,6 +93,10 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 	private ProgressDialog pDialog=null;
 	
 	private static final int REQ_CODE=4500;
+	
+	private String FACEBOOK_POST_DESCRIPTION="Gladio sends calls, makes calls, emails, sends facebook messages, SMS alerts and push notifications to multiple contacts chosen by you in a distress situation, informing them of your distress and location."+
+                                               "Also you can opt to be a volunteer, and get alerts based on your proximity to the person in distress. Download today from google play";
+	
 
 
 	private String locationImage="http://maps.googleapis.com/maps/api/staticmap?center=%s,%s&zoom=13&size=320x480&maptype=roadmap&markers=color:blue|label:S|%s,%s&sensor=false";
@@ -436,7 +440,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 		Bundle params = new Bundle();
 		params.putString("name", getString(R.string.fb_share_name));
 		params.putString("caption", getString(R.string.fb_share_caption));
-		params.putString("description", getString(R.string.fb_share_desciption));
+		params.putString("description", FACEBOOK_POST_DESCRIPTION);
 		String url=String.format(getString(R.string.share_link, getPackageName()));
 		params.putString("link", url);
 		String image=String.format(getString(R.string.fb_share_picture,WSConstants.HOST));
@@ -461,15 +465,15 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 												Toast.LENGTH_SHORT).show();
 									} else {
 										// User clicked the Cancel button
-										Toast.makeText(HomeActivity.this.getApplicationContext(), 
-												"Sharing cancelled", 
-												Toast.LENGTH_SHORT).show();
+//										Toast.makeText(HomeActivity.this.getApplicationContext(), 
+//												"Sharing cancelled", 
+//												Toast.LENGTH_SHORT).show();
 									}
 								} else if (error instanceof FacebookOperationCanceledException) {
 									// User clicked the "x" button
-									Toast.makeText(HomeActivity.this.getApplicationContext(), 
-											"Sharing cancelled", 
-											Toast.LENGTH_SHORT).show();
+//									Toast.makeText(HomeActivity.this.getApplicationContext(), 
+//											"Sharing cancelled", 
+//											Toast.LENGTH_SHORT).show();
 								} else {
 									// Generic, ex: network error
 									Toast.makeText(HomeActivity.this.getApplicationContext(), 
@@ -549,7 +553,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 		//emailIntent.setType("text/html");
 		emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Sub:"+getString(R.string.share_msg));
 		// emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, Uri.parse("market://details?id="+getPackageName()+"").toString());
-		emailIntent.putExtra(android.content.Intent.EXTRA_TEXT,  String.format(getString(R.string.share_link, getPackageName())));
+		emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Gladio is a personal security solution aimed at providing you real time help in situations of distress \n"+ FACEBOOK_POST_DESCRIPTION+"\n"+String.format(getString(R.string.share_link, getPackageName())));
 		//startActivity(Intent.createChooser(emailIntent, "Send mail..."));
 		startActivity(emailIntent);
 	}
@@ -618,7 +622,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 		}
 		case REQ_CODE:
 			if(resultCode==Activity.RESULT_OK){
-				new UpdateTwitterStatus(HomeActivity.this).execute(String.format(getString(R.string.share_link), getApplicationContext()));
+				new UpdateTwitterStatus(HomeActivity.this).execute(getString(R.string.fb_share_caption)+".\n Please Download it From Google Play."+String.format(getString(R.string.share_link), getApplicationContext()));
 			}
         break;
         default:

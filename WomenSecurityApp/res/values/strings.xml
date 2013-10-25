@@ -36,7 +36,7 @@
 	
 	<string name="str_friends">Friends</string>
 	<string name="str_friends_desc">Inform Friends via Facebook</string>
-	<string name="str_friends_desc_long">This will enable alerting your friends through facebook chat message and timeline post</string>
+	<string name="str_friends_desc_long">Enable alerting your friends via facebook chat message and timeline post</string>
 	
 	<string name="str_volunteer">Volunteer</string>
 	<string name="str_volunteer_desc">I am a Volunteer</string>
@@ -108,8 +108,9 @@
     
     <!-- Share -->
     <string name="fb_share_name">Gladio mobile application for Android</string>
-    <string name="fb_share_caption">Install and be safe.</string>
-    <string name="fb_share_desciption">Describing the app.</string>
+    <string name="fb_share_caption">Gladio mobile security solution </string>
+    <string name="fb_share_desciption">Gladio sends calls &lt;makes calls&gt;, emails, &lt;sends&gt; facebook messages, SMS alerts and push notifications to multiple contacts chosen by you in a distress situation, informing them of your distress and location.
+                      Also you can opt to be a volunteer, and get alerts based on your proximity to the person in distress.Please download from Google Play.</string>
    
     <string name="fb_share_picture">http://%s/twsa/web/images/gladio_icon.png</string>
     

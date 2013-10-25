@@ -16,10 +16,7 @@ public class TermsAbout extends ActionBarActivity{
 
 
 
-	private TextView mAboutText1 = null;
-	private TextView mAboutText2 = null;
-	private TextView mAboutText3 = null;
-	private TextView mAboutText4 = null;
+
 
 	private WebView mTermsWeb = null;
 	private TextView mTermsTitle = null;
@@ -30,7 +27,7 @@ public class TermsAbout extends ActionBarActivity{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.terms);
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 		initTerms();
 		mTermsWeb.setWebViewClient(new WebViewClient(){
 			@Override
