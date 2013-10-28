@@ -78,7 +78,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 	String stateString = "N/A";
 	boolean callNext = false;
 	private static String[] numbers;
-	private int callRepeatCount = 1;
+	//private int callRepeatCount = 1;
 	private ContentResolver resolver;
 	private boolean buzzer;
 	private boolean isSocialnetworkingenabled;
@@ -91,6 +91,9 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 	private LocationManager manager=null;
 	private TwitterHelper twitterHelp=null;
 	private ProgressDialog pDialog=null;
+	
+    private int mindexphonearray=0;	
+	
 	
 	private static final int REQ_CODE=4500;
 	
@@ -115,23 +118,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 
 
 
-	@Override
-	protected void onResume() {
-		buzzer = commonpref.isNeedbuzzer();
-		isSocialnetworkingenabled = commonpref.isInformFriends();
-		super.onResume();
-		if (callNext == true) {
-			for (int i = 0; i < callRepeatCount; i++) {
-
-				for (int j = 0; j < numbers.length; j++) {
-					makeEmergencyCalls(numbers[j]);
-				}
-			}
-			callNext = false;
-			callRepeatCount = 0;
-			resetTriggeringStatus();
-		}
-	}
+	
 
 	@Override
 	protected void onPause() {
@@ -200,7 +187,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 						notifyFriendsByPushNotification();
 					}catch(Exception e){}
 					if(isSocialnetworkingenabled){
-						postToWall();   // posting in the wall
+						//postToWall();   // posting in the wall
 
 					}
 					getCallStates();
@@ -277,6 +264,29 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 		onExecute(WSConstants.CODE_ALERT_API,
 				HttpRequestCreater.alertUsers(jsonNumbers, userid), false);
 	}
+	
+	
+	@Override
+	protected void onResume() {
+		buzzer = commonpref.isNeedbuzzer();
+		isSocialnetworkingenabled = commonpref.isInformFriends();
+		super.onResume();
+		if (callNext == true&&mindexphonearray<numbers.length) {
+		//	Log.i("TAG","calling next1");
+			//for (int i = 0; i < callRepeatCount; i++) {
+				//Log.i("TAG","calling next2");
+				//for (int j = 0; j < numbers.length; j++) {
+					Log.i("TAG","calling next"+numbers[mindexphonearray]);
+					makeEmergencyCalls(numbers[mindexphonearray]);
+					mindexphonearray++;
+				//}
+			//}
+			callNext = false;
+			//callRepeatCount = 0;
+			resetTriggeringStatus();
+		}
+	}
+	
 
 	private void getCallStates() {
 		telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
@@ -290,13 +300,16 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 				case TelephonyManager.CALL_STATE_IDLE:
 					stateString = "Idle";
 					callNext = true;
+					Log.i("TAG","CALL_STATE_IDLE");
 					break;
 				case TelephonyManager.CALL_STATE_OFFHOOK:
 					stateString = "Off Hook";
 					callNext = false;
+					Log.i("TAG","CALL_STATE_OFFHOOK");
 					break;
 				case TelephonyManager.CALL_STATE_RINGING:
 					stateString = "Ringing";
+					Log.i("TAG","CALL_STATE_RINGING");
 					break;
 				}
 			}
@@ -359,6 +372,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 			intent.addFlags(Intent.FLAG_FROM_BACKGROUND);
 			startActivity(intent);
 		}
+		mindexphonearray=0;
 
 	}
 

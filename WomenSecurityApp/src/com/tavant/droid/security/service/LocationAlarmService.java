@@ -245,6 +245,7 @@ public class LocationAlarmService extends Service implements LocationListener{
 				Log.d("TAG","clearing location listenre");
 				CopsData data=(CopsData)base;
 				if(data!=null&&data.phoneNumber!=null) {
+					Log.d("TAG","police number"+data.phoneNumber);
 					prefrences.setVolunteerNumber(data.phoneNumber);
 				}	
 				stopSelfResult(Activity.RESULT_OK);
