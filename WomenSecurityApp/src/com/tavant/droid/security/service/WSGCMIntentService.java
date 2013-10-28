@@ -35,7 +35,7 @@ public class WSGCMIntentService extends GCMBaseIntentService {
 			else if(key.equals("telno"))
 				telephonenumber=intent.getExtras().getString(key);
 			else if(key.equals("friend"))
-				from=intent.getExtras().getString(from);
+				from=intent.getExtras().getString(key);
 		}
 		Resources res=  context.getResources();
 		int icon= res.getIdentifier("ic_launcher", "drawable", context.getPackageName());

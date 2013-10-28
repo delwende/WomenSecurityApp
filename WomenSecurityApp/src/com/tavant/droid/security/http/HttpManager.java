@@ -1,6 +1,19 @@
 package com.tavant.droid.security.http;
 
 import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -20,6 +33,9 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
+import org.apache.http.protocol.HTTP;
+
+import com.tavant.droid.security.utils.WSConstants;
 
 /**
  * @author tavant
@@ -27,13 +43,10 @@ import org.apache.http.params.HttpProtocolParams;
  * This class is used to set up the HttpConnection with required perameters.
  */
 public class HttpManager {
-	
-	public static DefaultHttpClient sClient;
-	
 
-	
+	public static DefaultHttpClient sClient;
+
 	static {
-		
 		HttpParams params = new BasicHttpParams();
 		HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
 		HttpProtocolParams.setContentCharset(params, "UTF-8");
@@ -47,14 +60,39 @@ public class HttpManager {
 		HttpProtocolParams.setUserAgent(params, "gladio");
 
 		SchemeRegistry schemeRegistry = new SchemeRegistry();
+		//if(WSConstants.PROTOCOL.equals("http://")){
 		schemeRegistry.register(new Scheme("http", PlainSocketFactory
 				.getSocketFactory(), 80));
-		schemeRegistry.register(new Scheme("https", SSLSocketFactory
-				.getSocketFactory(), 443));
-
+		//}else{
+		SSLSocketFactory sslfactory=getSSLSocketFactory(); 
+		if(sslfactory!=null){
+			schemeRegistry.register(new Scheme("https", sslfactory, 443));
+		}else{
+			schemeRegistry.register(new Scheme("https", SSLSocketFactory
+					.getSocketFactory(), 443));
+		}
+		//}
+		
 		ClientConnectionManager manager= new ThreadSafeClientConnManager(
 				params, schemeRegistry);
 		sClient = new DefaultHttpClient(manager, params);
+	}
+
+	private static SSLSocketFactory getSSLSocketFactory(){
+
+
+		KeyStore trustStore=null;
+		SSLSocketFactory sf=null;
+		try {
+			trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+			trustStore.load(null, null);
+			sf= new MySSLSocketFactory(trustStore);
+			sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        return sf;	
 	}
 
 	private HttpManager() {
@@ -84,6 +122,55 @@ public class HttpManager {
 		else
 			return null;
 	}
+
+
+
+
+
+
+	public static class MySSLSocketFactory extends SSLSocketFactory {
+		SSLContext sslContext = SSLContext.getInstance("TLS");
+
+		public MySSLSocketFactory(KeyStore truststore) throws NoSuchAlgorithmException, KeyManagementException, KeyStoreException, UnrecoverableKeyException {
+			super(truststore);
+
+			TrustManager tm = new X509TrustManager() {
+				public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+				}
+
+				public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+				}
+
+				public X509Certificate[] getAcceptedIssuers() {
+					return null;
+				}
+			};
+
+			sslContext.init(null, new TrustManager[] { tm }, null);
+		}
+
+		@Override
+		public Socket createSocket(Socket socket, String host, int port, boolean autoClose) throws IOException, UnknownHostException {
+			return sslContext.getSocketFactory().createSocket(socket, host, port, autoClose);
+		}
+
+		@Override
+		public Socket createSocket() throws IOException {
+			return sslContext.getSocketFactory().createSocket();
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
+
 
 	public static void clear() {
 		if (sClient != null)

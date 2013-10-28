@@ -187,7 +187,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 						notifyFriendsByPushNotification();
 					}catch(Exception e){}
 					if(isSocialnetworkingenabled){
-						//postToWall();   // posting in the wall
+						postToWall();   // posting in the wall
 
 					}
 					getCallStates();
