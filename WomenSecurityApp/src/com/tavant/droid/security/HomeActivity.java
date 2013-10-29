@@ -4,6 +4,7 @@ import group.pals.android.lib.ui.lockpattern.LockPatternActivity;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -32,6 +33,7 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.telephony.PhoneStateListener;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
@@ -102,8 +104,8 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 	
 
 
-	private String locationImage="http://maps.googleapis.com/maps/api/staticmap?center=%s,%s&zoom=13&size=320x480&maptype=roadmap&markers=color:blue|label:S|%s,%s&sensor=false";
-
+	private String locationImage="http://maps.googleapis.com/maps/api/staticmap?center={0},{1}&zoom=13&size=320x480&maptype=roadmap&markers=color:blue|label:S|{2},{3}&sensor=false";
+    private String locImage=locationImage.replace("|", "%7C");
 	@Override
 	protected void onCreate(Bundle instance3) {
 		super.onCreate(instance3);
@@ -215,8 +217,15 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 					post.addHeader("Content-Type", "multipart/form-data");
 					List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
 					nameValuePairs.add(new BasicNameValuePair("access_token", fbauthtoken));
-					nameValuePairs.add(new BasicNameValuePair("message", alertText+" "
-							+  commonpref.getUserlocation()));
+					
+					String msg=alertText+" "+commonpref.getUserlocation()+" "+MessageFormat.format(locImage, commonpref.getLatitude(),commonpref.getLongtitude(),
+							commonpref.getLatitude(), commonpref.getLongtitude());
+					/*
+					String msg=alertText+" "
+							+  commonpref.getUserlocation()+" "+String.format(locImage,commonpref.getLatitude(),commonpref.getLongtitude(),
+									commonpref.getLatitude(), commonpref.getLongtitude());
+									*/
+					nameValuePairs.add(new BasicNameValuePair("message",msg));
 					nameValuePairs.add(new BasicNameValuePair("privacy","{'value':'ALL_FRIENDS'}"));
 					post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 					HttpResponse res=client.execute(post);
@@ -373,7 +382,6 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 			startActivity(intent);
 		}
 		mindexphonearray=0;
-
 	}
 
 	public static void sendSmsMessage(String[] number, String message)

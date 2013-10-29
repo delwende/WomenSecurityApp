@@ -11,7 +11,7 @@
     <string name="fetch_details">Fetching user details...</string>
     <string name="registering">Registering user....</string>
     <string name="press_button">Please press only when in an emergency!</string>
-    <string name="alert_text">PLEASE HELP ME !. I am in danger and need your help. I am at </string>
+    <string name="alert_text">PLEASE HELP ME !! I am in danger and i need your help immediately. My current location is  </string>
     <string name="confirm_click_alert">Please click two or more times to confirm the alert within 5 Seconds.</string>
     <string name="alert_received">An alart received From </string>
     <string name="no_internet">No Internet Connection.Please check your network settings.</string>
