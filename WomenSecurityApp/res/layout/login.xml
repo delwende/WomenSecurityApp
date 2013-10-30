@@ -24,12 +24,14 @@
         android:text="@string/version"/>
 
    <com.facebook.widget.LoginButton
+        xmlns:fb="http://schemas.android.com/apk/res-auto"
         android:id="@+id/fb_btn"
         android:layout_marginBottom="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@id/version"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/fbloginbtn_selector" />
+        android:scaleType="centerInside"
+        android:background="@drawable/btn_fb_login" />
   
 </RelativeLayout>

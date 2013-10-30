@@ -46,6 +46,7 @@ import com.tavant.droid.security.prefs.CommonPreferences;
 import com.tavant.droid.security.service.LocationAlarmService;
 import com.tavant.droid.security.utils.CustomAlert;
 import com.tavant.droid.security.utils.CustomDialog;
+import com.tavant.droid.security.utils.FontLoader;
 import com.tavant.droid.security.utils.NetWorkUtil;
 import com.tavant.droid.security.utils.PhoneStatus;
 import com.tavant.droid.security.utils.WSConstants;
@@ -161,6 +162,8 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 			uiHelper= new UiLifecycleHelper(this, callback); 	
 			setContentView(R.layout.login);
 			loginbtn=(LoginButton)findViewById(R.id.fb_btn);
+			loginbtn.setBackgroundResource(R.drawable.btn_fb_login);
+			loginbtn.setTypeface(FontLoader.getMngr().getTfRobotBold());
 			//loginbtn.setPublishPermissions(Arrays.asList("publish_stream","publish_actions"));
 			loginbtn.setReadPermissions(Arrays.asList("xmpp_login", "user_online_presence","friends_online_presence","read_friendlists","read_stream","read_requests",
 					"read_friendlists")); 

@@ -99,7 +99,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 	
 	private static final int REQ_CODE=4500;
 	
-	private String FACEBOOK_POST_DESCRIPTION="Gladio sends calls, makes calls, emails, sends facebook messages, SMS alerts and push notifications to multiple contacts chosen by you in a distress situation, informing them of your distress and location."+
+	private String FACEBOOK_POST_DESCRIPTION="Gladio  makes calls, emails, sends facebook messages, SMS alerts and push notifications to multiple contacts chosen by you in a distress situation, informing them of your distress and location."+
                                                "Also you can opt to be a volunteer, and get alerts based on your proximity to the person in distress. Download today from google play";
 	
 
@@ -220,11 +220,6 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 					
 					String msg=alertText+" "+commonpref.getUserlocation()+" "+MessageFormat.format(locImage, commonpref.getLatitude(),commonpref.getLongtitude(),
 							commonpref.getLatitude(), commonpref.getLongtitude());
-					/*
-					String msg=alertText+" "
-							+  commonpref.getUserlocation()+" "+String.format(locImage,commonpref.getLatitude(),commonpref.getLongtitude(),
-									commonpref.getLatitude(), commonpref.getLongtitude());
-									*/
 					nameValuePairs.add(new BasicNameValuePair("message",msg));
 					nameValuePairs.add(new BasicNameValuePair("privacy","{'value':'ALL_FRIENDS'}"));
 					post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
@@ -448,7 +443,8 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 
 	private void shareTwitter(){
 		if(commonpref.getAcessToken()!=null&&commonpref.getAccessTokenSecret()!=null){
-			new UpdateTwitterStatus(HomeActivity.this).execute(String.format(getString(R.string.share_link), getPackageName()));
+			String msg=getString(R.string.tw_share_desciption)+"\n"+String.format(getString(R.string.share_link), getPackageName());
+			new UpdateTwitterStatus(HomeActivity.this).execute(msg);
 		}else{
 			startActivityForResult(new Intent(HomeActivity.this,TwitterAuthenticationActivity.class),REQ_CODE);
 		}	
@@ -462,7 +458,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 		Bundle params = new Bundle();
 		params.putString("name", getString(R.string.fb_share_name));
 		params.putString("caption", getString(R.string.fb_share_caption));
-		params.putString("description", FACEBOOK_POST_DESCRIPTION);
+		params.putString("description", getString(R.string.fb_share_desciption));
 		String url=String.format(getString(R.string.share_link, getPackageName()));
 		params.putString("link", url);
 		String image=String.format(getString(R.string.fb_share_picture,WSConstants.HOST));
@@ -656,8 +652,9 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 		if(fbtocken!=null){
 			String decodedTocken = null;
 			try {
-				String msg=alertText+ commonpref.getUserlocation()+" "+String.format(locationImage,commonpref.getLatitude(),commonpref.getLongtitude(),
-						commonpref.getLatitude(), commonpref.getLongtitude());
+			
+				String msg=alertText+" "+commonpref.getUserlocation()+" "+MessageFormat.format(locImage, commonpref.getLatitude(),commonpref.getLongtitude(),
+						commonpref.getLatitude(), commonpref.getLongtitude());	
 				decodedTocken = URLDecoder.decode(fbtocken, "utf-8");
 				XMPPManager.getInstance().init(decodedTocken,fbids,msg);
 				XMPPManager.getInstance().setXMPPChatListener(this, mChatListener);

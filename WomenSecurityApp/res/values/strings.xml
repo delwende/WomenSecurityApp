@@ -108,16 +108,20 @@
     
     <!-- Share -->
     <string name="fb_share_name">Gladio mobile application for Android</string>
-    <string name="fb_share_caption">Gladio mobile security solution </string>
-    <string name="fb_share_desciption">Gladio sends calls &lt;makes calls&gt;, emails, &lt;sends&gt; facebook messages, SMS alerts and push notifications to multiple contacts chosen by you in a distress situation, informing them of your distress and location.
-                      Also you can opt to be a volunteer, and get alerts based on your proximity to the person in distress.Please download from Google Play.</string>
+    <string name="fb_share_caption">Gladio - Personal Security Alert Agent</string>
+    <string name="fb_share_desciption">Use Gladio to immediately inform chosen contacts and send sms and emails, posts on Facebook, voice calls, alerts and notifications to multiple contacts chosen by you in a distress situation.Download today from Google Play!</string>
    
+    <string name="tw_share_desciption">Use Gladio to immediately inform chosen contacts,send sms,emails,post on Facebook and Twitter when in distress, download now from Google Play</string>
+    
+    
     <string name="fb_share_picture">http://%s/twsa/web/images/gladio_icon.png</string>
     
      <!-- Share -->
     <string name="twitter_api_key">y8bPTLU3rmiIG96gLQJ9w</string>
     <string name="twitter_api_secret">GRVTONBioqyDO9SjpBJGcLh6SvdHGBc567qOO3uWqE</string>
     <string name="sharing">Sharing into Twitter..</string>
+    <string name="login_text">GRVTONBioqyDO9SjpBJGcLh6SvdHGBc567qOO3uWqE</string>
+    <string name="logout_text">Sharing into Twitter..</string>
     
     
 </resources>
