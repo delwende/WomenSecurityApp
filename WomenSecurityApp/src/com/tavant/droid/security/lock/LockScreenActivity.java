@@ -86,6 +86,8 @@ public class LockScreenActivity extends BaseActivity {
             }
             break;
         }
+        default:
+        break;
         }
     }// onActivityResult()
 

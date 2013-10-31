@@ -15,6 +15,7 @@ import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.Contacts;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -247,7 +248,9 @@ public class PickerFriendListActivity extends ActionBarActivity
 				    if(mCursor.getCount()>0){
 				    	showMenu=true;
 				    	if(Utils.hasHoneycomb())
-				    	invalidateOptionsMenu();
+				    	  invalidateOptionsMenu();
+				    	else
+				    		ActivityCompat.invalidateOptionsMenu(PickerFriendListActivity.this);	
 				    }	
 				}
 				else{

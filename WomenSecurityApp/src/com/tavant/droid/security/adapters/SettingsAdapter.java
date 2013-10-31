@@ -77,7 +77,8 @@ public class SettingsAdapter extends BaseAdapter implements android.view.View.On
 		if(position==2||position==3||position==4){
 			holder.check.setVisibility(View.VISIBLE);
 			holder.check.setId(position);
-			holder.check.setOnClickListener(this);
+		    holder.check.setOnClickListener(this);
+			rowView.setOnClickListener(parentListner);
 			if(position==2)
 				holder.check.setChecked(buzzer);
 			else if(position==3)
@@ -115,7 +116,31 @@ public class SettingsAdapter extends BaseAdapter implements android.view.View.On
 		default:
 			break;
 		}
+		
 	}
+	
+	View.OnClickListener parentListner=new  View.OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			ViewHolder holder=(ViewHolder) v.getTag();
+			CheckBox v1=holder.check;
+			switch (v1.getId()) {
+			 case 2 :
+				  prefs.setNeedbuzzer(!v1.isChecked());  
+				  v1.setChecked(!v1.isChecked());
+			  break;
+			  case 3 :
+				  prefs.setInformFriends(!v1.isChecked()); 
+				  v1.setChecked(!v1.isChecked());
+			  break;
+			  case 4 :
+				((VolunteerStatus)mctx).changetoVolunteer(!v1.isChecked()); 
+			  break;
+			default:
+				break;
+			}
+		}
+	};
 
 	
 }
