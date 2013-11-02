@@ -38,7 +38,7 @@ import com.tavant.droid.security.utils.Utils;
 import com.tavant.droid.security.utils.VolunteerStatus;
 import com.tavant.droid.security.utils.WSConstants;
 
-public class SettingsActivity extends BaseActivity implements OnItemClickListener,VolunteerStatus{
+public class SettingsActivity extends BaseActivity implements VolunteerStatus{
 	Preference facebookPref=null;
 	Preference pattrenpref=null;
 	Preference buzzerPref=null;
@@ -84,7 +84,6 @@ public class SettingsActivity extends BaseActivity implements OnItemClickListene
 		prefs=CommonPreferences.getInstance();
 		adapter=new SettingsAdapter(this,title,desc,desc_long);
 		listview.setAdapter(adapter);
-		listview.setOnItemClickListener(this);
 		SecurityPrefs.setAutoSavePattern(this, true);
 		SecurityPrefs.setEncrypterClass(this, LPEncrypter.class);
 		resolver=getContentResolver();
@@ -131,32 +130,9 @@ public class SettingsActivity extends BaseActivity implements OnItemClickListene
 	}
 
 	@Override
-	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-		switch (arg1.getId()) {
-		case 0:
-			starPickerActivity(PickerFriendListActivity.FRIEND_PICKER);
-			break;
-		case 1:
-			starPickerActivity(PickerFriendListActivity.CONTACTS_PICKER);
-			break;
-		case 5:
-			//startPatternLockActivity();
-			loadSettings();
-			break;
-		default:
-			break;
-		}		
+	public void startpatternActivity() {
+		loadSettings();
 	}
-
-	protected void startPatternLockActivity() {
-		Intent intentActivity = new Intent(
-				LockPatternActivity.ACTION_CREATE_PATTERN,
-				null, this,
-				LockPatternActivity.class);
-		startActivityForResult(intentActivity,
-				REQ_CREATE_PATTERN);
-	}
-
 
 	private void loadSettings() {
 
@@ -181,15 +157,6 @@ public class SettingsActivity extends BaseActivity implements OnItemClickListene
 					REQ_CREATE_PATTERN);
 		}
 
-	}
-
-
-
-	private void starPickerActivity(Uri type) {
-		Intent intent = new Intent();
-		intent.setClass(this, PickerFriendListActivity.class);
-		intent.setData(type);
-		startActivityForResult(intent, 2000);		
 	}
 
 
@@ -250,6 +217,10 @@ public class SettingsActivity extends BaseActivity implements OnItemClickListene
 	protected void onError(int reqCode, int errorCode, String errorMessage) {
 		Toast.makeText(this, "server error", Toast.LENGTH_SHORT).show();
 	}
+
+	
+
+	
 
 }
 

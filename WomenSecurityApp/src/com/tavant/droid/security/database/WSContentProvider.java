@@ -81,6 +81,7 @@ public class WSContentProvider extends ContentProvider {
 				SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
 				builder.setTables(ContentDescriptor.WSFacebook.NAME_TABLE);
 				Cursor cur= builder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
+				cur.setNotificationUri(getContext().getContentResolver(), uri);
 				return cur;
 			}
 			default: return null;
@@ -94,6 +95,7 @@ public class WSContentProvider extends ContentProvider {
 		final int match = ContentDescriptor.URI_MATCHER.match(uri);
 		switch (match) {
 		case ContentDescriptor.WSFacebook.PATH_TOKEN:{
+			getContext().getContentResolver().notifyChange(uri, null);
 			return db.update(ContentDescriptor.WSFacebook.NAME_TABLE, values, selection, selectionArgs);
 		 }
 		default:

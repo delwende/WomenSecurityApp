@@ -1,9 +1,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" 
-       xmlns:gladio="http://schemas.android.com/apk/res-auto">
+       xmlns:gladio="http://schemas.android.com/apk/res-auto">  
+     <item
+        android:id="@+id/action_search"
+        gladio:showAsAction="always"
+        android:icon="@drawable/ic_action_search"
+        android:visible="true"/>
     <item
         android:id="@+id/action_done"
         gladio:showAsAction="always"
         android:icon="@drawable/ic_action_accept"
-        android:visible="false"
-        android:title="@string/done"/>
+        android:visible="false"/>
 </menu>

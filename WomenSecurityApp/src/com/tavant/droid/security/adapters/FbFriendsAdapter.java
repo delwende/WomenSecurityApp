@@ -229,12 +229,12 @@ public class FbFriendsAdapter extends 	android.support.v4.widget.CursorAdapter i
 		selected=cursor.getInt(cursor
 				.getColumnIndex(ContentDescriptor.WSFacebook.Cols.FBSTATUS));
 		}else{
-			uName=cursor.getString(cursor.getColumnIndex(Contacts.DISPLAY_NAME));
+			uName=cursor.getString(cursor.getColumnIndex("name"));
 			id=cursor.getString(cursor
-					.getColumnIndex(Contacts._ID));
+					.getColumnIndex("_id"));
 			if(miDs.contains(id))
 				selected=1;
-			imgurl=""+cursor.getLong(cursor.getColumnIndex(Contacts._ID));
+			imgurl=""+cursor.getString(cursor.getColumnIndex("photoid"));
 		}
 		
 		adapter.mName.setText(uName);

@@ -11,6 +11,14 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:visibility="visible" />
+    
+    <com.tavant.droid.security.widget.CustomizableTextView
+        android:id="@+id/load_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="@string/cant_load"
+        android:visibility="gone" />
 
     <ListView
         android:id="@+id/friendslist"

@@ -84,6 +84,25 @@
             android:name=".activities.PickerFriendListActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.FacebookFriendPicker"
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
+            android:screenOrientation="portrait">
+             <meta-data android:name="android.app.default_searchable"
+                   android:value=".activities.SearchableActivity" />
+        </activity>    
+        <activity
+            android:name=".activities.SearchableActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
+            android:launchMode ="singleInstance"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+        </activity>
         <activity android:name=".activities.DummyActivity" />
         <activity
             android:name="group.pals.android.lib.ui.lockpattern.LockPatternActivity"

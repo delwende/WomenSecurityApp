@@ -108,7 +108,12 @@ public class LocationAlarmService extends Service implements LocationListener{
 		location=LocationData.getInstance();
 		if(provider != null && !provider.equals("")){
 			Log.d("TAG","final provider"+provider);
+			try{
 			timer.schedule(timertask, 10*1000);
+			}catch(Exception e){
+				e.printStackTrace();
+				stopSelf(Activity.RESULT_CANCELED);
+			}
 			locationManager.requestLocationUpdates(provider, 20000, 1, this);
 		}else{
 			Toast.makeText(getBaseContext(), "No Provider found", Toast.LENGTH_SHORT).show();

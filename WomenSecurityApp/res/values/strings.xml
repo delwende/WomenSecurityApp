@@ -123,5 +123,8 @@
     <string name="login_text">GRVTONBioqyDO9SjpBJGcLh6SvdHGBc567qOO3uWqE</string>
     <string name="logout_text">Sharing into Twitter..</string>
     
-    
+    <string name="cant_load">Unable to load the Facebook friends</string>
+    <string name="cant_load_contact">Unable to load the contacts</string>
+    <string name="search_hint">Search by name</string>
+     
 </resources>
