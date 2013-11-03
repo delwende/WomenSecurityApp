@@ -7,6 +7,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.provider.BaseColumns;
+import android.util.Log;
 
 /**
  * This class defines the WomenSecurityContentProvider.
@@ -17,6 +19,7 @@ import android.net.Uri;
  */
 public class WSContentProvider extends ContentProvider {
 	private WSContactsDatabase wsContactsDb;
+	
 
 	@Override
 	public boolean onCreate() {
@@ -83,6 +86,38 @@ public class WSContentProvider extends ContentProvider {
 				Cursor cur= builder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
 				cur.setNotificationUri(getContext().getContentResolver(), uri);
 				return cur;
+			}
+			case ContentDescriptor.WSFacebook.PATH_FOR_ID_TOKEN:{
+				String pathid=uri.getLastPathSegment();
+				SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
+				builder.setTables(ContentDescriptor.WSFacebook.NAME_TABLE);
+ 				Cursor cur= builder.query(db, projection, ContentDescriptor.WSFacebook.Cols.ID+ "= ?", new String[]{pathid}, null, null, sortOrder);
+				cur.setNotificationUri(getContext().getContentResolver(), uri);
+				return cur;
+			}
+			case ContentDescriptor.WSFacebook.SEARCH_SUGGEST:{
+				/*
+				 String[] columns = new String[] {
+				          BaseColumns._ID,
+				          ContentDescriptor.KEY_WORD};
+				          */
+				// String selection1 = ContentDescriptor.KEY_WORD + " LIKE ?";
+			     String[] selectionArgs1 = new String[]{selectionArgs[0]+"%"};
+			     SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
+				 builder.setTables(ContentDescriptor.WSFacebook.NAME_TABLE);
+				 builder.setProjectionMap(ContentDescriptor.mColumnMapFB);
+				 Cursor cursor = builder.query(db,
+			                 null, selection, selectionArgs1, null, null, null);
+
+			        if (cursor == null) {
+			            return null;
+			        } else if (!cursor.moveToFirst()) {
+			            cursor.close();
+			            return null;
+			        }
+			        Log.i("TAG","getCount"+cursor.getCount());
+			        return cursor;
+				
 			}
 			default: return null;
 		}

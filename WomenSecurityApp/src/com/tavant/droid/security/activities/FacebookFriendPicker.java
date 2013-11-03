@@ -1,24 +1,23 @@
 package com.tavant.droid.security.activities;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import android.app.SearchManager;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.AsyncTask.Status;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.provider.ContactsContract.Contacts;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,9 +37,7 @@ import com.facebook.SessionState;
 import com.facebook.model.GraphUser;
 import com.tavant.droid.security.R;
 import com.tavant.droid.security.adapters.FacebookFriendsAdapter;
-import com.tavant.droid.security.adapters.FbFriendsAdapter;
 import com.tavant.droid.security.database.ContentDescriptor;
-import com.tavant.droid.security.database.ContentDescriptor.WSContact;
 import com.tavant.droid.security.prefs.CommonPreferences;
 import com.tavant.droid.security.utils.Utils;
 
@@ -59,7 +56,6 @@ public class FacebookFriendPicker extends ActionBarActivity implements LoaderCal
 	private Map<Integer, Integer> sectionToOffset;
 	private Map<Integer, Integer> sectionToPosition;
 	private AsyncTask<Void, Void,Integer> mTask = null;
-	private ArrayList<String>mIDs=null;
 	private boolean showMenu=false;
 
 	@Override
@@ -81,17 +77,6 @@ public class FacebookFriendPicker extends ActionBarActivity implements LoaderCal
 		else{
 			loadFBSession();
 		}
-	}
-
-	private void getCurrentlySelectedCursor(){
-		Cursor temp=getContentResolver().query(ContentDescriptor.WSContact.CONTENT_URI,null,null,null,null);
-		Log.i("TAG","length of cursor"+temp.getCount());
-		mIDs=new ArrayList<String>();
-		if(temp!=null&&temp.getCount()>0){
-			while(temp.moveToNext()){
-				mIDs.add(temp.getString(temp.getColumnIndex(WSContact.Cols.CONTACTS_ID)));  
-			}
-		}		
 	}
 
 	private void loadFBSession() {
@@ -174,6 +159,7 @@ public class FacebookFriendPicker extends ActionBarActivity implements LoaderCal
 
 	@Override
 	public void onLoaderReset(Loader<Cursor> arg0) {
+		if(adapter!=null)
 		adapter.swapCursor(null);
 	}
 
@@ -182,6 +168,15 @@ public class FacebookFriendPicker extends ActionBarActivity implements LoaderCal
 		if (mTask != null && (mTask.getStatus() == Status.RUNNING))
 			return;
 		mTask = new AsyncTask<Void, Void, Integer>() {
+			@Override
+			protected void onPreExecute() {
+				if(mCursor.getCount()<=0){
+					progress.setVisibility(View.INVISIBLE);
+				    mtext.setVisibility(View.VISIBLE);
+				    mTask.cancel(true);
+				}
+			};
+			
 			@Override
 			protected Integer doInBackground(Void... params) {
 				try {
@@ -248,8 +243,10 @@ public class FacebookFriendPicker extends ActionBarActivity implements LoaderCal
 					}	
 				}
 				else{
+					
 					adapter.refresh(indexer, usedSectionNumbers,
 							sectionToOffset, sectionToPosition);
+							
 					adapter.swapCursor(mCursor);
 				}
 			}
@@ -263,6 +260,14 @@ public class FacebookFriendPicker extends ActionBarActivity implements LoaderCal
 		MenuItem item=menu.findItem(R.id.action_done);
 		if(showMenu){
 			item.setVisible(showMenu);
+		}
+		if(Utils.hasHoneycomb()){
+		    SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+		    SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+		    // Assumes current activity is the searchable activity
+		    searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+		    searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+
 		}
 		return true;
 	}

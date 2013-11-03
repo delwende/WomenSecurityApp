@@ -94,7 +94,7 @@
         <activity
             android:name=".activities.SearchableActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
-            android:launchMode ="singleInstance"
+            android:launchMode ="singleTop"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
