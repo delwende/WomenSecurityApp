@@ -20,6 +20,7 @@ import android.widget.ViewFlipper;
 import com.tavant.droid.security.HomeActivity;
 import com.tavant.droid.security.R;
 import com.tavant.droid.security.prefs.CommonPreferences;
+import com.tavant.droid.security.service.WSContactUpdateManger;
 import com.tavant.droid.security.utils.Utils;
 
 public class SplashScreenActivity extends Activity implements View.OnClickListener {
@@ -39,6 +40,7 @@ public class SplashScreenActivity extends Activity implements View.OnClickListen
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		startService(new Intent(this, WSContactUpdateManger.class));
 		pref=CommonPreferences.getInstance();
 		pref.load(this);
 		if(pref.isFirstTime()){

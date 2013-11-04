@@ -33,8 +33,10 @@ public class ContentDescriptor {
 		matcher.addURI(authority, WSContact.PATH_FOR_ID, WSContact.PATH_FOR_ID_TOKEN);
 		matcher.addURI(authority, WSFacebook.PATH, WSFacebook.PATH_TOKEN);
 		matcher.addURI(authority, WSFacebook.PATH_FOR_ID, WSFacebook.PATH_FOR_ID_TOKEN);
-		matcher.addURI(AUTHORITY, SearchManager.SUGGEST_URI_PATH_QUERY, WSFacebook.SEARCH_SUGGEST);
-		matcher.addURI(AUTHORITY, SearchManager.SUGGEST_URI_PATH_QUERY + "/*", WSFacebook.SEARCH_SUGGEST);
+		matcher.addURI(AUTHORITY, WSFacebook.SEARCH_SUGGEST_OPTION+"/"+SearchManager.SUGGEST_URI_PATH_QUERY, WSFacebook.SEARCH_SUGGEST);
+		matcher.addURI(AUTHORITY, WSFacebook.SEARCH_SUGGEST_OPTION+"/"+SearchManager.SUGGEST_URI_PATH_QUERY + "/*", WSFacebook.SEARCH_SUGGEST);
+		matcher.addURI(AUTHORITY, WSContact.SEARCH_SUGGEST_OPTION+"/"+SearchManager.SUGGEST_URI_PATH_QUERY, WSContact.SEARCH_SUGGEST);
+		matcher.addURI(AUTHORITY, WSContact.SEARCH_SUGGEST_OPTION+"/"+SearchManager.SUGGEST_URI_PATH_QUERY + "/*",  WSContact.SEARCH_SUGGEST);
 		return matcher;
 	}
 	private static HashMap<String,String> buildColumnMapfacebook() {
@@ -63,12 +65,13 @@ public class ContentDescriptor {
 	// Here we define contacts
 	public static class WSContact {
 		// an identifying name for entity
-		public static final String NAME = "wscontact";
+		public static final String NAME_TABLE = "wscontact";
 		public static final String PATH = "wscontacts";
 		public static final int PATH_TOKEN = 100;
 		public static final String PATH_FOR_ID = "wscontacts/*";
 		public static final int PATH_FOR_ID_TOKEN = 200;
 		public static final int SEARCH_SUGGEST = 3;
+		public static final int SEARCH_SUGGEST_OPTION = 3000;
 
 		// URI for all content stored as WSContact entity
 		// BASE_URI + PATH ==> "com.tavant.droid.womensecurity.database.contentprovider";
@@ -84,6 +87,8 @@ public class ContentDescriptor {
 			public static final String NAME = "suggest_text_1";
 			public static final String CONTACTS_ID="wscontact_id";
 			public static final String PHONE = "suggest_text_2";
+			public static final String STATUS  = "status";
+			public static final String IMGURL  = "imgurl";
 		}
 
 	}
@@ -98,6 +103,7 @@ public class ContentDescriptor {
 		public static final String PATH_FOR_ID = "wsfb/*";
 		public static final int PATH_FOR_ID_TOKEN = 600;
 		public static final int SEARCH_SUGGEST = 2;
+		public static final int SEARCH_SUGGEST_OPTION = 2000;
 		public static final Uri CONTENT_URI = BASE_URI.buildUpon().appendPath(PATH).build();
 
 		public static class Cols {

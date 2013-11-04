@@ -81,9 +81,12 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".activities.PickerFriendListActivity"
+            android:name=".activities.ContactsListActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait" >
+             <meta-data android:name="android.app.default_searchable"
+                   android:value=".activities.ContactSearchableActivity" />
+          </activity>   
         <activity
             android:name=".activities.FacebookFriendPicker"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
@@ -102,6 +105,18 @@
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
+        </activity>
+        <activity
+            android:name=".activities.ContactSearchableActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
+            android:launchMode ="singleTop"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchablecontact" />
         </activity>
         <activity android:name=".activities.DummyActivity" />
         <activity
@@ -123,29 +138,10 @@
                 <category android:name="com.tavant.droid.security" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".widget.WidgetProvider" >
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/widget_provider" />
-        </receiver>
-        <receiver
-            android:name=".widget.WidgetIntentReceiver"
-            android:label="widgetBroadcastReceiver" >
-            <intent-filter>
-                <action android:name="womansecurity.intent.action.ALERT_FRIENDS_AND_COP" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/widget_provider" />
-        </receiver>
-
+     
         <service android:name=".service.WSGCMIntentService" />
-        <service android:name=".service.LocationAlarmService" />
+        <service android:name=".service.WSContactUpdateManger"  android:exported="false"/>
+        <service android:name=".service.LocationAlarmService" android:exported="false"/>
 
         <activity
             android:name="com.google.ads.AdActivity"

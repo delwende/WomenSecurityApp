@@ -7,12 +7,13 @@ import java.util.Map;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.net.Uri;
-import android.provider.BaseColumns;
-import android.provider.ContactsContract.Contacts;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,25 +22,26 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
 
 import com.tavant.droid.security.R;
-import com.tavant.droid.security.activities.PickerFriendListActivity;
 import com.tavant.droid.security.database.ContentDescriptor;
+import com.tavant.droid.security.database.ContentDescriptor.WSContact;
 import com.tavant.droid.security.utils.FontLoader;
-import com.tavant.droid.security.utils.PhoneUtils;
 import com.tavant.droid.security.utils.Utils;
+import com.tavant.droid.security.widget.CustomizableTextView;
 
 
-public class FbFriendsAdapter extends 	android.support.v4.widget.CursorAdapter implements OnCheckedChangeListener,SectionIndexer{
-	
-	
-	
+public class ContactListAdapter extends 	android.support.v4.widget.CursorAdapter implements OnCheckedChangeListener,SectionIndexer{
+
+
+
 	private ContentResolver mResolver = null; 
-    private ContentValues values=null;
-    
-    private static final int TYPE_HEADER = 1;
+	private ContentValues values=null;
+
+	private static final int TYPE_HEADER = 1;
 	private static final int TYPE_NORMAL = 0;
 	private static final int TYPE_COUNT = 2;
 	private AlphabetIndexer indexer;
@@ -55,26 +57,23 @@ public class FbFriendsAdapter extends 	android.support.v4.widget.CursorAdapter i
 	private ArrayList<String>miDs=null;
 	private Typeface mTypeFace_bold = null;
 	private Typeface mTypeFace_normal = null;
-    
-   
-    
-	public FbFriendsAdapter(Context context, Cursor c, AlphabetIndexer indexer,
+
+
+
+	public ContactListAdapter(Context context, Cursor c, AlphabetIndexer indexer,
 			int[] usedSectionNumbers, Map<Integer, Integer> sectionToOffset,
-			Map<Integer, Integer> sectionToPosition,Uri uri,ArrayList<String>ids) {
-		super(context, c);
-		this.muri=uri;
-		this.cur=c;
+			Map<Integer, Integer> sectionToPosition) {
+		super(context, c,false);
 		this.indexer = indexer;
 		this.usedSectionNumbers = usedSectionNumbers;
 		this.sectionToOffset = sectionToOffset;
 		this.sectionToPosition = sectionToPosition;
 		mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		mResolver=context.getContentResolver();
-		miDs=ids;
 		mTypeFace_bold=FontLoader.getMngr().getTfRobotBold();
 		mTypeFace_normal	=FontLoader.getMngr().getTfRobotNormal();	
 	}
-	
+
 	@Override
 	public int getCount() {
 		if (super.getCount() != 0) {
@@ -92,7 +91,7 @@ public class FbFriendsAdapter extends 	android.support.v4.widget.CursorAdapter i
 		return null;
 	}
 
-	
+
 	@Override
 	public int getPositionForSection(int section) {
 		if (!sectionToOffset.containsKey(section)) {
@@ -104,7 +103,7 @@ public class FbFriendsAdapter extends 	android.support.v4.widget.CursorAdapter i
 			if (i == maxLength)
 				return getCount();
 			return indexer.getPositionForSection(usedSectionNumbers[i])
-			+ sectionToOffset.get(usedSectionNumbers[i]);
+					+ sectionToOffset.get(usedSectionNumbers[i]);
 		}
 		return indexer.getPositionForSection(section) + sectionToOffset.get(section);
 	}
@@ -143,8 +142,8 @@ public class FbFriendsAdapter extends 	android.support.v4.widget.CursorAdapter i
 	public int getViewTypeCount() {
 		return TYPE_COUNT;
 	}
-	
-	
+
+
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		final int type = getItemViewType(position);
@@ -168,48 +167,69 @@ public class FbFriendsAdapter extends 	android.support.v4.widget.CursorAdapter i
 		return super.getView(mNewPosition, convertView, parent);
 	}
 
-	    // these two methods just disable the headers
-		@Override
-		public boolean areAllItemsEnabled() {
+	// these two methods just disable the headers
+	@Override
+	public boolean areAllItemsEnabled() {
+		return false;
+	}
+
+	@Override
+	public boolean isEnabled(int position) {
+		if (getItemViewType(position) == TYPE_HEADER) {
 			return false;
 		}
+		return true;
+	}
 
-		@Override
-		public boolean isEnabled(int position) {
-			if (getItemViewType(position) == TYPE_HEADER) {
-				return false;
-			}
-			return true;
-		}
-	
-	
+
 	@Override
 	public View newView(Context context, Cursor cursor, ViewGroup parent) {
 		View convertView = LayoutInflater.from(context).inflate(
-					R.layout.list_row, null);
+				R.layout.list_row, null);
 		adapter = getAdapter(convertView);
 		convertView.setTag(adapter);
 		return convertView;
 	}
-	
+
 	private ViewHolder getAdapter(View convertView) {
 		ViewHolder adapter = new ViewHolder();
 		adapter.mName = (TextView) convertView.findViewById(R.id.fb_name);
 		adapter.mAvathar = (ImageView) convertView.findViewById(R.id.com_facebook_image);
 		adapter.mCheckBox=(CheckBox)convertView.findViewById(R.id.com_fb_checkbox);
+		CustomizableTextView textview=new CustomizableTextView(mContext);
+		
+		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+		        RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+		lp.addRule(RelativeLayout.RIGHT_OF, adapter.mAvathar.getId());
+		lp.addRule(RelativeLayout.BELOW, adapter.mName.getId());
+		//RelativeLayout layout=(RelativeLayout)mLayoutInflater.inflate(R.layout.list_row, null, false);
+		lp.setMargins(getPixelValueFromDp(7) ,getPixelValueFromDp(10), 0, 0);
+		((RelativeLayout)convertView).addView(textview,lp);
+		adapter.mphone=textview;
 		convertView.setTag(adapter);
 		return adapter;
 	}
+
 	
-	
+	private int getPixelValueFromDp(int Dp){
+		Resources r = mContext.getResources();
+		int px = (int) TypedValue.applyDimension(
+		        TypedValue.COMPLEX_UNIT_DIP,
+		        Dp, 
+		        r.getDisplayMetrics()
+		);
+		return px;
+	}
+
 	@Override
 	public void bindView(View view, Context context, Cursor cursor) {
-		
+
 		String id;
 		String uName;
 		String imgurl;
 		int selected=0;
-		
+		String phonenumber;
+
 		adapter = (ViewHolder) view.getTag();
 		if (adapter.isTitle) {
 			view = null;
@@ -220,44 +240,34 @@ public class FbFriendsAdapter extends 	android.support.v4.widget.CursorAdapter i
 
 		adapter.position = getCursor().getPosition();
 		view.setTag(adapter);
-		
-		
-		if(muri.equals(PickerFriendListActivity.FRIEND_PICKER)){
-		id = cursor.getString(cursor.getColumnIndex(BaseColumns._ID));
-		uName = cursor.getString(cursor.getColumnIndex(ContentDescriptor.WSFacebook.Cols.FBNAME));
-		imgurl = cursor.getString(cursor.getColumnIndex(ContentDescriptor.WSFacebook.Cols.IMGURL));
+
+
+
+		uName=cursor.getString(cursor.getColumnIndex(ContentDescriptor.WSContact.Cols.NAME));
+		id=cursor.getString(cursor
+				.getColumnIndex(ContentDescriptor.WSContact.Cols.CONTACTS_ID));
 		selected=cursor.getInt(cursor
-				.getColumnIndex(ContentDescriptor.WSFacebook.Cols.FBSTATUS));
-		}else{
-			uName=cursor.getString(cursor.getColumnIndex("name"));
-			id=cursor.getString(cursor
-					.getColumnIndex("_id"));
-			if(miDs.contains(id))
-				selected=1;
-			imgurl=""+cursor.getString(cursor.getColumnIndex("photoid"));
-		}
-		
+				.getColumnIndex(ContentDescriptor.WSContact.Cols.STATUS));
+		imgurl=""+cursor.getString(cursor
+				.getColumnIndex(ContentDescriptor.WSContact.Cols.IMGURL));
+		phonenumber=""+cursor.getString(cursor
+				.getColumnIndex(ContentDescriptor.WSContact.Cols.PHONE));
+		Log.i("TAG","myphonenumber"+phonenumber);
+
 		adapter.mName.setText(uName);
+		adapter.mphone.setText(phonenumber);
 		adapter.mName.setTypeface(mTypeFace_normal);
+		adapter.mphone.setTypeface(mTypeFace_normal);
 		adapter.mCheckBox.setOnCheckedChangeListener(null);
 		adapter.mCheckBox.setChecked(selected==1 ? true:false );
 		adapter.mCheckBox.setTag(id);
 		adapter.mCheckBox.setOnCheckedChangeListener(this); 
-		adapter.mAvathar.setTag(R.string.ImageUrl, imgurl);
-		if(muri.equals(PickerFriendListActivity.FRIEND_PICKER)){
-		ImageView img=(ImageView)view.findViewById(R.id.com_facebook_image);
-		img.setTag(imgurl);
-		ImageLoader.getInstance().DisplayImage(imgurl,
-				adapter.mAvathar.getContext(), adapter.mAvathar,null);
-		}else{
-			adapter.mCheckBox.setTag(R.string.contacts_name,uName);
-			Utils.loadContactPhoto(context.getContentResolver(), Long.parseLong(id), adapter.mAvathar, null, 60, 60);
-		}		
+		Utils.loadContactPhoto(context.getContentResolver(), Long.parseLong(id), adapter.mAvathar, null, 60, 60);
 	}
-	
-	
-	
-	
+
+
+
+
 	public void refresh(AlphabetIndexer indxr,int[] usdsecnum,Map<Integer, Integer> s2off,Map<Integer, Integer> sec2Pos) {
 		try{
 			indexer = indxr;
@@ -271,42 +281,21 @@ public class FbFriendsAdapter extends 	android.support.v4.widget.CursorAdapter i
 
 	@Override
 	public void onCheckedChanged(CompoundButton arg0, boolean arg1) {
-		
 		Log.i("TAG",""+"refreshing listview");
-		if(muri.equals(PickerFriendListActivity.FRIEND_PICKER)){
-		Integer _id = new Integer(arg0.getTag().toString());
-			values = new ContentValues();
-			if (arg1) { 
-					values.put(ContentDescriptor.WSFacebook.Cols.FBSTATUS, 1);
-					mResolver.update(ContentDescriptor.WSFacebook.CONTENT_URI, values,
-							BaseColumns._ID+ " = " + _id + " ",
-							null);
-				
-			} else {
-				values.put(ContentDescriptor.WSFacebook.Cols.FBSTATUS, 0);
-				mResolver.update(ContentDescriptor.WSFacebook.CONTENT_URI, values,
-						BaseColumns._ID+ " = " + _id + " ",
-						null);
-			}
-		 }else{
-			 String id=arg0.getTag().toString();
-			 values = new ContentValues();
-			 if(arg1){
-				    values.put(ContentDescriptor.WSContact.Cols.CONTACTS_ID, id);
-				    values.put(ContentDescriptor.WSContact.Cols.NAME, id);
-				    values.put(ContentDescriptor.WSContact.Cols.PHONE, PhoneUtils.getContactPhoneNumber(mContext,id));
-				    mResolver.insert(ContentDescriptor.WSContact.CONTENT_URI, values);
-				    miDs.add(id);
-			 }else{
-				 mResolver.delete(ContentDescriptor.WSContact.CONTENT_URI, ContentDescriptor.WSContact.Cols.CONTACTS_ID+"= ?", new String[]{id}); 
-				 miDs.remove(id);
-			 }
-		 }
-			cur.requery();
-			notifyDataSetChanged();
-			
-	 }
+		String id=arg0.getTag().toString();
+		values = new ContentValues();
+		if (arg1) { 
+			values.put(ContentDescriptor.WSContact.Cols.STATUS, 1);
+			mResolver.update(ContentDescriptor.WSContact.CONTENT_URI, values,
+					WSContact.Cols.CONTACTS_ID+ " = " + id + " ",
+					null);
+		} else {
+			values.put(ContentDescriptor.WSContact.Cols.STATUS, 0);
+			mResolver.update(ContentDescriptor.WSContact.CONTENT_URI, values,
+					WSContact.Cols.CONTACTS_ID+ " = " + id + " ",
+					null);
+		}
 
+	}
 
-	
 }

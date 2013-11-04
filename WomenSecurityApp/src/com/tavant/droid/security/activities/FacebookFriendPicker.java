@@ -182,7 +182,7 @@ public class FacebookFriendPicker extends ActionBarActivity implements LoaderCal
 				try {
 					indexer = new AlphabetIndexer(mCursor,
 							mCursor.getColumnIndexOrThrow(ContentDescriptor.WSFacebook.Cols.FBNAME),
-							"#ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+							getString(R.string.alphabet));
 					sectionToOffset = new HashMap<Integer, Integer>();
 					sectionToPosition = new TreeMap<Integer, Integer>();
 					final int count = mCursor.getCount();

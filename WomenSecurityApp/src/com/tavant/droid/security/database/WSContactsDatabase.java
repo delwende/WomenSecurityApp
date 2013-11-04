@@ -25,11 +25,13 @@ public class WSContactsDatabase extends SQLiteOpenHelper {
 	 */
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		db.execSQL("CREATE TABLE " + ContentDescriptor.WSContact.NAME+ " ( " +
+		db.execSQL("CREATE TABLE " + ContentDescriptor.WSContact.NAME_TABLE+ " ( " +
 				ContentDescriptor.WSContact.Cols.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
 				ContentDescriptor.WSContact.Cols.NAME + " TEXT NOT NULL, " +
 				ContentDescriptor.WSContact.Cols.CONTACTS_ID 	+ " TEXT NOT NULL, " +
 				ContentDescriptor.WSContact.Cols.PHONE + " TEXT NOT NULL, " +
+				ContentDescriptor.WSContact.Cols.STATUS + " INTEGER NOT NULL, " +
+				ContentDescriptor.WSContact.Cols.IMGURL + " TEXT NOT NULL, " +
 				"UNIQUE (" + 
 					ContentDescriptor.WSContact.Cols.ID + 
 				") ON CONFLICT REPLACE)"
@@ -53,10 +55,6 @@ public class WSContactsDatabase extends SQLiteOpenHelper {
 	 */
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if(oldVersion < newVersion){
-        	db.execSQL("DROP TABLE IF EXISTS " + ContentDescriptor.WSContact.NAME);
-        	onCreate(db);
-        }
 	}
 
 }

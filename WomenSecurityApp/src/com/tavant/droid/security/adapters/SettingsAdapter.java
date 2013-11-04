@@ -1,12 +1,9 @@
 package com.tavant.droid.security.adapters;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.media.MediaRouter.VolumeCallback;
-import android.support.v7.appcompat.R.bool;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +11,10 @@ import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tavant.droid.security.R;
+import com.tavant.droid.security.activities.ContactsListActivity;
 import com.tavant.droid.security.activities.FacebookFriendPicker;
 import com.tavant.droid.security.prefs.CommonPreferences;
 import com.tavant.droid.security.utils.VolunteerStatus;
@@ -119,6 +116,9 @@ public class SettingsAdapter extends BaseAdapter implements  OnCheckedChangeList
 				mctx.startActivity(intent);	
 			  break;
 			case 1:
+				Intent intent1 = new Intent();
+				intent1.setClass(mctx, ContactsListActivity.class);
+				mctx.startActivity(intent1);	
 				break;
 			case 2 :
 				CheckBox v1=holder.check;

@@ -3,6 +3,8 @@
  */
 package com.tavant.droid.security.adapters;
 
+import com.tavant.droid.security.widget.CustomizableTextView;
+
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -15,4 +17,5 @@ public class ViewHolder {
 	public int type = -1;
 	public boolean isTitle = false;	
 	public int position = 0;
+	public CustomizableTextView mphone=null;
 }

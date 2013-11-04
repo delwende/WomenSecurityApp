@@ -50,7 +50,7 @@ public class WSContentProvider extends ContentProvider {
 		int token = ContentDescriptor.URI_MATCHER.match(uri);
 		switch(token){
 			case ContentDescriptor.WSContact.PATH_TOKEN:{
-				long id = db.insert(ContentDescriptor.WSContact.NAME, null, values);
+				long id = db.insert(ContentDescriptor.WSContact.NAME_TABLE, null, values);
 				return ContentDescriptor.WSContact.CONTENT_URI.buildUpon().appendPath(String.valueOf(id)).build();
 			}
 			case ContentDescriptor.WSFacebook.PATH_TOKEN:{
@@ -76,8 +76,9 @@ public class WSContentProvider extends ContentProvider {
 			// retrieve wscontacts list
 			case ContentDescriptor.WSContact.PATH_TOKEN:{
 				SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
-				builder.setTables(ContentDescriptor.WSContact.NAME);
+				builder.setTables(ContentDescriptor.WSContact.NAME_TABLE);
 				Cursor cur= builder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
+				cur.setNotificationUri(getContext().getContentResolver(), uri);
 				return cur;
 			}
 			case ContentDescriptor.WSFacebook.PATH_TOKEN:{
@@ -96,12 +97,6 @@ public class WSContentProvider extends ContentProvider {
 				return cur;
 			}
 			case ContentDescriptor.WSFacebook.SEARCH_SUGGEST:{
-				/*
-				 String[] columns = new String[] {
-				          BaseColumns._ID,
-				          ContentDescriptor.KEY_WORD};
-				          */
-				// String selection1 = ContentDescriptor.KEY_WORD + " LIKE ?";
 			     String[] selectionArgs1 = new String[]{selectionArgs[0]+"%"};
 			     SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
 				 builder.setTables(ContentDescriptor.WSFacebook.NAME_TABLE);
@@ -119,6 +114,33 @@ public class WSContentProvider extends ContentProvider {
 			        return cursor;
 				
 			}
+			case ContentDescriptor.WSContact.SEARCH_SUGGEST:{
+			     String[] selectionArgs1 = new String[]{selectionArgs[0]+"%"};
+			     SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
+				 builder.setTables(ContentDescriptor.WSContact.NAME_TABLE);
+				 builder.setProjectionMap(ContentDescriptor.mColumnMapContact);
+				 Cursor cursor = builder.query(db,
+			                 null, selection, selectionArgs1, null, null, null);
+
+			        if (cursor == null) {
+			            return null;
+			        } else if (!cursor.moveToFirst()) {
+			            cursor.close();
+			            return null;
+			        }
+			        Log.i("TAG","getCount"+cursor.getCount());
+			        return cursor;
+				
+			}
+			case ContentDescriptor.WSContact.PATH_FOR_ID_TOKEN:{
+				String pathid=uri.getLastPathSegment();
+				SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
+				builder.setTables(ContentDescriptor.WSContact.NAME_TABLE);
+ 				Cursor cur= builder.query(db, projection, ContentDescriptor.WSFacebook.Cols.ID+ "= ?", new String[]{pathid}, null, null, sortOrder);
+				cur.setNotificationUri(getContext().getContentResolver(), uri);
+				return cur;
+			}
+			
 			default: return null;
 		}
 	}
@@ -133,6 +155,10 @@ public class WSContentProvider extends ContentProvider {
 			getContext().getContentResolver().notifyChange(uri, null);
 			return db.update(ContentDescriptor.WSFacebook.NAME_TABLE, values, selection, selectionArgs);
 		 }
+		case ContentDescriptor.WSContact.PATH_TOKEN:{
+			getContext().getContentResolver().notifyChange(uri, null);
+			return db.update(ContentDescriptor.WSContact.NAME_TABLE, values, selection, selectionArgs);
+		 }
 		default:
 			break;
 		}
@@ -145,7 +171,7 @@ public class WSContentProvider extends ContentProvider {
 		final int match = ContentDescriptor.URI_MATCHER.match(uri);
 		switch (match) {
 		case ContentDescriptor.WSContact.PATH_TOKEN:
-			return db.delete(ContentDescriptor.WSContact.NAME,selection, selectionArgs);
+			return db.delete(ContentDescriptor.WSContact.NAME_TABLE,selection, selectionArgs);
 		default:
 			break;
 		}
