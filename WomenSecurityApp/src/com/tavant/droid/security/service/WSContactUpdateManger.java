@@ -61,7 +61,6 @@ public class WSContactUpdateManger extends Service {
 						values.put(ContentDescriptor.WSContact.Cols.PHONE,  PhoneUtils.getContactPhoneNumber(getApplicationContext(),id));
 						values.put(ContentDescriptor.WSContact.Cols.IMGURL, ""+cur.getLong(cur.getColumnIndex(Contacts._ID)));
 						values.put(ContentDescriptor.WSContact.Cols.STATUS, 0);
-						Log.i("TAG","inserting");
 						resolver.insert(ContentDescriptor.WSContact.CONTENT_URI, values);
 						}else if(temp!=null&&temp.getCount()>0){
 							
@@ -70,7 +69,7 @@ public class WSContactUpdateManger extends Service {
 								values.put(ContentDescriptor.WSContact.Cols.NAME, cur.getString(cur.getColumnIndex(Contacts.DISPLAY_NAME)));
 								values.put(ContentDescriptor.WSContact.Cols.PHONE,  PhoneUtils.getContactPhoneNumber(getApplicationContext(),id));
 								values.put(ContentDescriptor.WSContact.Cols.IMGURL, ""+cur.getLong(cur.getColumnIndex(Contacts._ID)));
-								Log.i("TAG","updating");
+								Log.d("TAG","updating");
 								resolver.update(ContentDescriptor.WSContact.CONTENT_URI, values, ContentDescriptor.WSContact.Cols.CONTACTS_ID+" =?", new String[]{id});
 							}
 						}
@@ -108,7 +107,7 @@ public class WSContactUpdateManger extends Service {
 	    @Override
 	    public void onChange(boolean selfChange) {
 	        super.onChange(selfChange);
-            Log.i("TAG","mobile contact changed"); 
+            Log.d("TAG","mobile contact changed"); 
             if(insertcompleted)
             	updateContactTable();
 	    }

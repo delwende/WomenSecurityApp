@@ -87,8 +87,8 @@ public class SettingsActivity extends BaseActivity implements VolunteerStatus{
 		SecurityPrefs.setAutoSavePattern(this, true);
 		SecurityPrefs.setEncrypterClass(this, LPEncrypter.class);
 		resolver=getContentResolver();
-		fbCursor =resolver.query(ContentDescriptor.WSFacebook.CONTENT_URI, null, null, null, null);
-		friendCursor=resolver.query(ContentDescriptor.WSContact.CONTENT_URI, null, null, null, null);
+		fbCursor =resolver.query(ContentDescriptor.WSFacebook.CONTENT_URI, null, ContentDescriptor.WSFacebook.Cols.FBSTATUS+" =?", new String[]{""+1}, null);
+		friendCursor=resolver.query(ContentDescriptor.WSContact.CONTENT_URI, null, ContentDescriptor.WSContact.Cols.STATUS+" =?", new String[]{""+1}, null);
 		issettings=getIntent().getBooleanExtra("issetting", false);
 		if(fbCursor!=null&&fbCursor.getCount()>0&&friendCursor!=null&&friendCursor.getCount()>0&&!issettings){
 			fbCursor.close();

@@ -29,10 +29,11 @@ public class ContentDescriptor {
 		final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
 		final String authority = AUTHORITY;
 
-		matcher.addURI(authority, WSContact.PATH, WSContact.PATH_TOKEN);
-		matcher.addURI(authority, WSContact.PATH_FOR_ID, WSContact.PATH_FOR_ID_TOKEN);
+		
 		matcher.addURI(authority, WSFacebook.PATH, WSFacebook.PATH_TOKEN);
 		matcher.addURI(authority, WSFacebook.PATH_FOR_ID, WSFacebook.PATH_FOR_ID_TOKEN);
+		matcher.addURI(authority, WSContact.PATH, WSContact.PATH_TOKEN);
+		matcher.addURI(authority, WSContact.PATH_FOR_ID, WSContact.PATH_FOR_ID_TOKEN);
 		matcher.addURI(AUTHORITY, WSFacebook.SEARCH_SUGGEST_OPTION+"/"+SearchManager.SUGGEST_URI_PATH_QUERY, WSFacebook.SEARCH_SUGGEST);
 		matcher.addURI(AUTHORITY, WSFacebook.SEARCH_SUGGEST_OPTION+"/"+SearchManager.SUGGEST_URI_PATH_QUERY + "/*", WSFacebook.SEARCH_SUGGEST);
 		matcher.addURI(AUTHORITY, WSContact.SEARCH_SUGGEST_OPTION+"/"+SearchManager.SUGGEST_URI_PATH_QUERY, WSContact.SEARCH_SUGGEST);
@@ -66,9 +67,9 @@ public class ContentDescriptor {
 	public static class WSContact {
 		// an identifying name for entity
 		public static final String NAME_TABLE = "wscontact";
-		public static final String PATH = "wscontacts";
+		public static final String PATH = "wscontact";
 		public static final int PATH_TOKEN = 100;
-		public static final String PATH_FOR_ID = "wscontacts/*";
+		public static final String PATH_FOR_ID = "wscontact/*";
 		public static final int PATH_FOR_ID_TOKEN = 200;
 		public static final int SEARCH_SUGGEST = 3;
 		public static final int SEARCH_SUGGEST_OPTION = 3000;

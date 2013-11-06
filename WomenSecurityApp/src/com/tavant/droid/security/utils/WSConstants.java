@@ -14,8 +14,8 @@ public class WSConstants {
 	
 	
 	
-	public static final String PROTOCOL="http://";	  //https://
-	public static final String HOST = "121.240.130.119";    //10.129.146.78  //121.240.130.119  //54.254.141.98  //gladio.tavant.com
+	public static final String PROTOCOL="https://";	  //https://
+	public static final String HOST = "gladio.tavant.com";    //10.129.146.78  //121.240.130.119  //54.254.141.98  //gladio.tavant.com
 	public static final String BASEURL =PROTOCOL+HOST+"/twsa/frontend_dev.php/API/%s";	//	"http://192.168.2.2:8080/WomenSecurityBackEnd";
 
 	

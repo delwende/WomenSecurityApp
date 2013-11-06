@@ -33,7 +33,6 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.telephony.PhoneStateListener;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
@@ -94,7 +93,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 	private TwitterHelper twitterHelp=null;
 	private ProgressDialog pDialog=null;
 	
-    private int mindexphonearray=0;	
+    private int mindexphonearray=-1;	
 	
 	
 	private static final int REQ_CODE=4500;
@@ -193,7 +192,16 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 
 					}
 					getCallStates();
+					mindexphonearray=-1;
+					if (volunteerNumber!=null&&volunteerNumber.length() != 0&&!volunteerNumber.equals(commonpref.getPhoneNumber())) {
 					makeEmergencyCallToNearestVolunteer();
+					mindexphonearray=0;
+					}else{
+						mindexphonearray++;
+						makeEmergencyCalls(numbers[mindexphonearray]);
+						Log.d("TAG", "calling"+numbers[mindexphonearray]);
+						mindexphonearray++;
+					}
 				}
 			}
 		}
@@ -224,7 +232,6 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 					nameValuePairs.add(new BasicNameValuePair("privacy","{'value':'ALL_FRIENDS'}"));
 					post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 					HttpResponse res=client.execute(post);
-					Log.d("TAG","htpp status codefb"+res.getStatusLine().getStatusCode());
 					sendFBChatMessage();
 				}catch(Exception e){
 					e.printStackTrace();
@@ -280,7 +287,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 			//for (int i = 0; i < callRepeatCount; i++) {
 				//Log.i("TAG","calling next2");
 				//for (int j = 0; j < numbers.length; j++) {
-					Log.i("TAG","calling next"+numbers[mindexphonearray]);
+					Log.d("TAG","calling next"+numbers[mindexphonearray]);
 					makeEmergencyCalls(numbers[mindexphonearray]);
 					mindexphonearray++;
 				//}
@@ -304,16 +311,16 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 				case TelephonyManager.CALL_STATE_IDLE:
 					stateString = "Idle";
 					callNext = true;
-					Log.i("TAG","CALL_STATE_IDLE");
+					Log.d("TAG","CALL_STATE_IDLE");
 					break;
 				case TelephonyManager.CALL_STATE_OFFHOOK:
 					stateString = "Off Hook";
 					callNext = false;
-					Log.i("TAG","CALL_STATE_OFFHOOK");
+					Log.d("TAG","CALL_STATE_OFFHOOK");
 					break;
 				case TelephonyManager.CALL_STATE_RINGING:
 					stateString = "Ringing";
-					Log.i("TAG","CALL_STATE_RINGING");
+					Log.d("TAG","CALL_STATE_RINGING");
 					break;
 				}
 			}
@@ -369,20 +376,20 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 	}
 
 	private void makeEmergencyCallToNearestVolunteer() {
-		if (volunteerNumber!=null&&volunteerNumber.length() != 0) {
+		    Log.d("TAG", "calling volunteer"+volunteerNumber);
 			Intent intent = new Intent(Intent.ACTION_CALL);
 			intent.setData(Uri.parse("tel:" + volunteerNumber));
 			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			intent.addFlags(Intent.FLAG_FROM_BACKGROUND);
 			startActivity(intent);
-		}
-		mindexphonearray=0;
+		
 	}
 
 	public static void sendSmsMessage(String[] number, String message)
 			throws Exception {
 		SmsManager smsMgr = SmsManager.getDefault();
 		for (int i = 0; i < number.length; i++) {
+			Log.d("TAG", "sending message to"+number[i]);
 			smsMgr.sendMultipartTextMessage(number[i], null, smsMgr.divideMessage(message), null, null);
 		}
 	}
@@ -390,9 +397,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener {
 	private String[] retrieveFriendnumbers() {
 		ArrayList<String> phoneList = new ArrayList<String>();
 
-		Cursor cur = getContentResolver()
-				.query(ContentDescriptor.WSContact.CONTENT_URI, null, null,
-						null, null);
+		Cursor cur = resolver.query(ContentDescriptor.WSContact.CONTENT_URI, null, ContentDescriptor.WSContact.Cols.STATUS+" =?", new String[]{""+1}, null);
 
 		if (cur != null) {
 			cur.moveToFirst();

@@ -10,7 +10,7 @@ import org.apache.http.entity.StringEntity;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import android.util.Log;
+//import android.util.Log;
 
 import com.tavant.droid.security.utils.WSConstants;
 /**
@@ -43,7 +43,7 @@ public class HttpRequestCreater {
 		object.put("osname", osname);
 		object.put("authtoken", authtoken);
 		object.put("username", userName);
-		Log.i("TAG",""+object.toString());
+
 		
 		put.addHeader("Content-type", "application/json");
 		put.addHeader("api-key", "R2xhZGlvQDEyMy10YXZhbnQuY29t");
@@ -73,7 +73,6 @@ public class HttpRequestCreater {
 		object.put("authtoken", authtoken);
 		else if(userName!=null)
 		object.put("username", userName);
-		Log.i("TAG",""+object.toString());
 		post.addHeader("Content-type", "application/json");
 		post.addHeader("api-key", "R2xhZGlvQDEyMy10YXZhbnQuY29t");
 		post.setEntity(new StringEntity(object.toString(), "utf-8"));

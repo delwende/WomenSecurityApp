@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.AlphabetIndexer;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -37,11 +38,13 @@ import com.facebook.SessionState;
 import com.facebook.model.GraphUser;
 import com.tavant.droid.security.R;
 import com.tavant.droid.security.adapters.FacebookFriendsAdapter;
+import com.tavant.droid.security.adapters.ViewHolder;
 import com.tavant.droid.security.database.ContentDescriptor;
 import com.tavant.droid.security.prefs.CommonPreferences;
 import com.tavant.droid.security.utils.Utils;
 
-public class FacebookFriendPicker extends ActionBarActivity implements LoaderCallbacks<Cursor>  {
+public class FacebookFriendPicker extends ActionBarActivity implements LoaderCallbacks<Cursor> //,android.widget.AdapterView.OnItemClickListener 
+{
 
 	private ProgressBar progress=null;
 	private ListView listview=null;
@@ -64,6 +67,7 @@ public class FacebookFriendPicker extends ActionBarActivity implements LoaderCal
 		setContentView(R.layout.friendslist);
 		progress=(ProgressBar)findViewById(R.id.loading);
 		listview=(ListView)findViewById(R.id.friendslist);
+		//listview.setOnItemClickListener(this);
 		//adaptor=new FacebookFreindsAdapter(this, null);
 		//listview.setAdapter(adapter);
 		mtext=(TextView)findViewById(R.id.load_status);
@@ -78,6 +82,16 @@ public class FacebookFriendPicker extends ActionBarActivity implements LoaderCal
 			loadFBSession();
 		}
 	}
+	/*
+	@Override
+	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+		ViewHolder adapter = (ViewHolder)arg1.getTag();
+		if(!adapter.isTitle){
+			adapter.mCheckBox.setChecked(adapter.mCheckBox.isChecked());
+		}
+		
+	}
+	*/
 
 	private void loadFBSession() {
 		AccessToken token=AccessToken.createFromExistingAccessToken(prefs.getFbAcessToken(),null,null,
@@ -91,6 +105,7 @@ public class FacebookFriendPicker extends ActionBarActivity implements LoaderCal
 			}
 		});
 	}
+	
 
 	private void getFBFriends(){
 		Request req= Request.newMyFriendsRequest(session,  new Request.GraphUserListCallback() {
@@ -286,4 +301,6 @@ public class FacebookFriendPicker extends ActionBarActivity implements LoaderCal
 		super.onDestroy();
 		getSupportLoaderManager().destroyLoader(LOADER_ID);
 	}
+
+
 }

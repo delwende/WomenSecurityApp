@@ -26,6 +26,7 @@
         android:protectionLevel="signature" />
 
     <uses-permission android:name="com.tavant.droid.security.permission.C2D_MESSAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name=".SecurityApp"
@@ -84,24 +85,27 @@
             android:name=".activities.ContactsListActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
             android:screenOrientation="portrait" >
-             <meta-data android:name="android.app.default_searchable"
-                   android:value=".activities.ContactSearchableActivity" />
-          </activity>   
+            <meta-data
+                android:name="android.app.default_searchable"
+                android:value=".activities.ContactSearchableActivity" />
+        </activity>
         <activity
             android:name=".activities.FacebookFriendPicker"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
-            android:screenOrientation="portrait">
-             <meta-data android:name="android.app.default_searchable"
-                   android:value=".activities.SearchableActivity" />
-        </activity>    
+            android:screenOrientation="portrait" >
+            <meta-data
+                android:name="android.app.default_searchable"
+                android:value=".activities.SearchableActivity" />
+        </activity>
         <activity
             android:name=".activities.SearchableActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
-            android:launchMode ="singleTop"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
+
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
@@ -109,11 +113,12 @@
         <activity
             android:name=".activities.ContactSearchableActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
-            android:launchMode ="singleTop"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
+
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchablecontact" />
@@ -138,10 +143,22 @@
                 <category android:name="com.tavant.droid.security" />
             </intent-filter>
         </receiver>
-     
+
         <service android:name=".service.WSGCMIntentService" />
-        <service android:name=".service.WSContactUpdateManger"  android:exported="false"/>
-        <service android:name=".service.LocationAlarmService" android:exported="false"/>
+        <service
+            android:name=".service.WSContactUpdateManger"
+            android:exported="false" />
+        <service
+            android:name=".service.LocationAlarmService"
+            android:exported="false" />
+
+        <receiver
+            android:name=".receiver.StartupReceiver"
+            android:exported="false" >
+            <intent-filter android:priority="1001" >
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
 
         <activity
             android:name="com.google.ads.AdActivity"

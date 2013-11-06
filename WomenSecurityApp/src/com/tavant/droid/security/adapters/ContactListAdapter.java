@@ -11,7 +11,6 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.net.Uri;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -252,7 +251,7 @@ public class ContactListAdapter extends 	android.support.v4.widget.CursorAdapter
 				.getColumnIndex(ContentDescriptor.WSContact.Cols.IMGURL));
 		phonenumber=""+cursor.getString(cursor
 				.getColumnIndex(ContentDescriptor.WSContact.Cols.PHONE));
-		Log.i("TAG","myphonenumber"+phonenumber);
+		
 
 		adapter.mName.setText(uName);
 		adapter.mphone.setText(phonenumber);
@@ -281,7 +280,6 @@ public class ContactListAdapter extends 	android.support.v4.widget.CursorAdapter
 
 	@Override
 	public void onCheckedChanged(CompoundButton arg0, boolean arg1) {
-		Log.i("TAG",""+"refreshing listview");
 		String id=arg0.getTag().toString();
 		values = new ContentValues();
 		if (arg1) { 

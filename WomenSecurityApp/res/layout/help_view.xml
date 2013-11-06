@@ -1,35 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-android:layout_width="fill_parent"
-android:layout_height="fill_parent"
-android:paddingTop="0dip"
-android:orientation="vertical" >
-       
-       <ViewFlipper
-            android:id="@+id/view_flipper"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:paddingTop="0dip" >
+
+    <ViewFlipper
+        android:id="@+id/view_flipper"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_margin="0dip" >
+
+        <ImageView
+            android:id="@+id/image_view1"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_margin="0dip" >
-                    <ImageView
-                        android:contentDescription="image1" 
-                        android:id="@+id/image_view1"
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"/>
-            
-                    <ImageView
-                        android:contentDescription="image1" 
-                        android:id="@+id/image_view2"
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"/>
-        </ViewFlipper>
-        
-       <ImageView   android:id="@+id/close_btn"
-                    android:paddingTop="15dip"
-                    android:paddingRight="15dip"
-                    android:contentDescription="image" 
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center|right|top"
-                    android:src="@drawable/help_close_btn"/>         
+            android:contentDescription="image1" />
+
+        <ImageView
+            android:id="@+id/image_view2"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:contentDescription="image1" />
+    </ViewFlipper>
+
+    <ImageView
+        android:id="@+id/close_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|right|top"
+        android:contentDescription="image"
+        android:paddingRight="15dip"
+        android:paddingTop="15dip"
+        android:src="@drawable/help_close_btn" />
+
+    <ImageView
+        android:id="@+id/arrow_btn_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|right"
+        android:contentDescription="image"
+        android:paddingRight="10dip"
+        android:src="@drawable/help_arrow_btn_right" />
+
+    <ImageView
+        android:id="@+id/arrow_btn_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|left"
+        android:contentDescription="image"
+        android:visibility="invisible"
+        android:paddingLeft="10dip"
+        android:src="@drawable/help_arrow_btn_left" />
 
 </FrameLayout>

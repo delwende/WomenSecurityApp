@@ -22,7 +22,6 @@ import android.os.Handler;
 import android.os.SystemClock;
 import android.provider.Settings.Secure;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
@@ -114,7 +113,6 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 		if (isResumed) {
 			if (state.isOpened()) {
 				loginbtn.setVisibility(View.INVISIBLE);
-				Log.d("TAG", "my accesstoken"+session.getAccessToken());
 				preferences.setFbAcessToken(session.getAccessToken());
 				mdialog=ProgressDialog.show(this, "",getString(R.string.fetch_details));
 				makeMeRequest(session);
@@ -131,7 +129,6 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 				// If the response is successful
 				if (session == Session.getActiveSession()) {
 					if (user != null) {
-						Log.d("TAG","myfbid"+user.getId());
 						preferences.setFbId(user.getId());
 						mdialog.dismiss();
 						alert.show();
@@ -226,7 +223,6 @@ public class LoginActivity extends BaseActivity implements PhoneStatus{
 		String gcmid=GCMRegistrar.getRegistrationId(this);
 		String accessToken=preferences.getFbAcessToken();
 		String userId=preferences.getFbId();
-		Log.i("TAG",""+gcmid);
 		HttpRequestBase put=HttpRequestCreater.createUesr(userId, "facebook", phonenumber, possibleEmail, gcmid, 0,"android",accessToken,userName);
 		onExecute(WSConstants.CODE_USER_API, put, false);
 	}
